@@ -1,0 +1,69 @@
+package ru.ifmo.ailab.daafse.registry.client;
+
+import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.QueueingConsumer;
+import ru.ifmo.ailab.daafse.bus.MessageBusFactory;
+import ru.ifmo.ailab.daafse.bus.StreamID;
+import ru.ifmo.ailab.daafse.registry.protocol.RegistryProtocol;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Created by oscii on 29/04/14.
+ */
+enum ConsumerRegistryImpl implements ConsumerRegistry {
+    INSTANCE;
+
+    private Channel channel;
+    private String requestQueueName = MessageBusFactory.getBus().getRegistryRoute();
+    private String replyQueueName;
+    private QueueingConsumer consumer;
+
+    ConsumerRegistryImpl() throws IOException {
+        channel = MessageBusFactory.getBus().getChannel();
+
+        replyQueueName = channel.queueDeclare().getQueue();
+        consumer = new QueueingConsumer(channel);
+        channel.basicConsume(replyQueueName, true, consumer);
+    }
+
+    @Override
+    synchronized public List<StreamID> getAvailableStreams() throws IOException, InterruptedException {
+        String response = null;
+        String corrID = UUID.randomUUID().toString();
+
+        BasicProperties props = new BasicProperties
+                                    .Builder()
+                                    .correlationId(corrID)
+                                    .replyTo(replyQueueName)
+                                    .build();
+
+        channel.basicPublish("", requestQueueName, props,
+                RegistryProtocol.GET_STREAMS.toString().getBytes());
+
+        List<StreamID> result = new ArrayList<>();
+        while (true) {
+            QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+
+            if (delivery.getProperties().getCorrelationId().equals(corrID)) {
+                String msg = new String(delivery.getBody());
+
+                if (msg.startsWith(RegistryProtocol.STREAMS.toString())) {
+                    String[] streamStrings = msg.split(" ")[1].split(",");
+
+                    for (String s : streamStrings) {
+                        result.add(new StreamID(s));
+                    }
+                    break;
+                }
+            }
+
+        }
+
+        return result;
+    }
+}
