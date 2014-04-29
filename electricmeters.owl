@@ -1,14 +1,17 @@
-@prefix : <http://purl.org/se/electricmeters#> .
+@prefix : <http://purl.org/daafse/electricmeters#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@base <http://purl.org/se/electricmeters> .
+@prefix daafse: <http://purl.org/daafse/electricmeters#> .
+@base <http://purl.org/daafse/electricmeters> .
 
-<http://purl.org/se/electricmeters> rdf:type owl:Ontology ;
-                                    
-                                    owl:imports <http://purl.oclc.org/NET/ssnx/ssn> .
+<http://purl.org/daafse/electricmeters> rdf:type owl:Ontology ;
+                                        
+                                        owl:imports <http://purl.oclc.org/NET/ssnx/ssn> ;
+                                        
+                                        owl:versionIRI <http://purl.org/daafse/electricmeters/1.0.0> .
 
 
 #################################################################
@@ -18,7 +21,7 @@
 #################################################################
 
 
-###  http://purl.org/se/electricmeters#hasPhaseNumber
+###  http://purl.org/daafse/electricmeters#hasPhaseNumber
 
 :hasPhaseNumber rdf:type owl:DatatypeProperty ,
                          owl:FunctionalProperty ;
@@ -29,7 +32,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#hasQuantityValue
+###  http://purl.org/daafse/electricmeters#hasQuantityValue
 
 :hasQuantityValue rdf:type owl:DatatypeProperty ;
                   
@@ -46,7 +49,7 @@
 #################################################################
 
 
-###  http://purl.org/se/electricmeters#ElectricMeter
+###  http://purl.org/daafse/electricmeters#ElectricMeter
 
 :ElectricMeter rdf:type owl:Class ;
                
@@ -57,7 +60,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#ElectricityFeature
+###  http://purl.org/daafse/electricmeters#ElectricityFeature
 
 :ElectricityFeature rdf:type owl:Class ;
                     
@@ -71,7 +74,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#Mercury230
+###  http://purl.org/daafse/electricmeters#Mercury230
 
 :Mercury230 rdf:type owl:Class ;
             
@@ -85,7 +88,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#PolyphaseVoltageObservation
+###  http://purl.org/daafse/electricmeters#PolyphaseVoltageObservation
 
 :PolyphaseVoltageObservation rdf:type owl:Class ;
                              
@@ -97,7 +100,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#PolyphaseVoltageSensorOutput
+###  http://purl.org/daafse/electricmeters#PolyphaseVoltageSensorOutput
 
 :PolyphaseVoltageSensorOutput rdf:type owl:Class ;
                               
@@ -105,7 +108,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#PolyphaseVoltageValue
+###  http://purl.org/daafse/electricmeters#PolyphaseVoltageValue
 
 :PolyphaseVoltageValue rdf:type owl:Class ;
                        
@@ -117,7 +120,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#QuantityObservationValue
+###  http://purl.org/daafse/electricmeters#QuantityObservationValue
 
 :QuantityObservationValue rdf:type owl:Class ;
                           
@@ -125,7 +128,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#VoltageObservation
+###  http://purl.org/daafse/electricmeters#VoltageObservation
 
 :VoltageObservation rdf:type owl:Class ;
                     
@@ -141,7 +144,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#VoltageProperty
+###  http://purl.org/daafse/electricmeters#VoltageProperty
 
 :VoltageProperty rdf:type owl:Class ;
                  
@@ -151,7 +154,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#VoltageSensorOutput
+###  http://purl.org/daafse/electricmeters#VoltageSensorOutput
 
 :VoltageSensorOutput rdf:type owl:Class ;
                      
@@ -163,7 +166,7 @@
 
 
 
-###  http://purl.org/se/electricmeters#VoltageValue
+###  http://purl.org/daafse/electricmeters#VoltageValue
 
 :VoltageValue rdf:type owl:Class ;
               
@@ -180,7 +183,7 @@
 #################################################################
 
 
-###  http://purl.org/se/electricmeters#Volt
+###  http://purl.org/daafse/electricmeters#Volt
 
 :Volt rdf:type <http://www.loa-cnr.it/ontologies/DUL.owl#UnitOfMeasure> ,
                owl:NamedIndividual ;
