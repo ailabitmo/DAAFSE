@@ -1,1 +1,6 @@
 catalog-*.xml
+stream-publisher/nbproject/private/
+stream-publisher/target/
+nb-configuration.xml
+nbactions.xml
+server.log
