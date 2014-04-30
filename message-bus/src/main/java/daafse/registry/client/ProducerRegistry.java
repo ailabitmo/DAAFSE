@@ -1,6 +1,6 @@
-package ru.ifmo.ailab.daafse.registry.client;
+package daafse.registry.client;
 
-import ru.ifmo.ailab.daafse.bus.StreamID;
+import daafse.bus.StreamID;
 
 /**
  * Created by oscii on 29/04/14.

@@ -1,11 +1,11 @@
-package ru.ifmo.ailab.daafse.registry.client;
+package daafse.registry.client;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.QueueingConsumer;
-import ru.ifmo.ailab.daafse.bus.MessageBusFactory;
-import ru.ifmo.ailab.daafse.bus.StreamID;
-import ru.ifmo.ailab.daafse.registry.protocol.RegistryProtocol;
+import daafse.bus.MessageBusFactory;
+import daafse.bus.StreamID;
+import daafse.registry.protocol.RegistryProtocol;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
-package ru.ifmo.ailab.daafse.playground;
+package daafse.playground;
 
-import ru.ifmo.ailab.daafse.bus.StreamID;
-import ru.ifmo.ailab.daafse.producers.AbstractProducer;
+import daafse.bus.StreamID;
+import daafse.producers.AbstractProducer;
 
 import java.io.IOException;
 

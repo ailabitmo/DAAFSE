@@ -4,10 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.ifmo.ailab</groupId>
-    <artifactId>daafse</artifactId>
+    <groupId>ru.ifmo.ailab.daafse</groupId>
+    <artifactId>root</artifactId>
+    <packaging>pom</packaging>
     <version>0.01</version>
-
+    <modules>
+        <module>message-bus</module>
+    </modules>
 
     <repositories>
         <repository>
@@ -15,6 +18,11 @@
             <url>http://mvn.dev.pattr.ru/</url>
         </repository>
     </repositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
     <dependencies>
         <dependency>

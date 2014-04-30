@@ -1,4 +1,4 @@
-package ru.ifmo.ailab.daafse.registry.protocol;
+package daafse.registry.protocol;
 
 import java.util.HashMap;
 import java.util.Map;

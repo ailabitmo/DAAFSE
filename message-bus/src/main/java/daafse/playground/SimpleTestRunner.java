@@ -1,8 +1,8 @@
-package ru.ifmo.ailab.daafse.playground;
+package daafse.playground;
 
-import ru.ifmo.ailab.daafse.bus.StreamID;
-import ru.ifmo.ailab.daafse.registry.client.RegistryFactory;
-import ru.ifmo.ailab.daafse.registry.server.Registry;
+import daafse.bus.StreamID;
+import daafse.registry.client.RegistryFactory;
+import daafse.registry.server.Registry;
 
 import java.io.IOException;
 import java.util.List;

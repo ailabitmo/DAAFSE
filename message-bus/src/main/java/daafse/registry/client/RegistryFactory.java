@@ -1,4 +1,4 @@
-package ru.ifmo.ailab.daafse.registry.client;
+package daafse.registry.client;
 
 import java.io.IOException;
 

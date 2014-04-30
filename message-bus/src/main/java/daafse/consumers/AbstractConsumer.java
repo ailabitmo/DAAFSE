@@ -1,9 +1,9 @@
-package ru.ifmo.ailab.daafse.consumers;
+package daafse.consumers;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.QueueingConsumer;
-import ru.ifmo.ailab.daafse.bus.MessageBusFactory;
-import ru.ifmo.ailab.daafse.bus.StreamID;
+import daafse.bus.MessageBusFactory;
+import daafse.bus.StreamID;
 
 import java.io.IOException;
 import java.util.HashSet;

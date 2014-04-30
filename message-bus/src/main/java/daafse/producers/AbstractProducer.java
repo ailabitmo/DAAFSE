@@ -1,10 +1,10 @@
-package ru.ifmo.ailab.daafse.producers;
+package daafse.producers;
 
 import com.rabbitmq.client.Channel;
-import ru.ifmo.ailab.daafse.bus.MessageBusFactory;
-import ru.ifmo.ailab.daafse.bus.StreamID;
-import ru.ifmo.ailab.daafse.registry.client.ProducerRegistry;
-import ru.ifmo.ailab.daafse.registry.client.RegistryFactory;
+import daafse.bus.MessageBusFactory;
+import daafse.bus.StreamID;
+import daafse.registry.client.ProducerRegistry;
+import daafse.registry.client.RegistryFactory;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package ru.ifmo.ailab.daafse.bus;
+package daafse.bus;
 
 import java.io.IOException;
 

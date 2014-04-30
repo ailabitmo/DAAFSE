@@ -1,4 +1,4 @@
-package ru.ifmo.ailab.daafse.bus;
+package daafse.bus;
 
 /**
  * Created by oscii on 29/04/14.

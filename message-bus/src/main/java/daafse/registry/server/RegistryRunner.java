@@ -1,4 +1,4 @@
-package ru.ifmo.ailab.daafse.registry.server;
+package daafse.registry.server;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;

@@ -1,6 +1,6 @@
-package ru.ifmo.ailab.daafse.registry.client;
+package daafse.registry.client;
 
-import ru.ifmo.ailab.daafse.bus.StreamID;
+import daafse.bus.StreamID;
 
 import java.io.IOException;
 import java.util.List;

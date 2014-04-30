@@ -1,6 +1,6 @@
-package ru.ifmo.ailab.daafse.playground;
+package daafse.playground;
 
-import ru.ifmo.ailab.daafse.consumers.AbstractConsumer;
+import daafse.consumers.AbstractConsumer;
 
 import java.io.IOException;
 
