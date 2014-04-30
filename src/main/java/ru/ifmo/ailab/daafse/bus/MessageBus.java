@@ -9,5 +9,6 @@ import java.io.IOException;
  */
 public interface MessageBus {
     public Channel getChannel() throws IOException;
-    public String getRegistryRoute();
+    public String getRegistryName();
+    public String getExchangeName();
 }

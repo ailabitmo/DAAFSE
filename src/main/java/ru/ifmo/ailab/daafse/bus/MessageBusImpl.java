@@ -9,11 +9,10 @@ import java.io.IOException;
 /**
  * Created by oscii on 29/04/14.
  */
-enum MessageBusImpl implements MessageBus {
-    INSTANCE;
-
+class MessageBusImpl implements MessageBus {
     private final Connection connection;
     private final String REGISTRY_ROUTE = "registry";
+    private final String EXCHANGE_NAME = "streams_exchange";
     private final String HOST = "localhost";
 
     private MessageBusImpl() throws IOException {
@@ -28,7 +27,22 @@ enum MessageBusImpl implements MessageBus {
     }
 
     @Override
-    public String getRegistryRoute() {
+    public String getRegistryName() {
         return REGISTRY_ROUTE;
+    }
+
+    @Override
+    public String getExchangeName() {
+        return EXCHANGE_NAME;
+    }
+
+
+    static private MessageBus singleton = null;
+
+    static MessageBus getInstance() throws IOException {
+        if (singleton == null) {
+            singleton = new MessageBusImpl();
+        }
+        return singleton;
     }
 }

@@ -1,13 +1,15 @@
 package ru.ifmo.ailab.daafse.registry.client;
 
+import java.io.IOException;
+
 /**
  * Created by oscii on 29/04/14.
  */
 public class RegistryFactory {
-    static public ConsumerRegistry getConsumerRegistry() {
-        return ConsumerRegistryImpl.INSTANCE;
+    static public ConsumerRegistry getConsumerRegistry() throws IOException {
+        return ConsumerRegistryImpl.getInstance();
     }
-    static public ProducerRegistry getProducerRegistry() {
-        return ProducerRegistryImpl.INSTANCE;
+    static public ProducerRegistry getProducerRegistry() throws IOException {
+        return ProducerRegistryImpl.getInstance();
     }
 }

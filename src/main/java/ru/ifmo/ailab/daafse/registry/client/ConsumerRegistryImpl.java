@@ -15,15 +15,13 @@ import java.util.UUID;
 /**
  * Created by oscii on 29/04/14.
  */
-enum ConsumerRegistryImpl implements ConsumerRegistry {
-    INSTANCE;
-
+class ConsumerRegistryImpl implements ConsumerRegistry {
     private Channel channel;
-    private String requestQueueName = MessageBusFactory.getBus().getRegistryRoute();
+    private String requestQueueName = MessageBusFactory.getBus().getRegistryName();
     private String replyQueueName;
     private QueueingConsumer consumer;
 
-    ConsumerRegistryImpl() throws IOException {
+    private ConsumerRegistryImpl() throws IOException {
         channel = MessageBusFactory.getBus().getChannel();
 
         replyQueueName = channel.queueDeclare().getQueue();
@@ -65,5 +63,15 @@ enum ConsumerRegistryImpl implements ConsumerRegistry {
         }
 
         return result;
+    }
+
+
+    private static ConsumerRegistry singleton = null;
+
+    static ConsumerRegistry getInstance() throws IOException {
+        if (singleton == null) {
+            singleton = new ConsumerRegistryImpl();
+        }
+        return singleton;
     }
 }

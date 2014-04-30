@@ -11,16 +11,12 @@ import java.io.IOException;
 /**
  * Created by oscii on 29/04/14.
  */
-enum ProducerRegistryImpl implements ProducerRegistry {
-    INSTANCE;
-
+class ProducerRegistryImpl implements ProducerRegistry {
     private Channel channel;
-    private String registryQueue = MessageBusFactory.getBus().getRegistryRoute();
+    private String registryQueue = MessageBusFactory.getBus().getRegistryName();
 
-    ProducerRegistryImpl() throws IOException {
+    private ProducerRegistryImpl() throws IOException {
         channel = MessageBusFactory.getBus().getChannel();
-        channel.queueDeclare(registryQueue, true, false, false, null);
-
     }
 
     @Override
@@ -49,5 +45,15 @@ enum ProducerRegistryImpl implements ProducerRegistry {
             e.printStackTrace();
             return false;
         }
+    }
+
+
+    private static ProducerRegistry singleton = null;
+
+    public static ProducerRegistry getInstance() throws IOException {
+        if (singleton == null) {
+            singleton = new ProducerRegistryImpl();
+        }
+        return singleton;
     }
 }
