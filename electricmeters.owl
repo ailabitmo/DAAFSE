@@ -21,6 +21,16 @@
 #################################################################
 
 
+###  http://purl.org/daafse/electricmeters#hasStream
+
+daafse:hasStream rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:domain <http://purl.oclc.org/NET/ssnx/ssn#SensingDevice> ;
+                 
+                 rdfs:range xsd:anyURI .
+
+
+
 ###  http://purl.org/daafse/electricmeters##hasPhaseNumber
 
 :hasPhaseNumber rdf:type owl:DatatypeProperty ,
