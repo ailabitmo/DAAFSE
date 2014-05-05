@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>stream-publisher</artifactId>
-    <packaging>jar</packaging>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>root</artifactId>
         <groupId>ru.ifmo.ailab.daafse</groupId>
         <version>0.01</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <description>Project for testing all other stuff.</description>
+
+    <artifactId>playground</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>ru.ifmo.ailab.daafse</groupId>
+            <artifactId>message-bus</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.ifmo.ailab.daafse</groupId>
+            <artifactId>stream-publisher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -34,7 +50,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.ifmo.ailab.ru.ifmo.ailab.daafse.streampublisher.Publisher</mainClass>
+                            <mainClass>ru.ifmo.ailab.daafse.playground.Runner</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -44,22 +60,5 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>apache-jena-libs</artifactId>
-            <type>pom</type>
-            <version>2.11.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aeonbits.owner</groupId>
-            <artifactId>owner</artifactId>
-            <version>1.0.5</version>
-        </dependency>
-    </dependencies>
+
 </project>
