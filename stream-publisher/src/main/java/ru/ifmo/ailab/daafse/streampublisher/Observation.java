@@ -22,15 +22,16 @@ public class Observation {
     private final Resource firstPhaseValue;
     private final Resource secondPhaseValue;
     private final Resource thirdPhaseValue;
+    private final String meterId;
 
     public Observation(final String meterType,
             final int meterSerialNumber, final long timestamp,
             final double[] phaseValues) {
-        String meterId = meterType + "_" + meterSerialNumber;
-        this.meter = model.createResource(createMeterURI(meterId));
+        this.meterId = meterType + "_" + meterSerialNumber;
+        this.meter = model.createResource(createMeterURI(this.meterId));
 
         this.firstPhaseValue = model.createResource(
-                createObservationValueURI(meterId, timestamp, 1),
+                createObservationValueURI(this.meterId, timestamp, 1),
                 DAAFSE.PolyphaseVoltageValue)
                 .addLiteral(DAAFSE.hasPhaseNumber, ResourceFactory
                         .createTypedLiteral("1", XSDDatatype.XSDinteger))
@@ -81,6 +82,10 @@ public class Observation {
 
     public Model getModel() {
         return model;
+    }
+    
+    public String getMeterId() {
+        return meterId;
     }
 
 }
