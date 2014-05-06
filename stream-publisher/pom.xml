@@ -5,9 +5,9 @@
     <packaging>jar</packaging>
 
     <parent>
-        <artifactId>root</artifactId>
         <groupId>ru.ifmo.ailab.daafse</groupId>
-        <version>0.01</version>
+        <artifactId>daafse-parent</artifactId>
+        <version>0.0.1</version>
     </parent>
 
     <build>

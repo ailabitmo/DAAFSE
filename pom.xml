@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.ifmo.ailab.daafse</groupId>
-    <artifactId>root</artifactId>
+    <artifactId>daafse-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.01</version>
+    <version>0.0.1</version>
 
     <description>Project for testing stuff in other projects</description>
 
