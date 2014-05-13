@@ -1,5 +1,6 @@
 package ru.ifmo.ailab.daafse.alertservice.services;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import java.util.Iterator;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,11 +21,22 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
     private CQELSEngine cqelsEngine;
 
     @Override
+    public void loadDataset(final String graph, final String uri) {
+        cqelsEngine.getContext().loadDataset(graph, uri);
+    }
+
+    @Override
     public int register(final String query) {
         ContinuousSelect select = cqelsEngine.getContext().registerSelect(query);
         select.register((Mapping mapping) -> {
-            logger.debug("{}", 
-                    mapping.getCtx().engine().decode(mapping.get(mapping.vars().next())));
+            String result = "";
+            for (Iterator<Var> vars = mapping.vars(); vars.hasNext();) {
+                final long t = mapping.get(vars.next());
+                if (t > 0) {
+                    result += " " + mapping.getCtx().engine().decode(t);
+                }
+            }
+            logger.debug("{}", result);
         });
         return 0;
     }
