@@ -32,14 +32,16 @@ public class StreamReaderServiceImplTest {
     public void simple() throws URISyntaxException, InterruptedException {
         StreamURI uri = new StreamURI(
                 "amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.*");
+        qes.loadDataset(null, "../datasets/meters.ttl");
         stream.startReadStream(uri);
         final int queryId = qes.register(
                 "PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>\n"
                 + "PREFIX em: <http://purl.org/daafse/electricmeters#>\n"
-                + "SELECT ?meter \n"
+                + "SELECT ?meter ?stream\n"
                 + "WHERE {\n"
-                + "STREAM <" + uri.toString() + "> [NOW] \n"
+                + "STREAM ?stream [NOW] \n"
                 + "{?o ssn:observedBy ?meter} \n"
+                + "[] em:hasStream ?stream ."
                 + "}");
         Thread.sleep(15000);
         qes.unregister(queryId);

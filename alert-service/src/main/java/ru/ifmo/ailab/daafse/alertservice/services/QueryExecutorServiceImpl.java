@@ -22,7 +22,11 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
 
     @Override
     public void loadDataset(final String graph, final String uri) {
-        cqelsEngine.getContext().loadDataset(graph, uri);
+        if (graph != null && !graph.isEmpty()) {
+            cqelsEngine.getContext().loadDataset(graph, uri);
+        } else {
+            cqelsEngine.getContext().loadDefaultDataset(uri);
+        }
     }
 
     @Override
