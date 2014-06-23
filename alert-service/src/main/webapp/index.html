@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="metersApp">
     <head>
         <title>Start Page</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="js/lib/parserUri/parserUri.js"></script>
+        <script src="js/lib/stomp_websocket/stomp.min.js"></script>
+        <script src="js/lib/angular/angular.min.js"></script>
+        <script src="js/lib/angular/modules/angular-route.min.js"></script>
+        <script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
+        <script src="js/lib/highcharts/highcharts.js"></script>
+        <script src="js/lib/angular/modules/highcharts-ng.min.js"></script>
+        <script src="js/message-service.js"></script>
+        <script src="js/app.js"></script>
+        <script src="js/controllers.js"></script>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <div class="navbar navbar-default navbar-static-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Dashboard</a>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3" ng-controller="MeterListCtrl as list">
+                    <h2>Smart Meters</h2>
+                    <div class="list-group meter-list">
+                        <a href="#/meters/{{meter.uri}}/info" class="list-group-item" 
+                            ng-repeat="meter in list.meters"
+                            ng-click="list.setSelected($index)"
+                            ng-class="{'active': list.isSelected($index)}">
+                            Mercury 230 #{{meter.serialNumber}}
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6" ng-view></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Alerts</h2>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

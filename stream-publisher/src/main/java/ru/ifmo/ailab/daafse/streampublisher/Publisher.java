@@ -35,7 +35,7 @@ public class Publisher implements ObservationListener {
     public void newObservation(Observation observation) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            observation.getModel().write(out);
+            observation.getModel().write(out, "JSON-LD");
             producer.publish(config.routingKey(observation.getMeterId()),
                     out.toByteArray());
             logger.debug("Published to {}", 

@@ -5,16 +5,25 @@
 @base <http://purl.org/daafse/> .
 
 <meters/mercury230_13534128> a em:Mercury230 ;
+	em:hasSerialNumber "13534128" ;
 	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13534128> .
 
 <meters/mercury230_13525036> a em:Mercury230 ;
+	em:hasSerialNumber "13525036" ;
 	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13525036> .
 
 <meters/mercury230_13092132> a em:Mercury230 ;
+	em:hasSerialNumber "13092132" ;
 	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13092132> .
 
 <meters/mercury230_17592094> a em:Mercury230 ;
+	em:hasSerialNumber "17592094" ;
 	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_17592094> .
 	
 <meters/mercury230_16824038> a em:Mercury230 ;
+	em:hasSerialNumber "16824038" ;
 	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_16824038> .
+	
+<meters/mercury230_13039187> a em:Mercury230 ;
+	em:hasSerialNumber "13039187" ;
+	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13039187> .
