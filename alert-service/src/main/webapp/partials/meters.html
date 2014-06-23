@@ -1,0 +1,11 @@
+<div class="col-md-3">
+    <div class="list-group meter-list">
+        <a href="#/meters/{{meter.uri}}/info" class="list-group-item" 
+           ng-repeat="meter in meters"
+           ng-click="setSelected($index)"
+           ng-class="{'active': isSelected($index)}">
+            Mercury 230 #{{meter.serialNumber}}
+        </a>
+    </div>
+</div>
+<div class="col-md-9" ui-view></div>

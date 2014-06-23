@@ -68,20 +68,47 @@
         return new StreamClient();
     }]);
 
-    services.factory('cache', function() {
-        function Cache() {
-            this.map = {};
+    services.factory('sparql', ['settings', '$http', '$q', function(settings, $http, $q) {
+        function Client() {
         };
         
-        Cache.prototype.write = function(key, value) {
-            this.map[key] = value;
+        Client.prototype.select = function(query) {
+            var deferred = $q.defer();
+            $http.get(settings.sparqlEndpoint, {
+                params: {query: query, output: 'json'},
+                headers: {Accept: "application/sparql-results+json"}
+            }).success(function(data) {
+                console.log(data);
+                var results = bindingsToJson(data);
+                console.log(results);
+                deferred.resolve(results);
+            }).error(function(data, status){
+                deferred.reject(status);
+            });
+            return deferred.promise;
         };
         
-        Cache.prototype.read = function(key) {
-            return this.map[key];
+        function bindingsToJson(bindings) {
+            var results = [];
+            bindings.results.bindings.forEach(function(element){
+                var r = {};
+                Object.getOwnPropertyNames(element).forEach(function(name){
+                    r[name] = element[name].value;
+                });
+                results.push(r);
+            });
+            return results;
         };
         
-        return new Cache();
+        return new Client();
+    }]);
+    
+    services.factory('settings', function(){
+        function Settings(){
+            this.sparqlEndpoint = "http://192.168.134.114:8890/sparql";
+        };
+        
+        return new Settings();
     });
     
 })(window.angular, window.console, window.Stomp);

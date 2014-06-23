@@ -1,29 +1,276 @@
-@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
-@prefix em: <http://purl.org/daafse/electricmeters#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix em:    <http://purl.org/daafse/electricmeters#> .
 
-@base <http://purl.org/daafse/> .
+<http://purl.org/daafse/meters/mercury230_13530806>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13530806" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13530806> .
 
-<meters/mercury230_13534128> a em:Mercury230 ;
-	em:hasSerialNumber "13534128" ;
-	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13534128> .
+<http://purl.org/daafse/meters/mercury230_13092132>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13092132" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13092132> .
 
-<meters/mercury230_13525036> a em:Mercury230 ;
-	em:hasSerialNumber "13525036" ;
-	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13525036> .
+<http://purl.org/daafse/meters/mercury230_13050479>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13050479" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13050479> .
 
-<meters/mercury230_13092132> a em:Mercury230 ;
-	em:hasSerialNumber "13092132" ;
-	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13092132> .
+<http://purl.org/daafse/meters/mercury230_13066982>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13066982" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13066982> .
 
-<meters/mercury230_17592094> a em:Mercury230 ;
-	em:hasSerialNumber "17592094" ;
-	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_17592094> .
-	
-<meters/mercury230_16824038> a em:Mercury230 ;
-	em:hasSerialNumber "16824038" ;
-	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_16824038> .
-	
-<meters/mercury230_13039187> a em:Mercury230 ;
-	em:hasSerialNumber "13039187" ;
-	em:hasStream <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13039187> .
+<http://purl.org/daafse/meters/mercury230_16820408>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "16820408" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_16820408> .
+
+<http://purl.org/daafse/meters/mercury230_15739982>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "15739982" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_15739982> .
+
+<http://purl.org/daafse/meters/mercury230_16824075>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "16824075" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_16824075> .
+
+<http://purl.org/daafse/meters/mercury230_13039187>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13039187" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13039187> .
+
+<http://purl.org/daafse/meters/mercury230_13530661>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13530661" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13530661> .
+
+<http://purl.org/daafse/meters/mercury230_13050311>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13050311" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13050311> .
+
+<http://purl.org/daafse/meters/mercury230_14759537>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "14759537" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_14759537> .
+
+<http://purl.org/daafse/meters/mercury230_13124029>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13124029" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13124029> .
+
+<http://purl.org/daafse/meters/mercury230_16939293>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "16939293" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_16939293> .
+
+<http://purl.org/daafse/meters/mercury230_13052927>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13052927" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13052927> .
+
+<http://purl.org/daafse/meters/mercury230_15732058>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "15732058" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_15732058> .
+
+<http://purl.org/daafse/meters/mercury230_13053084>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13053084" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13053084> .
+
+<http://purl.org/daafse/meters/mercury230_13530804>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13530804" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13530804> .
+
+<http://purl.org/daafse/meters/mercury230_13081123>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13081123" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13081123> .
+
+<http://purl.org/daafse/meters/mercury230_13080991>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13080991" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13080991> .
+
+<http://purl.org/daafse/meters/mercury230_13050310>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13050310" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13050310> .
+
+<http://purl.org/daafse/meters/mercury230_16824038>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "16824038" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_16824038> .
+
+<http://purl.org/daafse/meters/mercury230_13103048>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13103048" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13103048> .
+
+<http://purl.org/daafse/meters/mercury230_10192867>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "10192867" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_10192867> .
+
+<http://purl.org/daafse/meters/mercury230_13044673>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13044673" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13044673> .
+
+<http://purl.org/daafse/meters/mercury230_13525036>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13525036" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13525036> .
+
+<http://purl.org/daafse/meters/mercury230_13534128>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13534128" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13534128> .
+
+<http://purl.org/daafse/meters/mercury230_13048004>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13048004" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13048004> .
+
+<http://purl.org/daafse/meters/mercury230_13530324>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13530324" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13530324> .
+
+<http://purl.org/daafse/meters/mercury230_13052912>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13052912" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13052912> .
+
+<http://purl.org/daafse/meters/mercury230_13081170>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13081170" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13081170> .
+
+<http://purl.org/daafse/meters/mercury230_13092127>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13092127" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13092127> .
+
+<http://purl.org/daafse/meters/mercury230_13137298>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13137298" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13137298> .
+
+<http://purl.org/daafse/meters/mercury230_13534820>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13534820" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13534820> .
+
+<http://purl.org/daafse/meters/mercury230_13524655>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13524655" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13524655> .
+
+<http://purl.org/daafse/meters/mercury230_13092162>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13092162" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13092162> .
+
+<http://purl.org/daafse/meters/mercury230_13050091>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13050091" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13050091> .
+
+<http://purl.org/daafse/meters/mercury230_13053466>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13053466" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13053466> .
+
+<http://purl.org/daafse/meters/mercury230_13524583>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13524583" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13524583> .
+
+<http://purl.org/daafse/meters/mercury230_13081162>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13081162" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13081162> .
+
+<http://purl.org/daafse/meters/mercury230_13112319>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13112319" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13112319> .
+
+<http://purl.org/daafse/meters/mercury230_13052999>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13052999" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13052999> .
+
+<http://purl.org/daafse/meters/mercury230_13050321>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13050321" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13050321> .
+
+<http://purl.org/daafse/meters/mercury230_13036897>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13036897" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13036897> .
+
+<http://purl.org/daafse/meters/mercury230_13534241>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13534241" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13534241> .
+
+<http://purl.org/daafse/meters/mercury230_13531642>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13531642" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13531642> .
+
+<http://purl.org/daafse/meters/mercury230_13053066>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13053066" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13053066> .
+
+<http://purl.org/daafse/meters/mercury230_16824583>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "16824583" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_16824583> .
+
+<http://purl.org/daafse/meters/mercury230_13053493>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13053493" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13053493> .
+
+<http://purl.org/daafse/meters/mercury230_13534126>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13534126" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13534126> .
+
+<http://purl.org/daafse/meters/mercury230_13051773>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13051773" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13051773> .
+
+<http://purl.org/daafse/meters/mercury230_13052998>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13052998" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13052998> .
+
+<http://purl.org/daafse/meters/mercury230_17591928>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "17591928" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_17591928> .
+
+<http://purl.org/daafse/meters/mercury230_17592094>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "17592094" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_17592094> .
+
+<http://purl.org/daafse/meters/mercury230_13053086>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "13053086" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_13053086> .
+
+<http://purl.org/daafse/meters/mercury230_16820252>
+        a                   em:Mercury230 ;
+        em:hasSerialNumber  "16820252" ;
+        em:hasStream        <amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.mercury230_16820252> .

@@ -9,8 +9,8 @@
         <script src="js/lib/parserUri/parserUri.js"></script>
         <script src="js/lib/stomp_websocket/stomp.min.js"></script>
         <script src="js/lib/angular/angular.min.js"></script>
-        <script src="js/lib/angular/modules/angular-route.min.js"></script>
-        <script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
+        <script src="js/lib/angular/modules/angular-ui-router.min.js"></script>
+        <script src="js/lib/highcharts/standalone-framework.js"></script>
         <script src="js/lib/highcharts/highcharts.js"></script>
         <script src="js/lib/angular/modules/highcharts-ng.min.js"></script>
         <script src="js/message-service.js"></script>
@@ -23,28 +23,16 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#">Dashboard</a>
                 </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#/meters">Smart Meters</a></li>
+                        <li><a href="#" ui-sref="alerts">Configure Alerts</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-3" ng-controller="MeterListCtrl as list">
-                    <h2>Smart Meters</h2>
-                    <div class="list-group meter-list">
-                        <a href="#/meters/{{meter.uri}}/info" class="list-group-item" 
-                            ng-repeat="meter in list.meters"
-                            ng-click="list.setSelected($index)"
-                            ng-class="{'active': list.isSelected($index)}">
-                            Mercury 230 #{{meter.serialNumber}}
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-6" ng-view></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>Alerts</h2>
-                </div>
-            </div>
+            <div class="row" ui-view></div>
         </div>
     </body>
 </html>
