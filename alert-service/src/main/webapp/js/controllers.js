@@ -1,9 +1,9 @@
 (function(angular, console, Date) {
-    var metersApp = angular.module('metersApp-controllers', 
+    var app = angular.module('metersApp-controllers', 
         ['metersApp-services', 'highcharts-ng']);
 
-    metersApp.controller('MeterListCtrl', ['$scope', 'sparql', '$stateParams', '$state',
-        function($scope, sparql, $stateParams, $state) {
+    app.controller('MeterListCtrl', ['$scope', 'sparql', '$state',
+        function($scope, sparql, $state) {
             var perPage = 10;
             $scope.selected = $state.params.meterUri;
             $scope.meters = [];
@@ -61,7 +61,7 @@
                 });
         }]);
 
-    metersApp.controller('MeterInfoCtrl', ['$scope', '$stateParams', 'rabbitmq',
+    app.controller('MeterInfoCtrl', ['$scope', '$stateParams', 'rabbitmq',
         'sparql',
     function($scope, $stateParams, rabbitmq, sparql) {
         sparql.select(
@@ -139,6 +139,22 @@
                 array.shift();
             }
             array.push(point);
+        };
+    }]);
+
+    app.controller('AlertCtrl', ['$scope', 'settings', 
+        function($scope, settings) {
+        $scope.editorOptions = {
+            lineNumbers: true,
+            lineWrapping: true,
+            mode: 'application/x-sparql-query'
+        };
+        $scope.register = function() {
+            var query = settings.prefixes + "\n" + $scope.query;
+            console.log(query);
+        };
+        $scope.prefixes = function() {
+            return settings.prefixes;
         };
     }]);
 })(window.angular, window.console, window.Date);

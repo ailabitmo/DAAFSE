@@ -1,0 +1,12 @@
+<div class="col-md-12">
+    <form class="form" role="form" novalidate>
+        <div class="form-group panel panel-default">
+            <div class="panel-heading">
+                <code style="font-size: 14px">{{prefixes()}}</code>
+            </div>
+            <div ui-codemirror="editorOptions" ng-model="query"></div>
+        </div>
+        <button class="btn btn-default btn-lg btn-block" 
+                ng-click="register()">Register</button>
+    </form>
+</div>

@@ -104,6 +104,8 @@
     services.factory('settings', function(){
         function Settings(){
             this.sparqlEndpoint = "http://192.168.134.114:8890/sparql";
+            this.prefixes = 
+                    "PREFIX em:<http://purl.org/daafse/electricmeters#> .";
         };
         
         return new Settings();

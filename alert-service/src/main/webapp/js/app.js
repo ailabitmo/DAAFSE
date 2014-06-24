@@ -1,5 +1,6 @@
 (function(angular) {
-    var app = angular.module('metersApp', ['ui.router', 'metersApp-controllers']);
+    var app = angular.module('metersApp', 
+        ['ui.router', 'ui.codemirror', 'metersApp-controllers']);
 
     app.config(function($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise("/");
@@ -19,7 +20,9 @@
                     controller: 'MeterInfoCtrl'
                 })
                 .state('alerts', {
-                    url: "/alerts"
+                    url: "/alerts",
+                    templateUrl: 'partials/alerts.html',
+                    controller: 'AlertCtrl'
                 });
     });
 })(window.angular);
