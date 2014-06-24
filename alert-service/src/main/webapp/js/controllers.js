@@ -2,14 +2,42 @@
     var metersApp = angular.module('metersApp-controllers', 
         ['metersApp-services', 'highcharts-ng']);
 
-    metersApp.controller('MeterListCtrl', ['$scope', 'sparql', function($scope, sparql) {
+    metersApp.controller('MeterListCtrl', ['$scope', 'sparql', '$stateParams', '$state',
+        function($scope, sparql, $stateParams, $state) {
+            var perPage = 10;
+            $scope.selected = $state.params.meterUri;
             $scope.meters = [];
+            $scope.indexes = [0, undefined];
             
-            this.setSelected = function(setId) {
+            $scope.setSelected = function(setId) {
                 $scope.selected = setId;
             };
-            this.isSelected = function(checkId) {
+            $scope.isSelected = function(checkId) {
                 return $scope.selected === checkId;
+            };
+            $scope.hasPrev = function() {
+                return $scope.indexes[0] >= perPage;
+            };
+            $scope.hasNext = function() {
+                return $scope.indexes[1]?
+                            $scope.indexes[1] < $scope.meters.length : true;
+            };
+            $scope.next = function() {
+                $scope.indexes[0] += perPage;
+                if($scope.indexes[1] + perPage <= $scope.meters.length) {
+                    $scope.indexes[1] += perPage;
+                } else {
+                    $scope.indexes[1] = $scope.meters.length;
+                }
+            };
+            $scope.prev = function() {
+                var diff = $scope.indexes[1] - $scope.indexes[0];
+                $scope.indexes[0] -= perPage;
+                if(diff < perPage) {
+                    $scope.indexes[1] -= diff;
+                } else {
+                    $scope.indexes[1] -= perPage;
+                }
             };
 
             sparql.select("PREFIX em:<http://purl.org/daafse/electricmeters#>\n\
@@ -21,8 +49,14 @@
                 }")
                 .then(function(meters){
                     $scope.meters = meters;
+                    if($scope.meters.length < perPage) {
+                        $scope.indexes[1] = $scope.meters.length;
+                    } else {
+                        $scope.indexes[1] = perPage;
+                    }
                 }, function(status){
                     $scope.meters = [];
+                    $scope.indexes = [0, undefined];
                     alert("[ERROR] HTTP Status: " + status);
                 });
         }]);

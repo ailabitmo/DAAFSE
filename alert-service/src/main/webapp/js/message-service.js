@@ -78,9 +78,7 @@
                 params: {query: query, output: 'json'},
                 headers: {Accept: "application/sparql-results+json"}
             }).success(function(data) {
-                console.log(data);
                 var results = bindingsToJson(data);
-                console.log(results);
                 deferred.resolve(results);
             }).error(function(data, status){
                 deferred.reject(status);

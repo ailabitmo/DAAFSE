@@ -1,11 +1,20 @@
 <div class="col-md-3">
-    <div class="list-group meter-list">
-        <a href="#/meters/{{meter.uri}}/info" class="list-group-item" 
-           ng-repeat="meter in meters"
-           ng-click="setSelected($index)"
-           ng-class="{'active': isSelected($index)}">
-            Mercury 230 #{{meter.serialNumber}}
-        </a>
+    <div class="panel panel-default"> 
+        <div class="panel-heading">Total: {{meters.length}}</div>
+        <div class="list-group meter-list">
+            <a href="#/meters/{{meter.uri}}/info" class="list-group-item" 
+               ng-repeat="meter in meters.slice(indexes[0], indexes[1])"
+               ng-click="setSelected(meter.uri)"
+               ng-class="{'active': isSelected(meter.uri)}">
+                Mercury 230 #{{meter.serialNumber}}
+            </a>
+        </div>
+        <ul class="pager">
+            <li><a class="btn" ng-click="prev()" 
+                   ng-class="{'disabled': !hasPrev()}">Previous</a></li>
+            <li><a class="btn" ng-click="next()" 
+                   ng-class="{'disabled': !hasNext()}">Next</a></li>
+        </ul>
     </div>
 </div>
 <div class="col-md-9" ui-view></div>
