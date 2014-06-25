@@ -1,10 +1,15 @@
 package ru.ifmo.ailab.daafse.alertservice.services;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Var;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.deri.cqels.data.Mapping;
+import org.deri.cqels.engine.ConstructListener;
+import org.deri.cqels.engine.ContinuousConstruct;
 import org.deri.cqels.engine.ContinuousSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +35,7 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
     }
 
     @Override
-    public int register(final String query) {
+    public int registerSelect(final String query) {
         ContinuousSelect select = cqelsEngine.getContext().registerSelect(query);
         select.register((Mapping mapping) -> {
             String result = "";
@@ -41,6 +46,20 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
                 }
             }
             logger.debug("{}", result);
+        });
+        return 0;
+    }
+    
+    @Override
+    public int registerConstruct(final String query) {
+        ContinuousConstruct construct = cqelsEngine.getContext()
+                .registerConstruct(query);
+        construct.register(new ConstructListener(cqelsEngine.getContext()) {
+            
+            @Override
+            public void update(List<Triple> graph) {
+                System.out.println(Arrays.toString(graph.toArray()));
+            }
         });
         return 0;
     }

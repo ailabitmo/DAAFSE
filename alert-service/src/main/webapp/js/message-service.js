@@ -80,7 +80,19 @@
             }).success(function(data) {
                 var results = bindingsToJson(data);
                 deferred.resolve(results);
-            }).error(function(data, status){
+            }).error(function(_, status){
+                deferred.reject(status);
+            });
+            return deferred.promise;
+        };
+        
+        Client.prototype.register = function(query) {
+            var deferred = $q.defer();
+            $http.post('rest/query/register/', {}, {
+                params: {query: query}
+            }).success(function(){
+                deferred.resolve();
+            }).error(function(_, status){
                 deferred.reject(status);
             });
             return deferred.promise;
@@ -103,9 +115,9 @@
     
     services.factory('settings', function(){
         function Settings(){
-            this.sparqlEndpoint = "http://192.168.134.114:8890/sparql";
+            this.sparqlEndpoint = "http://192.168.134.114:8890/sparql-cors";
             this.prefixes = 
-                    "PREFIX em:<http://purl.org/daafse/electricmeters#> .";
+                    "PREFIX em:<http://purl.org/daafse/electricmeters#>";
         };
         
         return new Settings();

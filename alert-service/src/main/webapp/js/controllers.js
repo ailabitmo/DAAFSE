@@ -1,4 +1,4 @@
-(function(angular, console, Date) {
+(function(angular, console, Date, N3) {
     var app = angular.module('metersApp-controllers', 
         ['metersApp-services', 'highcharts-ng']);
 
@@ -62,8 +62,9 @@
         }]);
 
     app.controller('MeterInfoCtrl', ['$scope', '$stateParams', 'rabbitmq',
-        'sparql',
-    function($scope, $stateParams, rabbitmq, sparql) {
+        'sparql', '$q',
+    function($scope, $stateParams, rabbitmq, sparql, $q) {
+        var parser = N3.Parser();
         sparql.select(
         "PREFIX em:<http://purl.org/daafse/electricmeters#>\
         SELECT ?serialNumber ?streamUri WHERE {\
@@ -72,6 +73,7 @@
                     em:hasStream ?streamUri .\
             }\
         }").then(function(meters){
+            var length = 10;
             $scope.meter = meters[0];
             $scope.meter.uri = $stateParams.meterUri;
             
@@ -80,24 +82,31 @@
             var HASQUANTITYVALUE = "http://purl.org/daafse/electricmeters#hasQuantityValue";
             
             rabbitmq.subscribe($scope.meter.streamUri, function(message) {
-                var json = JSON.parse(message.body);
                 var observation = [];
                 var time = Date.now();
+                var store = N3.Store();
+                var N3Util = N3.Util;
+                parser.parse(message.body, function(error, triple, prefixes) {
+                    if(triple) {
+                        store.addTriple(triple.subject, triple.predicate, triple.object);
+                    } else {
+                        var values = store.find(null, null, VALUE);
+                        values.forEach(function(triple) {
+                            var phase = store.find(triple.subject, HASPHASENUMBER, null)[0];
+                            var value = store.find(triple.subject, HASQUANTITYVALUE, null)[0];
+                            observation[N3Util.getLiteralValue(phase.object)] = 
+                                    [time, parseFloat(N3Util.getLiteralValue(value.object))];
+                        });
+                        addPoint($scope.chartConfig.series[0].data, length, 
+                                    observation[1]);
+                        addPoint($scope.chartConfig.series[1].data, length, 
+                                    observation[2]);
+                        addPoint($scope.chartConfig.series[2].data, length, 
+                                    observation[3]);
 
-                json['@graph'].forEach(function(e) {
-                    if(e['@type'] === VALUE) {
-                        observation[e[HASPHASENUMBER]] = [
-                            time, e[HASQUANTITYVALUE]
-                        ];
+                        $scope.$apply();
                     }
                 });
-                var length = 10;
-
-                addPoint($scope.chartConfig.series[0].data, length, observation[1]);
-                addPoint($scope.chartConfig.series[1].data, length, observation[2]);
-                addPoint($scope.chartConfig.series[2].data, length, observation[3]);
-
-                $scope.$apply();
             });
         });
         $scope.events = [];
@@ -142,8 +151,8 @@
         };
     }]);
 
-    app.controller('AlertCtrl', ['$scope', 'settings', 
-        function($scope, settings) {
+    app.controller('AlertCtrl', ['$scope', 'settings', 'sparql',
+        function($scope, settings, sparql) {
         $scope.editorOptions = {
             lineNumbers: true,
             lineWrapping: true,
@@ -151,10 +160,12 @@
         };
         $scope.register = function() {
             var query = settings.prefixes + "\n" + $scope.query;
-            console.log(query);
+            sparql.register(query).catch(function(status) {
+                alert('[ERROR][AlertCtrl] HTTP status: ' + status);
+            });
         };
         $scope.prefixes = function() {
             return settings.prefixes;
         };
     }]);
-})(window.angular, window.console, window.Date);
+})(window.angular, window.console, window.Date, window.N3);

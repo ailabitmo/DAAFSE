@@ -159,7 +159,7 @@ public class StreamReaderServiceImpl implements StreamReaderService {
                 AMQP.BasicProperties properties, byte[] body)
                 throws IOException {
             Model model = ModelFactory.createDefaultModel().read(
-                    new StringReader(new String(body)), null);
+                    new StringReader(new String(body)), null, "TTL");
             StmtIterator i = model.listStatements();
             while (i.hasNext()) {
                 Triple triple = i.nextStatement().asTriple();

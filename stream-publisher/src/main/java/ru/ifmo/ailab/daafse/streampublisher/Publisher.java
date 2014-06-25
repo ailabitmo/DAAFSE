@@ -16,10 +16,14 @@ public class Publisher implements ObservationListener {
     private static final Producer producer = new Producer(
             config.serverURI(), config.exchangeName());
     private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
+    private static String lang = "RDF/XML";
 
     public static void main(String[] args) throws Exception {
         try {
             Path log = Paths.get(args[0]);
+            if(args.length > 1 && args[1] != null) {
+                lang = args[1];
+            }
             logger.info("Observations will be read from {} file.", log);
             LogReader lr = new LogReader(log, new Publisher());
             producer.init();
@@ -35,7 +39,7 @@ public class Publisher implements ObservationListener {
     public void newObservation(Observation observation) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            observation.getModel().write(out, "JSON-LD");
+            observation.getModel().write(out, lang);
             producer.publish(config.routingKey(observation.getMeterId()),
                     out.toByteArray());
             logger.debug("Published to {}", 

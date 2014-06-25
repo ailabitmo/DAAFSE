@@ -34,16 +34,16 @@ public class StreamReaderServiceImplTest {
                 "amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.*");
         qes.loadDataset(null, "../datasets/meters.ttl");
         stream.startReadStream(uri);
-        final int queryId = qes.register(
+        final int queryId = qes.registerSelect(
                 "PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>\n"
                 + "PREFIX em: <http://purl.org/daafse/electricmeters#>\n"
                 + "SELECT ?meter ?stream\n"
-                + "WHERE {\n"
-                + "STREAM ?stream [NOW] \n"
-                + "{?o ssn:observedBy ?meter} \n"
-                + "[] em:hasStream ?stream ."
+                + "WHERE {"
+                + "     STREAM ?stream [NOW]"
+                + "     {?o ssn:observedBy ?meter}"
+                + "     ?x em:hasStream ?stream ."
                 + "}");
-        Thread.sleep(15000);
+        Thread.sleep(20000);
         qes.unregister(queryId);
         stream.stopReadStream(uri);
     }
