@@ -27,7 +27,7 @@ public class StartupBean {
 
     @PostConstruct
     void init() {
-        System.out.println("initializing...");
+        logger.debug("initializing...");
         ResultSet results = sparqlRs.select("PREFIX em:<http://purl.org/daafse/electricmeters#>"
                 + "SELECT ?streamUri {"
                 + "	GRAPH <http://192.168.134.114/SmartMetersDB/> {"
@@ -43,7 +43,7 @@ public class StartupBean {
                 logger.warn(ex.getMessage(), ex);
             }
         }
-        System.out.println("initialized.");
+        logger.debug("initialized.");
     }
 
     @PreDestroy

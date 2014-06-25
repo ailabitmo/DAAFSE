@@ -185,7 +185,11 @@
                  
                  rdfs:label "Напряжение"@ru ;
                  
-                 rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#Property> .
+                 rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#Property> ;
+                 
+                 rdfs:seeAlso "http://en.wikipedia.org/wiki/Voltage"^^xsd:anyURI ;
+                 
+                 rdfs:comment "Voltage"@en .
 
 
 

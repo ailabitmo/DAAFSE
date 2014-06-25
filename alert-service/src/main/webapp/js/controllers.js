@@ -153,19 +153,22 @@
 
     app.controller('AlertCtrl', ['$scope', 'settings', 'sparql',
         function($scope, settings, sparql) {
+        $scope.query = "";
+        settings.prefixes.forEach(
+        function(e){
+            $scope.query += "PREFIX " + e.prefix + ": <" + e.uri + ">\n";
+        });
+            
         $scope.editorOptions = {
             lineNumbers: true,
             lineWrapping: true,
             mode: 'application/x-sparql-query'
         };
+        
         $scope.register = function() {
-            var query = settings.prefixes + "\n" + $scope.query;
-            sparql.register(query).catch(function(status) {
+            sparql.register($scope.query).catch(function(status) {
                 alert('[ERROR][AlertCtrl] HTTP status: ' + status);
             });
-        };
-        $scope.prefixes = function() {
-            return settings.prefixes;
         };
     }]);
 })(window.angular, window.console, window.Date, window.N3);

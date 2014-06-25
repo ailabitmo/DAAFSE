@@ -116,8 +116,20 @@
     services.factory('settings', function(){
         function Settings(){
             this.sparqlEndpoint = "http://192.168.134.114:8890/sparql-cors";
-            this.prefixes = 
-                    "PREFIX em:<http://purl.org/daafse/electricmeters#>";
+            this.prefixes = [
+                {
+                    prefix: "em",
+                    uri:"http://purl.org/daafse/electricmeters#"
+                },
+                {
+                    prefix: "pne", 
+                    uri: "http://data.press.net/ontology/event/"
+                },
+                {   
+                    prefix: "ssn", 
+                    uri: "http://purl.oclc.org/NET/ssnx/ssn#"
+                }
+            ];
         };
         
         return new Settings();
