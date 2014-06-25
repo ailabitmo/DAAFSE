@@ -1,10 +1,10 @@
-@prefix : <http://purl.org/daafse/electricmeters##> .
+@prefix : <http://purl.org/NET/ssnext/electricmeters#> .
+@prefix em: <http://purl.org/NET/ssnext/electricmeters#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix daafse: <http://purl.org/daafse/electricmeters#> .
 @base <http://purl.org/NET/ssnext/electricmeters#> .
 
 <http://purl.org/NET/ssnext/electricmeters#> rdf:type owl:Ontology ;
@@ -23,11 +23,11 @@
 
 ###  http://purl.org/NET/ssnext/electricmeters#hasStream
 
-<http://purl.org/NET/ssnext/electricmeters#hasStream> rdf:type owl:ObjectProperty ;
-                                                      
-                                                      rdfs:label "has stream"@en ;
-                                                      
-                                                      rdfs:domain <http://purl.oclc.org/NET/ssnx/ssn#SensingDevice> .
+:hasStream rdf:type owl:ObjectProperty ;
+           
+           rdfs:label "has stream"@en ;
+           
+           rdfs:domain <http://purl.oclc.org/NET/ssnx/ssn#SensingDevice> .
 
 
 
@@ -40,20 +40,7 @@
 #################################################################
 
 
-###  http://purl.org/NET/ssnext/electricmeters#hasSerialNumber
-
-<http://purl.org/NET/ssnext/electricmeters#hasSerialNumber> rdf:type owl:DatatypeProperty ,
-                                                                     owl:FunctionalProperty ;
-                                                            
-                                                            rdfs:label "has serial number"@en ;
-                                                            
-                                                            rdfs:domain <http://purl.org/NET/ssnext/electricmeters#Mercury230> ;
-                                                            
-                                                            rdfs:range rdfs:Literal .
-
-
-
-###  http://purl.org/NET/ssnext/electricmeters##hasPhaseNumber
+###  http://purl.org/NET/ssnext/electricmeters#hasPhaseNumber
 
 :hasPhaseNumber rdf:type owl:DatatypeProperty ,
                          owl:FunctionalProperty ;
@@ -64,11 +51,24 @@
 
 
 
-###  http://purl.org/NET/ssnext/electricmeters##hasQuantityValue
+###  http://purl.org/NET/ssnext/electricmeters#hasQuantityValue
 
 :hasQuantityValue rdf:type owl:DatatypeProperty ;
                   
                   rdfs:subPropertyOf <http://www.loa-cnr.it/ontologies/DUL.owl#hasRegionDataValue> .
+
+
+
+###  http://purl.org/NET/ssnext/electricmeters#hasSerialNumber
+
+:hasSerialNumber rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
+                 
+                 rdfs:label "has serial number"@en ;
+                 
+                 rdfs:domain :Mercury230 ;
+                 
+                 rdfs:range rdfs:Literal .
 
 
 
@@ -83,129 +83,129 @@
 
 ###  http://purl.org/NET/ssnext/electricmeters#ElectricMeter
 
-<http://purl.org/NET/ssnext/electricmeters#ElectricMeter> rdf:type owl:Class ;
-                                                          
-                                                          rdfs:label "ElectricMeter"@en ,
-                                                                     "Электросчетчик"@ru ;
-                                                          
-                                                          rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#SensingDevice> .
+:ElectricMeter rdf:type owl:Class ;
+               
+               rdfs:label "ElectricMeter"@en ,
+                          "Электросчетчик"@ru ;
+               
+               rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#SensingDevice> .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#ElectricityFeature
 
-<http://purl.org/NET/ssnext/electricmeters#ElectricityFeature> rdf:type owl:Class ;
-                                                               
-                                                               rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest> ,
-                                                                               [ rdf:type owl:Restriction ;
-                                                                                 owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#hasProperty> ;
-                                                                                 owl:someValuesFrom <http://purl.org/NET/ssnext/electricmeters#VoltageProperty>
-                                                                               ] ;
-                                                               
-                                                               rdfs:comment "Электричество. Его свойства: напряжение, сила тока и т.д."@ru .
+:ElectricityFeature rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest> ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#hasProperty> ;
+                                      owl:someValuesFrom :VoltageProperty
+                                    ] ;
+                    
+                    rdfs:comment "Электричество. Его свойства: напряжение, сила тока и т.д."@ru .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#Mercury230
 
-<http://purl.org/NET/ssnext/electricmeters#Mercury230> rdf:type owl:Class ;
-                                                       
-                                                       rdfs:label "Mercury 230"@en ,
-                                                                  "Меркурий 230"@ru ;
-                                                       
-                                                       rdfs:subClassOf <http://purl.org/NET/ssnext/electricmeters#ElectricMeter> ,
-                                                                       [ rdf:type owl:Restriction ;
-                                                                         owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observes> ;
-                                                                         owl:someValuesFrom <http://purl.org/NET/ssnext/electricmeters#VoltageProperty>
-                                                                       ] ;
-                                                       
-                                                       rdfs:seeAlso "http://77cs.ru/mercury-230"^^xsd:anyURI .
+:Mercury230 rdf:type owl:Class ;
+            
+            rdfs:label "Mercury 230"@en ,
+                       "Меркурий 230"@ru ;
+            
+            rdfs:subClassOf :ElectricMeter ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observes> ;
+                              owl:someValuesFrom :VoltageProperty
+                            ] ;
+            
+            rdfs:seeAlso "http://77cs.ru/mercury-230"^^xsd:anyURI .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageObservation
 
-<http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageObservation> rdf:type owl:Class ;
-                                                                        
-                                                                        rdfs:subClassOf <http://purl.org/NET/ssnext/electricmeters#VoltageObservation> ,
-                                                                                        [ rdf:type owl:Restriction ;
-                                                                                          owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
-                                                                                          owl:allValuesFrom <http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageSensorOutput>
-                                                                                        ] .
+:PolyphaseVoltageObservation rdf:type owl:Class ;
+                             
+                             rdfs:subClassOf :VoltageObservation ,
+                                             [ rdf:type owl:Restriction ;
+                                               owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
+                                               owl:allValuesFrom :PolyphaseVoltageSensorOutput
+                                             ] .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageSensorOutput
 
-<http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageSensorOutput> rdf:type owl:Class ;
-                                                                         
-                                                                         rdfs:subClassOf <http://purl.org/NET/ssnext/electricmeters#VoltageSensorOutput> .
+:PolyphaseVoltageSensorOutput rdf:type owl:Class ;
+                              
+                              rdfs:subClassOf :VoltageSensorOutput .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageValue
 
-<http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageValue> rdf:type owl:Class ;
-                                                                  
-                                                                  rdfs:subClassOf <http://purl.org/NET/ssnext/electricmeters#VoltageValue> ,
-                                                                                  [ rdf:type owl:Restriction ;
-                                                                                    owl:onProperty :hasPhaseNumber ;
-                                                                                    owl:allValuesFrom xsd:integer
-                                                                                  ] .
+:PolyphaseVoltageValue rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :VoltageValue ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasPhaseNumber ;
+                                         owl:allValuesFrom xsd:integer
+                                       ] .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#QuantityObservationValue
 
-<http://purl.org/NET/ssnext/electricmeters#QuantityObservationValue> rdf:type owl:Class ;
-                                                                     
-                                                                     rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#ObservationValue> .
+:QuantityObservationValue rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#ObservationValue> .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#VoltageObservation
 
-<http://purl.org/NET/ssnext/electricmeters#VoltageObservation> rdf:type owl:Class ;
-                                                               
-                                                               rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#Observation> ,
-                                                                               [ rdf:type owl:Restriction ;
-                                                                                 owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
-                                                                                 owl:allValuesFrom <http://purl.org/NET/ssnext/electricmeters#VoltageSensorOutput>
-                                                                               ] ,
-                                                                               [ rdf:type owl:Restriction ;
-                                                                                 owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> ;
-                                                                                 owl:allValuesFrom <http://purl.org/NET/ssnext/electricmeters#ElectricityFeature>
-                                                                               ] .
+:VoltageObservation rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#Observation> ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
+                                      owl:allValuesFrom :VoltageSensorOutput
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> ;
+                                      owl:allValuesFrom :ElectricityFeature
+                                    ] .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#VoltageProperty
 
-<http://purl.org/NET/ssnext/electricmeters#VoltageProperty> rdf:type owl:Class ;
-                                                            
-                                                            rdfs:label "Напряжение"@ru ;
-                                                            
-                                                            rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#Property> .
+:VoltageProperty rdf:type owl:Class ;
+                 
+                 rdfs:label "Напряжение"@ru ;
+                 
+                 rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#Property> .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#VoltageSensorOutput
 
-<http://purl.org/NET/ssnext/electricmeters#VoltageSensorOutput> rdf:type owl:Class ;
-                                                                
-                                                                rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#SensorOutput> ,
-                                                                                [ rdf:type owl:Restriction ;
-                                                                                  owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
-                                                                                  owl:allValuesFrom <http://purl.org/NET/ssnext/electricmeters#VoltageValue>
-                                                                                ] .
+:VoltageSensorOutput rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#SensorOutput> ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
+                                       owl:allValuesFrom :VoltageValue
+                                     ] .
 
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#VoltageValue
 
-<http://purl.org/NET/ssnext/electricmeters#VoltageValue> rdf:type owl:Class ;
-                                                         
-                                                         rdfs:subClassOf <http://purl.org/NET/ssnext/electricmeters#QuantityObservationValue> .
+:VoltageValue rdf:type owl:Class ;
+              
+              rdfs:subClassOf :QuantityObservationValue .
 
 
 
@@ -218,7 +218,7 @@
 #################################################################
 
 
-###  http://purl.org/NET/ssnext/electricmeters##Volt
+###  http://purl.org/NET/ssnext/electricmeters#Volt
 
 :Volt rdf:type <http://www.loa-cnr.it/ontologies/DUL.owl#UnitOfMeasure> ,
                owl:NamedIndividual ;
