@@ -5,7 +5,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class DAAFSE extends Namespace{
     
-    public static final String BASE = "http://purl.org/daafse/electricmeters#";
+    public static final String BASE = "http://purl.org/NET/ssnext/electricmeters#";
     
     public static final Resource PolyphaseVoltageObservation = resource(BASE, 
             "PolyphaseVoltageObservation");
