@@ -1,4 +1,4 @@
-<div class="col-md-3">
+<div class="col-md-2">
     <div class="panel panel-default"> 
         <div class="panel-heading">Total: {{meters.length}}</div>
         <div class="list-group meter-list">
@@ -17,4 +17,15 @@
         </ul>
     </div>
 </div>
-<div class="col-md-9" ui-view></div>
+<div class="col-md-7" ui-view></div>
+<div class="col-md-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">Alerts</div>
+        <div class="list-group meter-list">
+            <a class="list-group-item" ng-repeat="alert in alerts">
+                <h4 class="list-group-item-heading">{{alert.type}}</h4>
+                <p class="list-group-item-text"><small>{{alert.meterUri}}</small></p>
+            </a>
+        </div>
+    </div>
+</div>

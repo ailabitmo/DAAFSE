@@ -2,11 +2,12 @@
     var app = angular.module('metersApp-controllers', 
         ['metersApp-services', 'highcharts-ng']);
 
-    app.controller('MeterListCtrl', ['$scope', 'sparql', '$state',
-        function($scope, sparql, $state) {
+    app.controller('MeterListCtrl', ['$scope', 'sparql', '$state', 'rabbitmq',
+        function($scope, sparql, $state, rabbitmq) {
             var perPage = 10;
             $scope.selected = $state.params.meterUri;
             $scope.meters = [];
+            $scope.alerts = [];
             $scope.indexes = [0, undefined];
             
             $scope.setSelected = function(setId) {
@@ -59,6 +60,23 @@
                     $scope.indexes = [0, undefined];
                     alert("[ERROR] HTTP Status: " + status);
                 });
+                
+            var N3Util = N3.Util;
+                
+            rabbitmq.subscribe('amqp://192.168.134.114?exchangeName=alert_exchange&routingKey=alerts', 
+            function(message) {
+                var parser = N3.Parser();
+                parser.parse(message.body, function(errors, triple, prefixes) {
+                    if(triple) {
+                        $scope.$apply(function() {
+                            $scope.alerts.push({
+                                type: N3Util.getLiteralValue(triple.object),
+                                meterUri: triple.subject
+                            });
+                        });
+                    }
+                });
+            });
         }]);
 
     app.controller('MeterInfoCtrl', ['$scope', '$stateParams', 'rabbitmq',

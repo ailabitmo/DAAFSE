@@ -10,11 +10,11 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import ru.ifmo.ailab.daafse.alertservice.QueryExecutorService;
-import ru.ifmo.ailab.daafse.alertservice.StreamReaderService;
+import ru.ifmo.ailab.daafse.alertservice.StreamService;
 import ru.ifmo.ailab.daafse.alertservice.StreamURI;
 
 @RunWith(Arquillian.class)
-public class StreamReaderServiceImplTest {
+public class StreamServiceImplTest {
 
     @Deployment
     public static JavaArchive createDeployment() {
@@ -24,7 +24,7 @@ public class StreamReaderServiceImplTest {
     }
 
     @Inject
-    StreamReaderService stream;
+    StreamService stream;
     @Inject
     QueryExecutorService qes;
 
@@ -33,7 +33,7 @@ public class StreamReaderServiceImplTest {
         StreamURI uri = new StreamURI(
                 "amqp://192.168.134.114?exchangeName=meter_exchange&routingKey=meter.location.*");
         qes.loadDataset(null, "../datasets/meters.ttl");
-        stream.startReadStream(uri);
+        stream.register(uri);
         final int queryId = qes.registerSelect(
                 "PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>\n"
                 + "PREFIX em: <http://purl.org/daafse/electricmeters#>\n"
@@ -45,6 +45,6 @@ public class StreamReaderServiceImplTest {
                 + "}");
         Thread.sleep(20000);
         qes.unregister(queryId);
-        stream.stopReadStream(uri);
+        stream.unregister(uri);
     }
 }

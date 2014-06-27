@@ -1,8 +1,15 @@
 package ru.ifmo.ailab.daafse.alertservice.services;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.core.Var;
-import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
@@ -15,15 +22,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.alertservice.CQELSEngine;
 import ru.ifmo.ailab.daafse.alertservice.QueryExecutorService;
+import ru.ifmo.ailab.daafse.alertservice.StreamService;
+import ru.ifmo.ailab.daafse.alertservice.StreamURI;
 
 @Singleton
 public class QueryExecutorServiceImpl implements QueryExecutorService {
 
     private static final Logger logger = LoggerFactory.getLogger(
             QueryExecutorServiceImpl.class);
+    public static StreamURI streamUri;
+    
+    static {
+        try {
+            streamUri = new StreamURI(
+                    "amqp://192.168.134.114?exchangeName=alert_exchange&routingKey=alerts");
+        } catch (URISyntaxException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+    }
 
     @Inject
     private CQELSEngine cqelsEngine;
+    @Inject
+    private StreamService streamService;
 
     @Override
     public void loadDataset(final String graph, final String uri) {
@@ -45,20 +66,33 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
                     result += " " + mapping.getCtx().engine().decode(t);
                 }
             }
-            logger.debug("{}", result);
+//            logger.debug("{}", result);
         });
         return 0;
     }
-    
+
     @Override
     public int registerConstruct(final String query) {
         ContinuousConstruct construct = cqelsEngine.getContext()
                 .registerConstruct(query);
         construct.register(new ConstructListener(cqelsEngine.getContext()) {
-            
+
             @Override
             public void update(List<Triple> graph) {
-                System.out.println(Arrays.toString(graph.toArray()));
+                Model model = ModelFactory.createDefaultModel();
+                graph.stream().forEach((t) -> {
+                    Resource subject = ResourceFactory
+                            .createResource(t.getSubject().getURI());
+                    Property predicate = ResourceFactory
+                            .createProperty(t.getPredicate().getURI());
+                    Literal object = ResourceFactory
+                            .createTypedLiteral(t.getObject().getLiteralValue());
+                    model.add(subject, predicate, object);
+                });
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                model.write(out, "TTL");
+                logger.debug(out.toString());
+                streamService.publish(streamUri, out.toByteArray());
             }
         });
         return 0;
