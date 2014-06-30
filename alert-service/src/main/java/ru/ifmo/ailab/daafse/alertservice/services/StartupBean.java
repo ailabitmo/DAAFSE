@@ -3,7 +3,6 @@ package ru.ifmo.ailab.daafse.alertservice.services;
 import com.hp.hpl.jena.query.ResultSet;
 import com.rabbitmq.client.Channel;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
@@ -37,7 +36,7 @@ public class StartupBean {
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
-        ResultSet results = sparqlRs.select("PREFIX em:<http://purl.org/daafse/electricmeters#>"
+        ResultSet results = sparqlRs.select("PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>"
                 + "SELECT ?streamUri {"
                 + "	GRAPH <http://192.168.134.114/SmartMetersDB/> {"
                 + "    	?x em:hasStream ?streamUri ."

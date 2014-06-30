@@ -41,7 +41,7 @@
                 }
             };
 
-            sparql.select("PREFIX em:<http://purl.org/daafse/electricmeters#>\n\
+            sparql.select("PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>\n\
                 SELECT ?uri ?serialNumber WHERE {\
                     GRAPH <http://192.168.134.114/SmartMetersDB/> {\
                         ?uri a em:Mercury230 ;\
@@ -84,7 +84,7 @@
     function($scope, $stateParams, rabbitmq, sparql, $q) {
         var parser = N3.Parser();
         sparql.select(
-        "PREFIX em:<http://purl.org/daafse/electricmeters#>\
+        "PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>\
         SELECT ?serialNumber ?streamUri WHERE {\
             GRAPH <http://192.168.134.114/SmartMetersDB/> {\
                 <http://purl.org/daafse/meters/mercury230_16824038> em:hasSerialNumber ?serialNumber ;\
@@ -95,9 +95,9 @@
             $scope.meter = meters[0];
             $scope.meter.uri = $stateParams.meterUri;
             
-            var VALUE = "http://purl.org/daafse/electricmeters#PolyphaseVoltageValue";
-            var HASPHASENUMBER = "http://purl.org/daafse/electricmeters#hasPhaseNumber";
-            var HASQUANTITYVALUE = "http://purl.org/daafse/electricmeters#hasQuantityValue";
+            var VALUE = "http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageValue";
+            var HASPHASENUMBER = "http://purl.org/NET/ssnext/electricmeters#hasPhaseNumber";
+            var HASQUANTITYVALUE = "http://purl.org/NET/ssnext/electricmeters#hasQuantityValue";
             
             rabbitmq.subscribe($scope.meter.streamUri, function(message) {
                 var observation = [];

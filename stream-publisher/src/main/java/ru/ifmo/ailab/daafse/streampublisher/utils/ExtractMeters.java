@@ -4,7 +4,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.vocabulary.RDFS;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -14,15 +13,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.streampublisher.namespaces.DAAFSE;
 
 public class ExtractMeters {
 
+    private static final Logger logger = 
+            LoggerFactory.getLogger(ExtractMeters.class);
     private static final Map<String, Meter> meters = new HashMap<>();
     private static final Model model = ModelFactory.createDefaultModel();
 
@@ -47,25 +48,26 @@ public class ExtractMeters {
                     }
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                logger.warn(ex.getMessage(), ex);
             }
 
-            for (String key : meters.keySet()) {
-                Meter meter = meters.get(key);
+            meters.keySet().stream().map((key) -> meters.get(key)).map((meter) -> {
                 model.setNsPrefix("em", DAAFSE.BASE);
+                return meter;
+            }).forEach((meter) -> {
                 Resource r = model.createResource(meter.uri, DAAFSE.Mercury230);
                 r.addLiteral(DAAFSE.hasSerialNumber,
                         ResourceFactory.createPlainLiteral(meter.serialNumber));
                 r.addProperty(DAAFSE.hasStream, meter.stream);
-            }
+            });
             
             try(FileWriter writer = new FileWriter(new File("meters.ttl"))){
                 model.write(writer, "TTL");
             } catch (IOException ex) {
-                ex.printStackTrace();
+                logger.warn(ex.getMessage(), ex);
             }
         } else {
-            System.out.println("Source file is not set!");
+            logger.error("Source file is not set!");
         }
     }
 

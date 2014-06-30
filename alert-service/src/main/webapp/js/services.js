@@ -119,7 +119,7 @@
             this.prefixes = [
                 {
                     prefix: "em",
-                    uri:"http://purl.org/daafse/electricmeters#"
+                    uri:"http://purl.org/NET/ssnext/electricmeters#"
                 },
                 {
                     prefix: "pne", 

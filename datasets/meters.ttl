@@ -1,4 +1,4 @@
-@prefix em:    <http://purl.org/daafse/electricmeters#> .
+@prefix em:    <http://purl.org/NET/ssnext/electricmeters#> .
 
 <http://purl.org/daafse/meters/mercury230_13530806>
         a                   em:Mercury230 ;

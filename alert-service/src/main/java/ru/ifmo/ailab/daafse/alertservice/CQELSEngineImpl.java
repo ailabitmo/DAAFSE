@@ -27,6 +27,7 @@ public class CQELSEngineImpl implements CQELSEngine {
     public void postConstruct() {
         if (!HOME.exists()) {
             HOME.mkdir();
+            HOME.setWritable(true);
         }
         context = new ExecContext(CQELS_HOME, true);
     }
