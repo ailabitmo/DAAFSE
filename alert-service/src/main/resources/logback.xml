@@ -12,6 +12,7 @@
     <logger name="com.espertech" level="INFO"/>
     <logger name="com.hp" level="INFO"/>
     <logger name="org.apache.jena" level="INFO"/>
+    <logger name="org.apache.http.wire" level="INFO"/>
 
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />

@@ -1,4 +1,4 @@
-<div class="col-md-2">
+<div class="col-md-9">
     <div class="panel panel-default"> 
         <div class="panel-heading">Total: {{meters.length}}</div>
         <div class="list-group meter-list">
@@ -6,7 +6,7 @@
                ng-repeat="meter in meters.slice(indexes[0], indexes[1])"
                ng-click="setSelected(meter.uri)"
                ng-class="{'active': isSelected(meter.uri)}">
-                Mercury 230 #{{meter.serialNumber}}
+                Mercury 230 #{{meter['em:hasSerialNumber']}}
             </a>
         </div>
         <ul class="pager">
@@ -17,15 +17,18 @@
         </ul>
     </div>
 </div>
-<div class="col-md-7" ui-view></div>
 <div class="col-md-3">
     <div class="panel panel-default">
-        <div class="panel-heading">Alerts</div>
-        <div class="list-group meter-list">
-            <a class="list-group-item" ng-repeat="alert in alerts">
-                <h4 class="list-group-item-heading">{{alert.type}}</h4>
-                <p class="list-group-item-text"><small>{{alert.meterUri}}</small></p>
-            </a>
+        <div class="panel-body">
+            <form role="form">
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select class="form-control" id="type">
+                        <option>Mercury 230</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-block">Apply</button>
+            </form>
         </div>
     </div>
 </div>

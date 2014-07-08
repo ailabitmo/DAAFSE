@@ -1,5 +1,6 @@
 package ru.ifmo.ailab.daafse.alertservice;
 
+import com.hp.hpl.jena.tdb.StoreConnection;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -26,9 +27,9 @@ public class CQELSEngineImpl implements CQELSEngine {
     @PostConstruct
     public void postConstruct() {
         if (!HOME.exists()) {
-            HOME.mkdir();
-            HOME.setWritable(true);
-        }
+        HOME.mkdir();
+        HOME.setWritable(true);
+    }
         context = new ExecContext(CQELS_HOME, true);
     }
 

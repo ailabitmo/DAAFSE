@@ -1,96 +1,84 @@
 (function(angular, console, Date, N3) {
-    var app = angular.module('metersApp-controllers', 
-        ['metersApp-services', 'highcharts-ng']);
+    var app = angular.module('metersApp.controllers', [
+        'ngSTOMP', 'ngSPARQL', 'rdflib.models', 'highcharts-ng', 
+        'metersApp.config', 'metersApp.utils'
+    ]);
 
-    app.controller('MeterListCtrl', ['$scope', 'sparql', '$state', 'rabbitmq',
-        function($scope, sparql, $state, rabbitmq) {
-            var perPage = 10;
-            $scope.selected = $state.params.meterUri;
+    app.controller('MeterListCtrl', function(
+        $scope, $state, stomp, Resource, ResourceManager, utils, 
+        GENERAL_CONFIG) {
+        var perPage = 10;
+        $scope.selected = $state.params.meterUri;
+        $scope.meters = [];
+        $scope.alerts = [];
+        $scope.indexes = [0, undefined];
+
+        $scope.setSelected = function(setId) {
+            $scope.selected = setId;
+        };
+        $scope.isSelected = function(checkId) {
+            return $scope.selected === checkId;
+        };
+        $scope.hasPrev = function() {
+            return $scope.indexes[0] >= perPage;
+        };
+        $scope.hasNext = function() {
+            return $scope.indexes[1]?
+                        $scope.indexes[1] < $scope.meters.length : true;
+        };
+        $scope.next = function() {
+            $scope.indexes[0] += perPage;
+            if($scope.indexes[1] + perPage <= $scope.meters.length) {
+                $scope.indexes[1] += perPage;
+            } else {
+                $scope.indexes[1] = $scope.meters.length;
+            }
+        };
+        $scope.prev = function() {
+            var diff = $scope.indexes[1] - $scope.indexes[0];
+            $scope.indexes[0] -= perPage;
+            if(diff < perPage) {
+                $scope.indexes[1] -= diff;
+            } else {
+                $scope.indexes[1] -= perPage;
+            }
+        };
+
+        ResourceManager.findByType('em:Mercury230', ['em:hasSerialNumber'])
+        .then(function(meters) {
+            $scope.meters = meters;
+            if($scope.meters.length < perPage) {
+                $scope.indexes[1] = $scope.meters.length;
+            } else {
+                $scope.indexes[1] = perPage;
+            }
+        }, function(status){
             $scope.meters = [];
-            $scope.alerts = [];
             $scope.indexes = [0, undefined];
-            
-            $scope.setSelected = function(setId) {
-                $scope.selected = setId;
-            };
-            $scope.isSelected = function(checkId) {
-                return $scope.selected === checkId;
-            };
-            $scope.hasPrev = function() {
-                return $scope.indexes[0] >= perPage;
-            };
-            $scope.hasNext = function() {
-                return $scope.indexes[1]?
-                            $scope.indexes[1] < $scope.meters.length : true;
-            };
-            $scope.next = function() {
-                $scope.indexes[0] += perPage;
-                if($scope.indexes[1] + perPage <= $scope.meters.length) {
-                    $scope.indexes[1] += perPage;
-                } else {
-                    $scope.indexes[1] = $scope.meters.length;
+            alert("[ERROR] HTTP Status: " + status);
+        });
+        
+        $scope._onAlert = function(message) {
+            utils.parseTTL(message.body)
+            .then(Resource.fromTriples)
+            .then(function(alert) {
+                if(alert['dul:involvesAgent'] === $scope.selected) {
+                    $scope.$apply(function() {
+                        utils.shiftAndPush($scope.alerts, 8, alert);
+                    });
                 }
-            };
-            $scope.prev = function() {
-                var diff = $scope.indexes[1] - $scope.indexes[0];
-                $scope.indexes[0] -= perPage;
-                if(diff < perPage) {
-                    $scope.indexes[1] -= diff;
-                } else {
-                    $scope.indexes[1] -= perPage;
-                }
-            };
-
-            sparql.select("PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>\n\
-                SELECT ?uri ?serialNumber WHERE {\
-                    GRAPH <http://192.168.134.114/SmartMetersDB/> {\
-                        ?uri a em:Mercury230 ;\
-                            em:hasSerialNumber ?serialNumber .\
-                    }\
-                }")
-                .then(function(meters){
-                    $scope.meters = meters;
-                    if($scope.meters.length < perPage) {
-                        $scope.indexes[1] = $scope.meters.length;
-                    } else {
-                        $scope.indexes[1] = perPage;
-                    }
-                }, function(status){
-                    $scope.meters = [];
-                    $scope.indexes = [0, undefined];
-                    alert("[ERROR] HTTP Status: " + status);
-                });
-                
-            var N3Util = N3.Util;
-                
-            rabbitmq.subscribe('amqp://192.168.134.114?exchangeName=alert_exchange&routingKey=alerts', 
-            function(message) {
-                var parser = N3.Parser();
-                parser.parse(message.body, function(errors, triple, prefixes) {
-                    if(triple) {
-                        $scope.$apply(function() {
-                            $scope.alerts.push({
-                                type: N3Util.getLiteralValue(triple.object),
-                                meterUri: triple.subject
-                            });
-                        });
-                    }
-                });
             });
-        }]);
+        };
+        stomp.subscribe(GENERAL_CONFIG.ALERTS_STREAM, $scope._onAlert);
+    });
 
-    app.controller('MeterInfoCtrl', ['$scope', '$stateParams', 'rabbitmq',
-        'sparql', '$q',
-    function($scope, $stateParams, rabbitmq, sparql, $q) {
+    app.controller('MeterInfoCtrl', 
+    function($scope, $stateParams, stomp, ResourceManager) {
+        
         var parser = N3.Parser();
-        sparql.select(
-        "PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>\
-        SELECT ?serialNumber ?streamUri WHERE {\
-            GRAPH <http://192.168.134.114/SmartMetersDB/> {\
-                <http://purl.org/daafse/meters/mercury230_16824038> em:hasSerialNumber ?serialNumber ;\
-                    em:hasStream ?streamUri .\
-            }\
-        }").then(function(meters){
+        ResourceManager.findByURI($stateParams.meterUri, [
+            'em:hasStream', 'em:hasSerialNumber'
+        ]).then(function(meters) {
             var length = 10;
             $scope.meter = meters[0];
             $scope.meter.uri = $stateParams.meterUri;
@@ -99,7 +87,7 @@
             var HASPHASENUMBER = "http://purl.org/NET/ssnext/electricmeters#hasPhaseNumber";
             var HASQUANTITYVALUE = "http://purl.org/NET/ssnext/electricmeters#hasQuantityValue";
             
-            rabbitmq.subscribe($scope.meter.streamUri, function(message) {
+            stomp.subscribe($scope.meter['em:hasStream'], function(message) {
                 var observation = [];
                 var time = Date.now();
                 var store = N3.Store();
@@ -115,11 +103,11 @@
                             observation[N3Util.getLiteralValue(phase.object)] = 
                                     [time, parseFloat(N3Util.getLiteralValue(value.object))];
                         });
-                        addPoint($scope.chartConfig.series[0].data, length, 
+                        shiftAndPush($scope.chartConfig.series[0].data, length, 
                                     observation[1]);
-                        addPoint($scope.chartConfig.series[1].data, length, 
+                        shiftAndPush($scope.chartConfig.series[1].data, length, 
                                     observation[2]);
-                        addPoint($scope.chartConfig.series[2].data, length, 
+                        shiftAndPush($scope.chartConfig.series[2].data, length, 
                                     observation[3]);
 
                         $scope.$apply();
@@ -150,7 +138,7 @@
             ],
             yAxis: {
                 title: {
-                    text: 'V (volt)'
+                    text: 'Voltage (V)'
                 }
             },
             xAxis: {
@@ -158,35 +146,12 @@
             },
             title: {
                 text: $scope.meter?$scope.meter.uri:""
+            },
+            tooltip: {
+                shared: true,
+                crosshairs: true
             }
         };
-        
-        function addPoint(array, length, point) {
-            if(array.length > length) {
-                array.shift();
-            }
-            array.push(point);
-        };
-    }]);
+    });
 
-    app.controller('AlertCtrl', ['$scope', 'settings', 'sparql',
-        function($scope, settings, sparql) {
-        $scope.query = "";
-        settings.prefixes.forEach(
-        function(e){
-            $scope.query += "PREFIX " + e.prefix + ": <" + e.uri + ">\n";
-        });
-            
-        $scope.editorOptions = {
-            lineNumbers: true,
-            lineWrapping: true,
-            mode: 'application/x-sparql-query'
-        };
-        
-        $scope.register = function() {
-            sparql.register($scope.query).catch(function(status) {
-                alert('[ERROR][AlertCtrl] HTTP status: ' + status);
-            });
-        };
-    }]);
 })(window.angular, window.console, window.Date, window.N3);

@@ -1,3 +1,7 @@
 .meter-list p {
     word-wrap: break-word;
 }
+.meter-alert {
+    display: inline-block;
+    margin: 5px;
+}

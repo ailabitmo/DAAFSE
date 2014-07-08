@@ -1,10 +1,24 @@
-<div class="col-md-12">
-    <form class="form" role="form" novalidate>
-        <div class="form-group panel panel-default">
-            <div class="panel-heading"></div>
-            <div ui-codemirror="editorOptions" ng-model="query"></div>
+<div class="col-md-9">
+    <div class="alert alert-warning meter-alert" role="alert"
+         ng-repeat="alert in alerts">
+        <strong>{{alert.type}}</strong>
+        {{alert.time | date: 'medium'}}<br/>
+        <small>{{alert.meterUri}}</small>
+    </div>
+</div>
+<div class="col-md-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">Filters</div>
+        <div class="panel-body">
+            <form role="form">
+                <div class="form-group">
+                    <select class="form-control">
+                        <option>Info</option>
+                        <option>Warning</option>
+                        <option>Danger</option>
+                    </select>
+                </div>
+            </form>
         </div>
-        <button class="btn btn-default btn-lg btn-block" 
-                ng-click="register()">Register</button>
-    </form>
+    </div>
 </div>
