@@ -11,22 +11,26 @@ import ru.ifmo.ailab.daafse.streampublisher.config.PublisherConfig;
 
 public class Publisher implements ObservationListener {
 
-    private static final PublisherConfig config = ConfigFactory
+    private static final PublisherConfig CONFIG = ConfigFactory
             .create(PublisherConfig.class);
     private static final Producer producer = new Producer(
-            config.serverURI(), config.exchangeName());
+            CONFIG.serverURI(), CONFIG.exchangeName());
+    private static final Store store = new Store(CONFIG.sparqlUpdate());
     private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
     private static String lang = "RDF/XML";
 
     public static void main(String[] args) throws Exception {
         try {
             Path log = Paths.get(args[0]);
-            if(args.length > 1 && args[1] != null) {
+            if (args.length > 1 && args[1] != null) {
                 lang = args[1];
             }
             logger.info("Observations will be read from {} file.", log);
             LogReader lr = new LogReader(log, new Publisher());
             producer.init();
+            store.clearAll();
+            logger.debug("SPARQL endpoint [{}] has been cleared!",
+                    CONFIG.sparqlUpdate());
 
             lr.run();
 
@@ -40,10 +44,14 @@ public class Publisher implements ObservationListener {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             observation.getModel().write(out, lang);
-            producer.publish(config.routingKey(observation.getMeterId()),
+            producer.publish(CONFIG.routingKey(observation.getMeterId()),
                     out.toByteArray());
-            logger.debug("Published to {}", 
-                    config.routingKey(observation.getMeterId()));
+            logger.debug("Published to {}",
+                    CONFIG.routingKey(observation.getMeterId()));
+            if (CONFIG.sparqlUpdateEnabled()) {
+                store.save(observation);
+                logger.debug("Saved to {}", observation.getMeterURI());
+            }
         } catch (IOException ex) {
             logger.debug(ex.getMessage(), ex);
         }

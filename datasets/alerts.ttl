@@ -1,0 +1,18 @@
+@base <http://purl.org/daafse/alerts/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+
+<#TooHighVoltageValue> a dul:Event ;
+	rdfs:label "Too high voltage value"@en ;
+	rdfs:comment "A high voltage value signals about an emergency in a line"@en ;
+	dul:isClassifiedBy </types#Warning> .
+	
+</types#Warning> a dul:EventType ;
+	rdfs:label "Warning" .
+	
+</types#Info> a dul:EventType ;
+	rdfs:label "Info" .
+	
+</types#Danger> a dul:EventType ;
+	rdfs:label "Danger" .

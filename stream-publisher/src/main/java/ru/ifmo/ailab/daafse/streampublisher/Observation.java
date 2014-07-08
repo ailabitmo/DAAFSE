@@ -5,14 +5,13 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.vocabulary.XSD;
 import ru.ifmo.ailab.daafse.streampublisher.namespaces.DAAFSE;
 import ru.ifmo.ailab.daafse.streampublisher.namespaces.SSN;
 
 public class Observation {
 
     private static final String OBSERVATIONS = "http://purl.org/daafse/observations/";
-    private static final String METERS = "http://purl.org/daafse/meters/";
+    public static final String METERS = "http://purl.org/daafse/meters/";
     private static final String OBSERVATION_RESULTS = "http://purl.org/daafse/observations/results/";
     private static final String OBSERVATION_VALUES = "http://purl.org/daafse/observations/results/values/";
     private final Model model = ModelFactory.createDefaultModel();
@@ -86,6 +85,10 @@ public class Observation {
     
     public String getMeterId() {
         return meterId;
+    }
+    
+    public String getMeterURI() {
+        return createMeterURI(meterId);
     }
 
 }

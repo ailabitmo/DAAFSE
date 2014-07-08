@@ -17,4 +17,11 @@ public interface PublisherConfig extends Config {
     @DefaultValue("amqp://localhost")
     URI serverURI();
     
+    @Key("sparql.update")
+    String sparqlUpdate();
+    
+    @Key("sparql.update.enabled")
+    @DefaultValue("true")
+    boolean sparqlUpdateEnabled();
+    
 }
