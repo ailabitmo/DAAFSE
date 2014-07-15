@@ -1,8 +1,10 @@
 (function(angular, Object){
     
-    var module = angular.module('ngSPARQL', ['ngSPARQL.config']);
+    var module = angular.module('ngSPARQL', [
+        'ngSPARQL.config', 'ngRDFResource', 'metersApp.utils'
+    ]);
     
-    module.factory('sparql', function($http, $q, SPARQL_CONFIG) {
+    module.factory('sparql', function($http, $q, SPARQL_CONFIG, Graph, utils) {
         
         function SPARQLClient() {
             this._compiledPrefixes = null;
@@ -11,7 +13,7 @@
         SPARQLClient.prototype = {
             _getEndpoint: function(endpoint) {
                 if(!endpoint) {
-                    return Object.getOwnPropertyNames(SPARQL_CONFIG.ENDPOINTS)[0];
+                    return SPARQL_CONFIG.ENDPOINTS[Object.keys(SPARQL_CONFIG.ENDPOINTS)[0]];
                 }
                 return endpoint;
             },
@@ -27,21 +29,25 @@
                 query = "CONSTRUCT {" + query + "} WHERE {\n " + query + "}";
                 return query;
             },
-            _query: function(query, endpoint) {
+            _query: function(query, endpoint, newConfigs) {
                 endpoint = this._getEndpoint(endpoint);
                 var deferred = $q.defer();
-                $http.get(SPARQL_CONFIG.ENDPOINTS[endpoint], {
+                var configs = {
                     params: {
-                        query: this.compilePrefixesString() + query, 
-                        output: 'json'
+                        query: this.compilePrefixesString() + query
                     },
-                    headers: {Accept: "application/sparql-results+json"}
-                }).success(function(data) {
+                    headers: { Accept: "application/sparql-results+json" }
+                };
+                angular.extend(configs, newConfigs);
+                $http.get(endpoint, configs)
+                .success(function(data) {
                     deferred.resolve(data);
                 }).error(function(_, status){
                     deferred.reject(status);
                 });
-                return deferred.promise;
+                return deferred.promise.catch(function(status) {
+                    alert("ERROR: HTTP status " + status);
+                });
             }
         };
         
@@ -55,6 +61,14 @@
          */
         SPARQLClient.prototype.select = function(query, endpoint) {
             return this._query(query, endpoint).then(bindingsToJson);
+        };
+        
+        SPARQLClient.prototype.describe = function(query, endpoint) {
+            return this._query(query, endpoint, {
+                headers: { Accept: "text/turtle" }
+            })
+            .then(function(data) {return utils.parseTTL(data);})
+            .then(Graph.prototype.fromTriples);
         };
         
         SPARQLClient.prototype.loadTriples = function(triples, endpoint) {

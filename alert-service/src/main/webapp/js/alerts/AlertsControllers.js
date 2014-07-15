@@ -1,9 +1,9 @@
 (function(angular){ 'use strict';
     var module = angular.module('metersApp.alerts', [
-        'metersApp.config', 'metersApp.utils', 'rdflib.models'
+        'metersApp.config', 'metersApp.utils', 'ngRDFResource'
     ]);
     
-    module.controller('AlertConfCtrl', function($scope, sparql, $http) {
+    module.controller('AlertConfigureCtrl', function($scope, sparql, $http) {
         $scope.queries = [];
         $scope.query = sparql.compilePrefixesString();
             

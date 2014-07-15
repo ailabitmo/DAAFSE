@@ -16,8 +16,8 @@
         * @param {Object} element
         * @returns {undefined}
         */
-        Utils.prototype.shiftAndPush = function(array, length, element) {
-            if(array.length >= length) {
+        Utils.prototype.shiftAndPush = function(array, element, length) {
+            if(length && array.length >= length) {
                 array.shift();
             }
             array.push(element);

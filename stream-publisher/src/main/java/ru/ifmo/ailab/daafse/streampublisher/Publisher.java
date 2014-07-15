@@ -28,7 +28,9 @@ public class Publisher implements ObservationListener {
             logger.info("Observations will be read from {} file.", log);
             LogReader lr = new LogReader(log, new Publisher());
             producer.init();
-            store.clearAll();
+            if(CONFIG.sparqlUpdateEnabled()) {
+                store.clearAll();
+            }
             logger.debug("SPARQL endpoint [{}] has been cleared!",
                     CONFIG.sparqlUpdate());
 

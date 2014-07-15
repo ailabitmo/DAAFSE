@@ -5,6 +5,10 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import ru.ifmo.ailab.daafse.streampublisher.namespaces.DAAFSE;
 import ru.ifmo.ailab.daafse.streampublisher.namespaces.SSN;
 
@@ -14,6 +18,7 @@ public class Observation {
     public static final String METERS = "http://purl.org/daafse/meters/";
     private static final String OBSERVATION_RESULTS = "http://purl.org/daafse/observations/results/";
     private static final String OBSERVATION_VALUES = "http://purl.org/daafse/observations/results/values/";
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_DATE_TIME;
     private final Model model = ModelFactory.createDefaultModel();
     private final Resource observation;
     private final Resource observationResult;
@@ -60,7 +65,10 @@ public class Observation {
                 DAAFSE.PolyphaseVoltageObservation)
                 .addProperty(SSN.observedBy, this.meter)
                 .addProperty(SSN.observationResult, this.observationResult)
-                .addLiteral(SSN.observationResultTime, timestamp);
+                .addLiteral(SSN.observationResultTime, 
+                        ResourceFactory.createTypedLiteral(
+                                Instant.ofEpochMilli(timestamp).toString(), 
+                                XSDDatatype.XSDdateTime));
     }
 
     private String createObservationURI(String meterId, long timestamp) {

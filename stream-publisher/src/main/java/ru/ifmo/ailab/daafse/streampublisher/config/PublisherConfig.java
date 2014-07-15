@@ -24,4 +24,8 @@ public interface PublisherConfig extends Config {
     @DefaultValue("true")
     boolean sparqlUpdateEnabled();
     
+    @Key("sparql.update.maxBatchSize")
+    @DefaultValue("5")
+    int sparqlMaxBatchSize();
+    
 }

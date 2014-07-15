@@ -1,6 +1,6 @@
 (function(angular, N3, console, Object) {
 
-    var module = angular.module('rdflib.models', ['ngSPARQL', 'ngSPARQL.config']);
+    var module = angular.module('ngRDFResource', ['ngSPARQL', 'ngSPARQL.config']);
 
     module.factory('ResourceManager', function(
             $q, Resource, ResourceUtils, sparql, SPARQL_CONFIG) {
@@ -8,7 +8,7 @@
         
         var ResourceManager = function() {
             this._n3utils = N3.Util;
-            this._store = N3.Store();         
+            this._store = N3.Store(null, SPARQL_CONFIG.PREFIXES);
         };
 
         ResourceManager.prototype = {
@@ -25,10 +25,7 @@
                 return variable.replace('_', ':');
             },
             _findInStore: function(uri, type, props) {
-                var resources = this._store.find(
-                        this._expandQName(uri), 
-                        this._expandQName('rdf:type'), 
-                        this._expandQName(type));
+                var resources = this._store.find(uri, 'rdf:type', type);
                 var missingTriples = [];
                 var map = {};
                 
@@ -40,12 +37,14 @@
                         var r = {};
                         
                         props.forEach(function(prop) {
-                            var value = this._store.find(
+                            var values = this._store.find(
                                     resource.subject, 
                                     this._expandQName(prop), 
                                     null);
-                            if (value.length > 0) {
-                                r[prop] = value[0].object;
+                            if (values.length > 0) {
+                                r[prop] = values.map(function(v){
+                                    return v.object;
+                                });
                             } else {
                                 //There is no such triple in the store
                                 missingTriples.push([
@@ -72,7 +71,7 @@
             },
             _mapToResources: function(map) {
                 var resources = [];
-                Object.keys(map).forEach(function(uri){
+                Object.keys(map).forEach(function(uri) {
                     var model = new Resource(uri, map[uri][RDF_TYPE]);
                     angular.extend(model, map[uri]);
                     resources.push(model);
@@ -89,7 +88,6 @@
         ResourceManager.prototype.findByType = function(type, props) {
             var deferred = $q.defer();
             var results = this._findInStore(null, type, props);
-            
             if(results.missing.length > 0) {
                 var thisArg = this;
                 sparql.loadTriples(results.missing).then(function(bindings) {
@@ -100,7 +98,12 @@
                         this._store.addTriple(s, p, o);
                         
                         results.map[s] = results.map[s] || {};
-                        results.map[s][ResourceUtils.toQName(p)] = o;
+                        var pq = ResourceUtils.toQName(p);
+                        if(results.map[s].hasOwnProperty(pq)) {
+                            results.map[s][pq].push(o);
+                        } else {
+                            results.map[s][ResourceUtils.toQName(p)] = [o];
+                        }
                     }, thisArg);
 
                     deferred.resolve(results.map);
@@ -124,8 +127,12 @@
                         var o = triple.o.value;
                         this._store.addTriple(s, p, o);
                         
+                        var pq = ResourceUtils.toQName(p);
                         results.map[s] = results.map[s] || {};
-                        results.map[s][ResourceUtils.toQName(p)] = o;
+                        if(!results.map[s].hasOwnProperty(pq)) {
+                            results.map[s][pq] = [];
+                        }
+                        results.map[s][ResourceUtils.toQName(p)].push(o);
                     }, thisArg);
 
                     deferred.resolve(results.map);
@@ -142,6 +149,10 @@
     module.factory('ResourceUtils', function(SPARQL_CONFIG) {
         function ResourceUtils() {
             this._n3utils = N3.Util;
+            
+            this.utils = function() {
+                return this._n3utils;
+            };
         };
         
         ResourceUtils.prototype.toQName = function(uri) {
@@ -161,14 +172,13 @@
         
         return new ResourceUtils();
     });
-
     module.factory('Resource', function(ResourceUtils) {
         var Resource = function(uri, type) {
             if (uri) {
                 this.uri = uri;
             }
             if (type) {
-                this['rdf:type'] = type;
+                this['rdf:type'] = [type];
             }
         };
         
@@ -180,16 +190,55 @@
          */
         Resource.prototype.fromTriples = function(triples) {
             var newResource = new Resource();
-            triples.forEach(function(triple){
+            triples.forEach(function(triple) {
                 var p = ResourceUtils.toQName(triple.predicate);
                 if(p === 'rdf:type') {
                     newResource.uri = triple.subject;
                 }
-                newResource[p] = triple.object;
+                if(!newResource.hasOwnProperty(p)) {
+                    newResource[p] = [];
+                }
+                newResource[p].push(triple.object);
             });
             return newResource;
         };
+        
+        Resource.prototype.get = function(property) {
+            if(ResourceUtils.utils().isLiteral(this[property][0])) {
+                return ResourceUtils.utils().getLiteralValue(this[property][0]);
+            }
+            return this[property][0];
+        };
 
         return Resource;
+    });
+    module.factory('Graph', function(Resource, SPARQL_CONFIG){
+        var Graph = function (triples, prefixes) {
+            if(!prefixes) {
+                prefixes = SPARQL_CONFIG.PREFIXES;
+            }
+            this._store = N3.Store(triples, prefixes);
+        };
+        
+        Graph.prototype.fromTriples = function(triples, prefixes) {
+            return new Graph(triples, prefixes);
+        };
+        
+        Graph.prototype.getByType = function(type) {
+            var resources = [];
+            var subjects = this._store.find(null, 'rdf:type', type);
+            subjects.forEach(function(subject) {
+                var triples = this._store.find(subject.subject, null, null);
+                resources.push(Resource.prototype.fromTriples(triples));
+            }, this);
+            return resources;
+        };
+        
+        Graph.prototype.getByURI = function(uri) {
+            var triples = this._store.find(uri, null, null);
+            return Resource.prototype.fromTriples(triples);
+        };
+        
+        return Graph;
     });
 })(window.angular, window.N3, window.console, window.Object);

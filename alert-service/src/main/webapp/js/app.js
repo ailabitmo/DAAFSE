@@ -1,6 +1,8 @@
 (function(angular) {
-    var app = angular.module('metersApp', 
-        ['ui.router', 'ui.codemirror', 'metersApp.controllers', 'metersApp.alerts']);
+    var app = angular.module('metersApp', [
+        'ui.router', 'ui.codemirror', 'metersApp.controllers', 
+        'metersApp.alerts', 'metersApp.meters', 'mgcrea.ngStrap'
+    ]);
 
     app.config(function($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise("/");
@@ -17,7 +19,7 @@
                 .state('meterPage', {
                     url: '/meters/{meterUri:.*}/info',
                     templateUrl: 'partials/meterPage.html',
-                    controller: 'MeterInfoCtrl'
+                    controller: 'MeterPageCtrl'
                 })
                 .state('alerts', {
                     url: '/alerts',
@@ -29,6 +31,12 @@
                     templateUrl: 'partials/configure.html',
                     controller: 'AlertConfigureCtrl'
                 });
+    });
+    app.config(function($datepickerProvider){
+        angular.extend($datepickerProvider.defaults, {
+            autoclose: true,
+            dateFormat: 'longDate'
+        });
     });
     
     var generalConfig = angular.module('metersApp.config', []);
@@ -43,10 +51,12 @@
                 'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
                 'em' : 'http://purl.org/NET/ssnext/electricmeters#',
                 'pne': 'http://data.press.net/ontology/event/',
-                'ssn': 'http://purl.oclc.org/NET/ssnx/ssn#'
+                'ssn': 'http://purl.oclc.org/NET/ssnx/ssn#',
+                'xsd': 'http://www.w3.org/2001/XMLSchema#'
             },
             ENDPOINTS: {
-                ENDPOINT_1: "http://192.168.134.114:8890/sparql-cors"
+                ENDPOINT_1: "http://192.168.134.114:8890/sparql-cors",
+                ENDPOINT_2: "http://192.168.134.114:3030/ds/query"
             }
         }
     );
