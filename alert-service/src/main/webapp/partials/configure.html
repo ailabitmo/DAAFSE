@@ -1,17 +1,16 @@
 <div class="col-md-8">
-    <form class="form" role="form" novalidate>
+    <form name="queryForm" class="form" role="form" novalidate 
+          ng-submit="register(queryForm.$valid)">
         <div class="form-group panel panel-default">
             <div class="panel-heading">
                 <label for="query-name" class="control-label">Name:</label>
                 <input id="query-name" class="form-control" 
-                       required="true" ng-model="name" placeholder="query name..."/>
+                       required ng-model="name" placeholder="query name..."/>
             </div>
             <div ui-codemirror="editorOptions" ng-model="query"></div>
         </div>
-        <div class="form-group">
-            <button class="btn btn-default btn-lg btn-block" 
-                    ng-click="register()">Register</button>
-        </div>
+        <button class="btn btn-default btn-lg btn-block" 
+                type="submit" ng-disabled="queryForm.$invalid">Register</button>
     </form>
 </div>
 <div class="col-md-4">

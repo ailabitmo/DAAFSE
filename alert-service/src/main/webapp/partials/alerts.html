@@ -1,9 +1,9 @@
 <div class="col-md-9">
     <div class="alert alert-warning meter-alert" role="alert"
          ng-repeat="alert in alerts">
-        <strong>{{alert.type}}</strong>
-        {{alert.time | date: 'medium'}}<br/>
-        <small>{{alert.meterUri}}</small>
+        <!--<strong>{{alert.type}}</strong>-->
+        {{alert.get('dul:hasEventDate') | date: 'medium'}}<br/>
+        <small>{{alert.get('dul:involvesAgent')}}</small>
     </div>
 </div>
 <div class="col-md-3">

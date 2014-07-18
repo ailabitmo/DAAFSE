@@ -40,6 +40,7 @@
         };
         
         StreamClient.prototype.subscribe = function(streamUri, callback) {
+            var deferred = $q.defer();
             var uri = parseUri(streamUri);
             var serverUri = 'ws://' + uri.host + ':15674/stomp/websocket';
             if(!this.clients.hasOwnProperty(serverUri)) {
@@ -63,8 +64,12 @@
                 var dest = '/exchange/' + uri.queryKey['exchangeName'] 
                         + '/' + uri.queryKey['routingKey'];
 
-                client.subscribe(dest, callback);
+                var subscription = client.subscribe(dest, callback);
+                deferred.resolve(subscription);
+            }, function() {
+                deferred.reject();
             });
+            return deferred.promise;
         };
         
         return new StreamClient();

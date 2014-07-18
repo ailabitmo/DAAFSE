@@ -88,7 +88,9 @@
             }).error(function(_, status){
                 deferred.reject(status);
             });
-            return deferred.promise;
+            return deferred.promise.catch(function(status){
+                alert("[ERROR] at SPARQLClient.register. HTTP status is " + status);
+            });
         };
         
         SPARQLClient.prototype.compilePrefixesString = function() {

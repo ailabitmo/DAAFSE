@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -33,11 +32,19 @@ public class QueryAPI {
     public void register(@QueryParam("query") String queryStr,
             @QueryParam("name") String name) {
         if (queryStr != null && name != null) {
-            Query query = new Query(name, queryStr);
-            queries.add(query);
-            logger.debug("Number of registered queries: {}", queries.size());
-            logger.debug("{}", query);
-            qes.registerConstruct(query.getQuery());
+            try {
+                Query query = new Query(name, queryStr);
+                
+                logger.debug("Number of registered queries: {}", queries.size());
+                logger.debug("{}", query);
+                
+                qes.registerConstruct(query.getQuery());
+                
+                queries.add(query);
+            } catch (Exception ex) {
+                throw new WebApplicationException(ex.getMessage(), ex,
+                        Response.Status.BAD_REQUEST);
+            }
         } else {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }

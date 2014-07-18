@@ -52,7 +52,8 @@
                 'em' : 'http://purl.org/NET/ssnext/electricmeters#',
                 'pne': 'http://data.press.net/ontology/event/',
                 'ssn': 'http://purl.oclc.org/NET/ssnx/ssn#',
-                'xsd': 'http://www.w3.org/2001/XMLSchema#'
+                'xsd': 'http://www.w3.org/2001/XMLSchema#',
+                'dul': 'http://www.loa-cnr.it/ontologies/DUL.owl#'
             },
             ENDPOINTS: {
                 ENDPOINT_1: "http://192.168.134.114:8890/sparql-cors",

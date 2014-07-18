@@ -6,6 +6,7 @@
     module.controller('MeterChartCtrl', function($scope, $stateParams, 
         ResourceManager, Graph, utils, stomp, sparql, SPARQL_CONFIG) {
         var thisArg = this;
+        var sub;
         $scope.chartConfig = {
             options: {
                 chart: { type: 'line', zoomType: 'x'},
@@ -54,7 +55,7 @@
                             toZeroTimeDate($scope.untilDate));
         })
         .then(function() {
-            stomp.subscribe($scope.meter.get('em:hasStream'), 
+            sub = stomp.subscribe($scope.meter.get('em:hasStream'), 
                 thisArg._onMessage);
         });
         
@@ -76,6 +77,11 @@
                         toZeroTimeDate($scope.fromDate),
                         toZeroTimeDate($scope.untilDate));
         };
+        $scope.$on('$destroy', function() {
+            sub.then(function(subscription) {
+                subscription.unsubscribe();
+            });
+        });
         
         this._onMessage = function(message) {
             utils.parseTTL(message.body)

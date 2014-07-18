@@ -5,6 +5,7 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -85,8 +86,14 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
                             .createResource(t.getSubject().getURI());
                     Property predicate = ResourceFactory
                             .createProperty(t.getPredicate().getURI());
-                    Literal object = ResourceFactory
-                            .createTypedLiteral(t.getObject().getLiteralValue());
+                    RDFNode object = null;
+                    if(t.getObject().isLiteral()) {
+                        object = ResourceFactory.createTypedLiteral(
+                                t.getObject().getLiteralValue());
+                    } else {
+                        object = ResourceFactory.createResource(
+                                t.getObject().getURI());
+                    }
                     model.add(subject, predicate, object);
                 });
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
