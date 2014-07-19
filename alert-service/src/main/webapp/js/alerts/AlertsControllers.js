@@ -31,16 +31,25 @@
     });
     
     module.controller('AlertListCtrl', function($scope, stomp, GENERAL_CONFIG, 
-        utils, Resource) {
+        utils, ResourceFactory, ResourceManager) {
+        var sub;
         $scope.alerts = [];
         $scope._onAlert = function(message) {
+            console.log('new message');
             utils.parseTTL(message.body)
-            .then(Resource.prototype.fromTriples)
+            .then(ResourceFactory.newFromTriples)
             .then(function(alert) {
                 $scope.alerts.push(alert);
             });
         };
-        var sub = stomp.subscribe(GENERAL_CONFIG.ALERTS_STREAM, $scope._onAlert);
+        //Pre-cache alert types
+        ResourceManager.findByType('dul:Event', [
+            'rdfs:label', 'rdfs:comment', 'dul:isClassifiedBy'
+        ]).then(function() {
+            return ResourceManager.findByType('dul:EventType', ['rdfs:label']);
+        }).then(function() {
+            sub = stomp.subscribe(GENERAL_CONFIG.ALERTS_STREAM, $scope._onAlert);
+        });
         
         $scope.$on('$destroy', function () {
             sub.then(function(subscription) {

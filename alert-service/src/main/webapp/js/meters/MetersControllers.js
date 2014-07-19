@@ -3,8 +3,17 @@
         'ngRDFResource', 'ngSTOMP', 'ngSPARQL', 'ngSPARQL.config'
     ]);
     
+    module.controller('MeterPageCtrl', function(
+            $scope, $stateParams, ResourceManager) {
+        ResourceManager.findByURI($stateParams.meterUri, [
+            'em:hasStream', 'em:hasSerialNumber'
+        ]).then(function(meters) {
+            $scope.meter = meters[0];
+        });
+    });
+    
     module.controller('MeterChartCtrl', function($scope, $stateParams, 
-        ResourceManager, Graph, utils, stomp, sparql, SPARQL_CONFIG) {
+        ResourceManager, GraphFactory, utils, stomp, sparql, SPARQL_CONFIG) {
         var thisArg = this;
         var sub;
         $scope.chartConfig = {
@@ -85,7 +94,7 @@
         
         this._onMessage = function(message) {
             utils.parseTTL(message.body)
-            .then(Graph.prototype.fromTriples)
+            .then(GraphFactory.newFromTriples)
             .then(function(graph) {
                 var points = [];
                 var observation = graph.getByType('em:PolyphaseVoltageObservation')[0];

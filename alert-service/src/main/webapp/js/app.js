@@ -49,6 +49,7 @@
         'SPARQL_CONFIG', {
             PREFIXES: {
                 'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+                'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
                 'em' : 'http://purl.org/NET/ssnext/electricmeters#',
                 'pne': 'http://data.press.net/ontology/event/',
                 'ssn': 'http://purl.oclc.org/NET/ssnx/ssn#',

@@ -6,7 +6,7 @@
                ng-repeat="meter in meters"
                ng-click="setSelected(meter.uri)"
                ng-class="{'active': isSelected(meter.uri)}">
-                Mercury 230 #{{meter.get('em:hasSerialNumber')}}
+                {{meter.get('rdf:type/rdfs:label')}} #{{meter.get('em:hasSerialNumber')}}
             </a>
         </div>
     </div>

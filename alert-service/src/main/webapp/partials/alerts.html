@@ -1,7 +1,7 @@
 <div class="col-md-9">
     <div class="alert alert-warning meter-alert" role="alert"
          ng-repeat="alert in alerts">
-        <!--<strong>{{alert.type}}</strong>-->
+        <strong>{{alert.get('rdf:type/dul:isClassifiedBy/rdfs:label')}}</strong>
         {{alert.get('dul:hasEventDate') | date: 'medium'}}<br/>
         <small>{{alert.get('dul:involvesAgent')}}</small>
     </div>

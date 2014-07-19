@@ -16,18 +16,11 @@
             return $scope.selected === checkId;
         };
 
-        ResourceManager.findByType('em:Mercury230', ['em:hasSerialNumber'])
+        ResourceManager.findByType('em:Mercury230', [
+            'em:hasSerialNumber', 'rdf:type/rdfs:label'
+        ])
         .then(function(meters) {
             $scope.meters = meters;
-        });
-    });
-
-    app.controller('MeterPageCtrl', 
-    function($scope, $stateParams, ResourceManager) {
-        ResourceManager.findByURI($stateParams.meterUri, [
-            'em:hasStream', 'em:hasSerialNumber'
-        ]).then(function(meters) {
-            $scope.meter = meters[0];
         });
     });
 

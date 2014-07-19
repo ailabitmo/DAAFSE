@@ -4,7 +4,7 @@
         'ngSPARQL.config', 'ngRDFResource', 'metersApp.utils'
     ]);
     
-    module.factory('sparql', function($http, $q, SPARQL_CONFIG, Graph, utils) {
+    module.factory('sparql', function($http, $q, SPARQL_CONFIG, utils, GraphFactory) {
         
         function SPARQLClient() {
             this._compiledPrefixes = null;
@@ -68,7 +68,7 @@
                 headers: { Accept: "text/turtle" }
             })
             .then(function(data) {return utils.parseTTL(data);})
-            .then(Graph.prototype.fromTriples);
+            .then(GraphFactory.newGraph);
         };
         
         SPARQLClient.prototype.loadTriples = function(triples, endpoint) {

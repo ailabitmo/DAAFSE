@@ -1,30 +1,63 @@
 (function(angular, N3, console, Object) {
 
     var module = angular.module('ngRDFResource', ['ngSPARQL', 'ngSPARQL.config']);
-
-    module.factory('ResourceManager', function(
-            $q, Resource, ResourceUtils, sparql, SPARQL_CONFIG) {
-        var RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-        
-        var ResourceManager = function() {
-            this._n3utils = N3.Util;
+    
+    module.factory('ResourceStore', function(ResourceUtils, SPARQL_CONFIG) {
+        var ResourceStore = function () {
             this._store = N3.Store(null, SPARQL_CONFIG.PREFIXES);
         };
-
-        ResourceManager.prototype = {
-            _expandQName: function(qname) {
-                if(qname && this._n3utils.isQName(qname)) {
-                    return this._n3utils.expandQName(qname, SPARQL_CONFIG.PREFIXES);
+        
+        ResourceStore.prototype.get = function (uri, path, index) {
+            index = index || 0;
+            
+            var results = [];
+            if(path.length - 1 > index) {
+                var vs = this._store.find(uri, path[index], null);
+                vs.forEach(function(v) {
+                    results = results.concat(
+                            this.get(v.object, path, index + 1));
+                }, this);
+                return results;
+            } else {
+                var vs = this._store.find(uri, path[index], null);
+                if(vs.length) {
+                    vs.forEach(function(v) {
+                        results.push(v.object);
+                    }, this);
+                } else {
+                    results.push(null);
                 }
-                return qname;
-            },
-            _propToVar: function(prop) {
-                return '?' + prop.replace(':', '_');
-            },
-            _varToProp: function(variable) {
-                return variable.replace('_', ':');
-            },
-            _findInStore: function(uri, type, props) {
+                return results;
+            }
+        };
+        ResourceStore.prototype.genMissingTP = function(root, path, index) {
+            if(!index) index = 0;
+
+            var missingTriples = [];
+            if(path.length > index) {
+                var vs = this._store.find(root, path[index], null);
+                if(!vs.length) {
+                    var variable = ResourceUtils.propToVar(path[index]);
+
+                    missingTriples = missingTriples.concat([[
+                        root.indexOf('?') === 0? root : '<' + root + '>',
+                        path[index], 
+                        variable
+                    ]]);
+                    return missingTriples.concat(this.genMissingTP(
+                            variable, path, index + 1));
+                } else {
+                    vs.forEach(function(v) {
+                        missingTriples = missingTriples.concat(
+                                this.genMissingTP(v.object, path, index + 1));
+                    }, this);
+                    return missingTriples;
+                }
+            } else {
+                return [];
+            } 
+        };
+        ResourceStore.prototype.getAndGenMissingTP = function(uri, type, props) {
                 var resources = this._store.find(uri, 'rdf:type', type);
                 var missingTriples = [];
                 var map = {};
@@ -34,23 +67,21 @@
                 
                 if (resources.length > 0) {
                     resources.forEach(function(resource) {
-                        var r = {};
-                        
+                        var r = {
+                            'rdf:type': [resource.object]
+                        };
                         props.forEach(function(prop) {
-                            var values = this._store.find(
-                                    resource.subject, 
-                                    this._expandQName(prop), 
-                                    null);
-                            if (values.length > 0) {
-                                r[prop] = values.map(function(v){
+                            var path = prop.split('/');
+                            missingTriples = missingTriples.concat(
+                                    this.genMissingTP(resource.subject, path));
+                            
+                            //fill with the root property
+                            var vs = this._store.find(
+                                    resource.subject, path[0], null);
+                            if(vs.length) {
+                                r[prop] = vs.map(function(v) {
                                     return v.object;
                                 });
-                            } else {
-                                //There is no such triple in the store
-                                missingTriples.push([
-                                    '<' + resource.subject + '>', 
-                                    prop, 
-                                    this._propToVar(prop)]);
                             }
                         }, this);
                         
@@ -59,8 +90,15 @@
                 } else {
                     missingTriples.push([uri, 'rdf:type', type]);
                     props.forEach(function(prop) {
-                        missingTriples.push([uri, prop,
-                            this._propToVar(prop)]);
+                        if(prop.indexOf('/') > -1) {
+                            //`prop` is a path
+                            var path = prop.split('/');
+                            missingTriples = missingTriples.concat(
+                                    this.genMissingTP(uri, path));
+                        } else {
+                            missingTriples.push(
+                                    [uri, prop, ResourceUtils.propToVar(prop)]);
+                        }
                     }, this);
                 }
                 
@@ -68,13 +106,107 @@
                     missing: missingTriples,
                     map: map
                 };
-            },
-            _mapToResources: function(map) {
+            };
+        
+        return new ResourceStore();
+    });
+    module.factory('ResourceFactory', function(Resource, ResourceUtils) {
+        var ResourceFactory = function() {
+            
+        };
+        
+        /**
+         * Creates a new `Resource` from a bag of triples.
+         * 
+         * @param {Array} triples
+         * @returns {Resource} a new resource
+         */
+        ResourceFactory.prototype.newFromTriples = function(triples) {
+            if(triples.length) {
+                var newResource = new Resource();
+                triples.forEach(function(triple) {
+                    var p = ResourceUtils.toQName(triple.predicate);
+                    if(p === 'rdf:type') {
+                        newResource.uri = triple.subject;
+                    }
+                    if(!newResource.hasOwnProperty(p)) {
+                        newResource[p] = [];
+                    }
+                    newResource[p].push(triple.object);
+                });
+                return newResource;
+            } else {
+                return null;
+            }
+        };
+        
+        return new ResourceFactory();
+    });
+    module.factory('GraphFactory', function(Graph){
+        var GraphFactory = function() {};
+        
+        GraphFactory.prototype.newGraph = function(triples, prefixes) {
+            return new Graph(triples, prefixes);
+        };
+        
+        return new GraphFactory();
+    });
+    module.factory('Resource', function(ResourceStore, ResourceUtils) {
+        var Resource = function(uri, type) {
+            if (uri) {
+                this.uri = uri;
+            }
+            if (type) {
+                this['rdf:type'] = [type];
+            }
+        };
+        
+        Resource.prototype = {
+            _getFirstValueOfProperty: function(property) {
+                if(this[property]) {
+                    if(ResourceUtils.utils().isLiteral(this[property][0])) {
+                        return ResourceUtils.utils().getLiteralValue(
+                                this[property][0]);
+                    }
+                    return this[property][0];
+                }
+                return null;
+            }
+        };
+        
+        Resource.prototype.get = function(prop) {
+            if(prop.indexOf('/') > -1) {
+                var path = prop.split('/');
+                if(this[path[0]]) {
+                    return ResourceStore.get(this[path[0]], path.slice(1))[0];
+                } else {
+                    //given root property doesn't exist
+                    return null;
+                }
+            } else {
+                return this._getFirstValueOfProperty(prop);
+            }
+        };
+        
+        return Resource;
+    });
+    module.factory('ResourceManager', function(
+            $q, Resource, ResourceStore, ResourceUtils, sparql) {
+        var ResourceManager = function() {
+        };
+
+        ResourceManager.prototype = {
+            _mapToResources: function(type, map) {
+                var t = type ? ResourceUtils.expandQName(type) : null;
                 var resources = [];
                 Object.keys(map).forEach(function(uri) {
-                    var model = new Resource(uri, map[uri][RDF_TYPE]);
-                    angular.extend(model, map[uri]);
-                    resources.push(model);
+                    var isThisType = t ? map[uri]['rdf:type'] 
+                            && map[uri]['rdf:type'].indexOf(t) > -1 : true;
+                    if(isThisType) {
+                        var model = new Resource(uri, map[uri]['rdf:type']);
+                        angular.extend(model, map[uri]);
+                        resources.push(model);
+                    }
                 });
                 return resources;
             }
@@ -87,15 +219,15 @@
          */
         ResourceManager.prototype.findByType = function(type, props) {
             var deferred = $q.defer();
-            var results = this._findInStore(null, type, props);
+            var thisArg = this;
+            var results = ResourceStore.getAndGenMissingTP(null, type, props);
             if(results.missing.length > 0) {
-                var thisArg = this;
                 sparql.loadTriples(results.missing).then(function(bindings) {
                     bindings.results.bindings.forEach(function(triple) {
                         var s = triple.s.value;
                         var p = triple.p.value;
                         var o = triple.o.value;
-                        this._store.addTriple(s, p, o);
+                        ResourceStore._store.addTriple(s, p, o);
                         
                         results.map[s] = results.map[s] || {};
                         var pq = ResourceUtils.toQName(p);
@@ -111,21 +243,23 @@
             } else {
                 deferred.resolve(results.map);
             }
-            return deferred.promise.then(this._mapToResources);
+            return deferred.promise.then(function(map) {
+                return thisArg._mapToResources(type, map);
+            });
         };
         
         ResourceManager.prototype.findByURI = function(uri, props) {
+            var thisArg = this;
             var deferred = $q.defer();
-            var results = this._findInStore(uri, null, props);
+            var results = ResourceStore.getAndGenMissingTP(uri, null, props);
             
             if(results.missing.length > 0) {
-                var thisArg = this;
                 sparql.loadTriples(results.missing).then(function(bindings) {
                     bindings.results.bindings.forEach(function(triple) {
                         var s = triple.s.value;
                         var p = triple.p.value;
                         var o = triple.o.value;
-                        this._store.addTriple(s, p, o);
+                        ResourceStore._store.addTriple(s, p, o);
                         
                         var pq = ResourceUtils.toQName(p);
                         results.map[s] = results.map[s] || {};
@@ -140,7 +274,9 @@
             } else {
                 deferred.resolve(results.map);
             }
-            return deferred.promise.then(this._mapToResources);
+            return deferred.promise.then(function(map) {
+                return thisArg._mapToResources(null, map);
+            });
         };
 
         return new ResourceManager();
@@ -169,50 +305,22 @@
             }
             return uri;
         };
+        ResourceUtils.prototype.expandQName = function(qname) {
+            if(qname && this._n3utils.isQName(qname)) {
+                return this._n3utils.expandQName(qname, SPARQL_CONFIG.PREFIXES);
+            }
+            return qname;
+        };
+        ResourceUtils.prototype.propToVar = function(prop) {
+            return '?' + prop.replace(':', '_');
+        };
+        ResourceUtils.prototype.varToProp = function(variable) {
+            return variable.replace('_', ':');
+        };
         
         return new ResourceUtils();
     });
-    module.factory('Resource', function(ResourceUtils) {
-        var Resource = function(uri, type) {
-            if (uri) {
-                this.uri = uri;
-            }
-            if (type) {
-                this['rdf:type'] = [type];
-            }
-        };
-        
-        /**
-         * Creates a new resource from a bag of triples.
-         * 
-         * @param {type} triples
-         * @returns {undefined}
-         */
-        Resource.prototype.fromTriples = function(triples) {
-            var newResource = new Resource();
-            triples.forEach(function(triple) {
-                var p = ResourceUtils.toQName(triple.predicate);
-                if(p === 'rdf:type') {
-                    newResource.uri = triple.subject;
-                }
-                if(!newResource.hasOwnProperty(p)) {
-                    newResource[p] = [];
-                }
-                newResource[p].push(triple.object);
-            });
-            return newResource;
-        };
-        
-        Resource.prototype.get = function(property) {
-            if(ResourceUtils.utils().isLiteral(this[property][0])) {
-                return ResourceUtils.utils().getLiteralValue(this[property][0]);
-            }
-            return this[property][0];
-        };
-
-        return Resource;
-    });
-    module.factory('Graph', function(Resource, SPARQL_CONFIG){
+    module.factory('Graph', function(ResourceFactory, SPARQL_CONFIG){
         var Graph = function (triples, prefixes) {
             if(!prefixes) {
                 prefixes = SPARQL_CONFIG.PREFIXES;
@@ -220,23 +328,19 @@
             this._store = N3.Store(triples, prefixes);
         };
         
-        Graph.prototype.fromTriples = function(triples, prefixes) {
-            return new Graph(triples, prefixes);
-        };
-        
         Graph.prototype.getByType = function(type) {
             var resources = [];
             var subjects = this._store.find(null, 'rdf:type', type);
             subjects.forEach(function(subject) {
                 var triples = this._store.find(subject.subject, null, null);
-                resources.push(Resource.prototype.fromTriples(triples));
+                resources.push(ResourceFactory.newFromTriples(triples));
             }, this);
             return resources;
         };
         
         Graph.prototype.getByURI = function(uri) {
             var triples = this._store.find(uri, null, null);
-            return Resource.prototype.fromTriples(triples);
+            return ResourceFactory.newFromTriples(triples);
         };
         
         return Graph;
