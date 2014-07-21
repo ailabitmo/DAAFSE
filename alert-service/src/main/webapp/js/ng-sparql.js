@@ -68,7 +68,7 @@
                 headers: { Accept: "text/turtle" }
             })
             .then(function(data) {return utils.parseTTL(data);})
-            .then(GraphFactory.newGraph);
+            .then(GraphFactory.newFromTriples);
         };
         
         SPARQLClient.prototype.loadTriples = function(triples, endpoint) {

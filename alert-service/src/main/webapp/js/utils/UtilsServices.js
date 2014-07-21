@@ -4,7 +4,6 @@
     module.factory('utils', function($q){
         function Utils() {
             this._n3util = N3.Util;
-            this._n3parser = N3.Parser();
         };
         
         /**
@@ -26,7 +25,8 @@
         Utils.prototype.parseTTL = function(data) {
             var deferred = $q.defer();
             var triples = [];
-            this._n3parser.parse(data, function(error, triple, prefixes) {
+            var parser = N3.Parser();
+            parser.parse(data, function(_, triple, __) {
                 if(triple) {
                     triples.push(triple);
                 } else {

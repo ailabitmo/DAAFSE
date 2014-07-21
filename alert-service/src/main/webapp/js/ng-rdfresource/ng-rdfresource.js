@@ -145,7 +145,7 @@
     module.factory('GraphFactory', function(Graph){
         var GraphFactory = function() {};
         
-        GraphFactory.prototype.newGraph = function(triples, prefixes) {
+        GraphFactory.prototype.newFromTriples = function(triples, prefixes) {
             return new Graph(triples, prefixes);
         };
         

@@ -33,13 +33,39 @@
     module.controller('AlertListCtrl', function($scope, stomp, GENERAL_CONFIG, 
         utils, ResourceFactory, ResourceManager) {
         var sub;
+        var alertsMap = {};
         $scope.alerts = [];
+        $scope.getTypeClass = function(alert) {
+            switch(alert.get('rdf:type/dul:isClassifiedBy')) {
+                case "http://purl.org/daafse/alerts/types#Info":
+                    return 'alert-info';
+                case "http://purl.org/daafse/alerts/types#Warning":
+                    return 'alert-warning';
+                case "http://purl.org/daafse/alerts/types#Danger":
+                    return 'alert-danger';
+                default:
+                    return 'alert-success';
+            };
+        };
         $scope._onAlert = function(message) {
-            console.log('new message');
             utils.parseTTL(message.body)
             .then(ResourceFactory.newFromTriples)
             .then(function(alert) {
-                $scope.alerts.push(alert);
+                var meterUri = alert.get('dul:involvesAgent');
+                if(!alertsMap.hasOwnProperty(meterUri)) {
+                    alertsMap[meterUri] = {};
+                }
+                var type = alert.get('rdf:type');
+                var card = alertsMap[meterUri][type] || { index: -1 };
+                if(card.index > 0) {
+                    $scope.alerts[card.index].count++;
+                } else {
+                    alert.count = alert.count ? alert.count++ : 1;
+                    var index = $scope.alerts.push(alert) - 1;
+                    alertsMap[meterUri][type] = {
+                        index: index
+                    };
+                }
             });
         };
         //Pre-cache alert types

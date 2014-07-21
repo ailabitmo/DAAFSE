@@ -1,8 +1,11 @@
 <div class="col-md-9">
-    <div class="alert alert-warning meter-alert" role="alert"
+    <div class="alert meter-alert" role="alert"
+         ng-class="getTypeClass(alert)"
          ng-repeat="alert in alerts">
         <strong>{{alert.get('rdf:type/dul:isClassifiedBy/rdfs:label')}}</strong>
-        {{alert.get('dul:hasEventDate') | date: 'medium'}}<br/>
+        {{alert.get('dul:hasEventDate') | date: 'medium'}}
+        <span class="badge">{{alert.count}}</span>
+        <br/>
         <small>{{alert.get('dul:involvesAgent')}}</small>
     </div>
 </div>
@@ -13,6 +16,7 @@
             <form role="form">
                 <div class="form-group">
                     <select class="form-control">
+                        <option>All</option>
                         <option>Info</option>
                         <option>Warning</option>
                         <option>Danger</option>
