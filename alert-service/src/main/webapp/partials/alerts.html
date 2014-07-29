@@ -1,12 +1,22 @@
 <div class="col-md-9">
     <div class="alert meter-alert" role="alert"
          ng-class="getTypeClass(alert)"
-         ng-repeat="alert in alerts">
-        <strong>{{alert.get('rdf:type/dul:isClassifiedBy/rdfs:label')}}</strong>
-        {{alert.get('dul:hasEventDate') | date: 'medium'}}
-        <span class="badge">{{alert.count}}</span>
-        <br/>
-        <small>{{alert.get('dul:involvesAgent')}}</small>
+         ng-repeat="alert in alerts| filter: filterByType">
+        <button type="button" class="close pull-right">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <div>
+            <div>
+                <span class="badge">{{alert.count}}</span>
+                <strong>{{alert.get('rdf:type/dul:isClassifiedBy/rdfs:label')}}</strong>
+                {{alert.get('dul:hasEventDate') | date: 'MMM d HH:mm:ss'}}
+            </div>
+            <div>
+                {{alert.get('dul:involvesAgent/rdf:type/rdfs:label')}} #{{alert.get('dul:involvesAgent/em:hasSerialNumber')}}
+                "{{alert.get('rdf:type/rdfs:label')}}"
+            </div>
+        </div>
     </div>
 </div>
 <div class="col-md-3">
@@ -15,11 +25,9 @@
         <div class="panel-body">
             <form role="form">
                 <div class="form-group">
-                    <select class="form-control">
-                        <option>All</option>
-                        <option>Info</option>
-                        <option>Warning</option>
-                        <option>Danger</option>
+                    <select class="form-control" ng-model="selectedType" 
+                            ng-options="type.get('rdfs:label') for type in alertTypes">
+                        <option value="">All</option>
                     </select>
                 </div>
             </form>

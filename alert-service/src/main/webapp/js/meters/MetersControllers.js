@@ -11,7 +11,6 @@
             $scope.meter = meters[0];
         });
     });
-    
     module.controller('MeterChartCtrl', function($scope, $stateParams, 
         ResourceManager, GraphFactory, utils, stomp, sparql, SPARQL_CONFIG) {
         var thisArg = this;

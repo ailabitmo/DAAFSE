@@ -35,6 +35,8 @@
         var sub;
         var alertsMap = {};
         $scope.alerts = [];
+        $scope.alertTypes = [];
+        $scope.selectedType = null;
         $scope.getTypeClass = function(alert) {
             switch(alert.get('rdf:type/dul:isClassifiedBy')) {
                 case "http://purl.org/daafse/alerts/types#Info":
@@ -68,11 +70,18 @@
                 }
             });
         };
+        $scope.filterByType = function(alert) {
+            if(!$scope.selectedType) return true;
+            return alert.get('rdf:type/dul:isClassifiedBy') 
+                    === $scope.selectedType.uri;
+        };
         //Pre-cache alert types
         ResourceManager.findByType('dul:Event', [
             'rdfs:label', 'rdfs:comment', 'dul:isClassifiedBy'
         ]).then(function() {
             return ResourceManager.findByType('dul:EventType', ['rdfs:label']);
+        }).then(function(eventTypes) {
+            return $scope.alertTypes = eventTypes;
         }).then(function() {
             sub = stomp.subscribe(GENERAL_CONFIG.ALERTS_STREAM, $scope._onAlert);
         });
