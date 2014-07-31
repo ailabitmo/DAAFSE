@@ -20,16 +20,17 @@ public class CQELSEngineImpl implements CQELSEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(
             CQELSEngineImpl.class);
-    private static final String CQELS_HOME = "cqels_home";
+    private static final String CQELS_HOME = "/opt/wildfly/cqels_home";
     private static final File HOME = new File(CQELS_HOME);
     private static ExecContext context;
 
     @PostConstruct
     public void postConstruct() {
         if (!HOME.exists()) {
-        HOME.mkdir();
-        HOME.setWritable(true);
-    }
+            HOME.mkdir();
+            HOME.setWritable(true);
+            logger.debug("CQELS HOME: " + HOME.getAbsolutePath());
+        }
         context = new ExecContext(CQELS_HOME, true);
     }
 

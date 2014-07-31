@@ -2,7 +2,7 @@
     <div class="alert meter-alert" role="alert"
          ng-class="getTypeClass(alert)"
          ng-repeat="alert in alerts| filter: filterByType">
-        <button type="button" class="close pull-right">
+        <button type="button" class="close pull-right" ng-click="remove($index)">
             <span aria-hidden="true">&times;</span>
             <span class="sr-only">Close</span>
         </button>

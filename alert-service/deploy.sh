@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JBOSS_HOME=/cygdrive/c/opt/wildfly-8.1.0.Final
+JBOSS_HOME=/opt/wildfly
 JBOSS_DEPS=$JBOSS_HOME/standalone/deployments
 APP_NAME=alert-service-1.0-SNAPSHOT
 WAR_NAME=$APP_NAME.war
@@ -22,4 +22,7 @@ if [ "$1" == "redeploy" ] ; then
 	touch $JBOSS_DEPS/$WAR_NAME.dodeploy
 elif [ "$1" == "copy" ] ; then
 	rsync -avzru --chmod 777 --exclude WEB-INF src/main/webapp/* $JBOSS_DEPS/$WAR_NAME/
+elif [ "$1" == "clean" ] ; then
+	rm -rf $JBOSS_DEPS/$APP_NAME*
+	rm -rf $JBOSS_HOME/cqels_home
 fi

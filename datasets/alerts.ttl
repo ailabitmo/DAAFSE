@@ -7,9 +7,14 @@
 	rdfs:label "Too high voltage value"@en ;
 	rdfs:comment "A high voltage value signals about an emergency in a line"@en ;
 	dul:isClassifiedBy </types#Warning> .
+
+<#TooLowVoltageValue> a dul:Event ;
+	rdfs:label "Too low voltage value"@en ;
+	rdfs:comment "A low voltage value signals about an emergency in a line"@en ;
+	dul:isClassifiedBy </types#Warning> .
 	
 </types#Warning> a dul:EventType ;
-	rdfs:label "Warning" .
+	rdfs:label "Warning"@en .
 	
 </types#Info> a dul:EventType ;
 	rdfs:label "Info" .

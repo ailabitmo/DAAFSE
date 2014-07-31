@@ -33,7 +33,6 @@
     module.controller('AlertListCtrl', function($scope, stomp, GENERAL_CONFIG, 
         utils, ResourceFactory, ResourceManager) {
         var sub;
-        var alertsMap = {};
         $scope.alerts = [];
         $scope.alertTypes = [];
         $scope.selectedType = null;
@@ -53,20 +52,20 @@
             utils.parseTTL(message.body)
             .then(ResourceFactory.newFromTriples)
             .then(function(alert) {
-                var meterUri = alert.get('dul:involvesAgent');
-                if(!alertsMap.hasOwnProperty(meterUri)) {
-                    alertsMap[meterUri] = {};
-                }
-                var type = alert.get('rdf:type');
-                var card = alertsMap[meterUri][type] || { index: -1 };
-                if(card.index > 0) {
-                    $scope.alerts[card.index].count++;
+                var index = -1;
+                $scope.alerts.every(function(v, i) {
+                    if(v['dul:involvesAgent'][0] === alert['dul:involvesAgent'][0] 
+                            && v['rdf:type'][0] === alert['rdf:type'][0]) {
+                        index = i;
+                        return false;
+                    }
+                    return true;
+                });
+                if(index > -1) {
+                    $scope.alerts[index].count++;
                 } else {
-                    alert.count = alert.count ? alert.count++ : 1;
-                    var index = $scope.alerts.push(alert) - 1;
-                    alertsMap[meterUri][type] = {
-                        index: index
-                    };
+                    alert.count = 1;
+                    $scope.alerts.push(alert);
                 }
             });
         };
@@ -74,6 +73,9 @@
             if(!$scope.selectedType) return true;
             return alert.get('rdf:type/dul:isClassifiedBy') 
                     === $scope.selectedType.uri;
+        };
+        $scope.remove = function(index) {
+            $scope.alerts.splice(index, 1);
         };
         //Pre-cache alert types
         ResourceManager.findByType('dul:Event', [
