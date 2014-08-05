@@ -9,11 +9,18 @@ public class DAAFSE extends Namespace{
     
     public static final Resource PolyphaseVoltageObservation = resource(BASE, 
             "PolyphaseVoltageObservation");
+    public static final Resource PolyphasePowerObservation = resource(BASE, 
+            "PolyphasePowerObservation");
     public static final Resource PolyphaseVoltageSensorOutput = resource(BASE, 
             "PolyphaseVoltageSensorOutput");
+    public static final Resource PolyphasePowerSensorOutput = resource(BASE, 
+            "PolyphasePowerSensorOutput");
     public static final Resource PolyphaseVoltageValue = resource(BASE, 
             "PolyphaseVoltageValue");
+    public static final Resource PolyphasePowerValue = resource(BASE, 
+            "PolyphasePowerValue");
     public static final Resource Mercury230 = resource(BASE, "Mercury230");
+    
     public static final Property hasPhaseNumber = property(BASE, "hasPhaseNumber");
     public static final Property hasQuantityValue = property(BASE, "hasQuantityValue");
     public static final Property hasSerialNumber = property(BASE, "hasSerialNumber");

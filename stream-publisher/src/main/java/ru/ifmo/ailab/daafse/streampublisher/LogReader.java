@@ -5,14 +5,18 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.ifmo.ailab.daafse.streampublisher.observations.PowerObservation;
+import ru.ifmo.ailab.daafse.streampublisher.observations.VoltageObservation;
 
 public class LogReader implements Runnable {
 
+    private final static Logger logger = LoggerFactory.getLogger(
+            LogReader.class);
     private final static int SLEEP = 500;
     private final Path file;
     private final ObservationListener listener;
@@ -31,25 +35,33 @@ public class LogReader implements Runnable {
                     JsonObject obj = jr.readObject();
                     if (obj.containsKey("type")
                             && obj.containsKey("SerialNumber__")) {
-                        Observation o = new Observation(
-                                obj.getString("type"),
-                                obj.getInt("SerialNumber__"),
-                                System.currentTimeMillis(),
-                                new double[]{
+                        final long time = System.currentTimeMillis();
+                        final String type = obj.getString("type");
+                        final int serialNumber = obj.getInt("SerialNumber__");
+                        VoltageObservation o = new VoltageObservation(
+                                type, serialNumber, time,
+                                new double[] {
                                     obj.getJsonNumber("Now_Voltage_Phase_1_value").doubleValue(),
                                     obj.getJsonNumber("Now_Voltage_Phase_2_value").doubleValue(),
                                     obj.getJsonNumber("Now_Voltage_Phase_3_value").doubleValue()
                                 }
                         );
+                        PowerObservation po = new PowerObservation(
+                                type, serialNumber, time, new double[] {
+                                    obj.getJsonNumber("Now_Power_Phase_1_value").doubleValue(),
+                                    obj.getJsonNumber("Now_Power_Phase_2_value").doubleValue(),
+                                    obj.getJsonNumber("Now_Power_Phase_3_value").doubleValue()
+                                });
                         listener.newObservation(o);
+                        listener.newObservation(po);
                     }
                 }
                 Thread.sleep(SLEEP);
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.warn(ex.getMessage(), ex);
         } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            logger.warn(ex.getMessage(), ex);
         }
     }
 

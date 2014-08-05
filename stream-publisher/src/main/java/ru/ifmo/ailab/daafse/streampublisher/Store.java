@@ -11,6 +11,7 @@ import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.streampublisher.config.PublisherConfig;
+import ru.ifmo.ailab.daafse.streampublisher.observations.Observation;
 
 public class Store {
 
