@@ -48,9 +48,9 @@ public class LogReader implements Runnable {
                         );
                         PowerObservation po = new PowerObservation(
                                 type, serialNumber, time, new double[] {
-                                    obj.getJsonNumber("Now_Power_Phase_1_value").doubleValue(),
-                                    obj.getJsonNumber("Now_Power_Phase_2_value").doubleValue(),
-                                    obj.getJsonNumber("Now_Power_Phase_3_value").doubleValue()
+                                    obj.getJsonNumber("Now_Power_P_Phase_1_value").doubleValue(),
+                                    obj.getJsonNumber("Now_Power_P_Phase_2_value").doubleValue(),
+                                    obj.getJsonNumber("Now_Power_P_Phase_3_value").doubleValue()
                                 });
                         listener.newObservation(o);
                         listener.newObservation(po);

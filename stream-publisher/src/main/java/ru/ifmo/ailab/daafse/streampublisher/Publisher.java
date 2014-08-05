@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.streampublisher.config.PublisherConfig;
 import ru.ifmo.ailab.daafse.streampublisher.observations.Observation;
-import ru.ifmo.ailab.daafse.streampublisher.observations.VoltageObservation;
 
 public class Publisher implements ObservationListener {
 
@@ -20,12 +19,16 @@ public class Publisher implements ObservationListener {
     private static final Store store = new Store(CONFIG.sparqlUpdate());
     private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
     private static String lang = "RDF/XML";
+    private static boolean verbose = false;
 
     public static void main(String[] args) throws Exception {
         try {
             Path log = Paths.get(args[0]);
             if (args.length > 1 && args[1] != null) {
                 lang = args[1];
+                if(args.length > 2 && args[2] != null) {
+                    verbose = Boolean.parseBoolean(args[2]);
+                }
             }
             logger.info("Observations will be read from {} file.", log);
             LogReader lr = new LogReader(log, new Publisher());
@@ -50,6 +53,9 @@ public class Publisher implements ObservationListener {
             observation.getModel().write(out, lang);
             producer.publish(CONFIG.routingKey(observation.getMeterId()),
                     out.toByteArray());
+            if(verbose) {
+                logger.info(out.toString());
+            }
             logger.debug("Published to {}",
                     CONFIG.routingKey(observation.getMeterId()));
             if (CONFIG.sparqlUpdateEnabled()) {
