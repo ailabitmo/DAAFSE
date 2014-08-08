@@ -13,7 +13,7 @@ RUN apt-get install -y wget openjdk-7-jre-headless unzip
 RUN wget http://apache-mirror.rbc.ru/pub/apache/jena/binaries/jena-fuseki-1.1.0-distribution.zip
 RUN unzip jena-fuseki-1.1.0-distribution.zip -d .
 
-ADD fuseki-config.ttl /root/jena-fuseki-1.1.0/config.ttl
+ADD config.ttl /root/jena-fuseki-1.1.0/config.ttl
 
 RUN cd jena-fuseki-1.1.0 && ./fuseki-server --config=config.ttl
 
