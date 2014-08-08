@@ -1,0 +1,32 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h4 class="modal-title">
+                    [{{selected.get('dul:hasEventDate') | date: 'MMM d HH:mm:ss'}}]
+                    {{selected.get('rdf:type/rdfs:label')}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <dl class="dl-horizontal">
+                        <dt>Счетчик:</dt>
+                        <dd>
+                            <a href="#/meters/{{selected.get('dul:involvesAgent')}}/info">
+                            {{selected.get('dul:involvesAgent/rdf:type/rdfs:label')}}
+                            №{{selected.get('dul:involvesAgent/em:hasSerialNumber')}}
+                            </a>
+                        </dd>
+                        <dt>Местоположение:</dt>
+                        <dd>{{selected.get('dul:involvesAgent/dul:hasLocation/rdfs:label')}}</dd>
+                        <dt>Описание:</dt><dd>{{selected.get('rdf:type/rdfs:comment')}}</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

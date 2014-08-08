@@ -1,36 +1,25 @@
 (function(angular) {
     var app = angular.module('metersApp', [
-        'ui.router', 'ui.codemirror', 'metersApp.controllers', 
-        'metersApp.alerts', 'metersApp.meters', 'mgcrea.ngStrap'
+        'ngRoute', 'ui.codemirror', 'metersApp.alerts', 'metersApp.meters', 
+        'mgcrea.ngStrap', 'highcharts-ng'
     ]);
 
-    app.config(function($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise("/");
-
-        $stateProvider
-                .state('index', {
-                    url: "/"
-                })
-                .state('meters', {
-                    url: '/meters',
-                    templateUrl: 'partials/meters.html',
-                    controller: 'MeterListCtrl'
-                })
-                .state('meterPage', {
-                    url: '/meters/{meterUri:.*}/info',
-                    templateUrl: 'partials/meterPage.html',
-                    controller: 'MeterPageCtrl'
-                })
-                .state('alerts', {
-                    url: '/alerts',
-                    templateUrl: 'partials/alerts.html',
-                    controller: 'AlertListCtrl'
-                })
-                .state('configure', {
-                    url: '/configure',
-                    templateUrl: 'partials/configure.html',
-                    controller: 'AlertConfigureCtrl'
-                });
+    app.config(function($routeProvider) {
+        $routeProvider
+            .when('/main', {
+                templateUrl: 'partials/main.html' 
+            })
+            .when('/configure', {
+                templateUrl: 'partials/configure.html',
+                controller: 'AlertConfigureCtrl'
+            })
+            .when('/meters/:meterUri*\/info', {
+                templateUrl: 'partials/meter-details.html',
+                controller: 'MeterPageCtrl'
+            })
+            .otherwise({
+                redirectTo: '/main'
+            });
     });
     app.config(function($datepickerProvider){
         angular.extend($datepickerProvider.defaults, {

@@ -1,0 +1,37 @@
+<div class="col-md-12">
+    <h2>Информация о счетчике
+        <a href="http://192.168.134.114/resource/properties/?r={{meter.uri}}" 
+           class="btn btn-default btn-xs" role="button" 
+           target="_blank">Редактировать</a>
+    </h2>
+    <dl class="dl-horizontal">
+        <dt>Модель:</dt><dd>{{meter.get('rdf:type/rdfs:label')}}</dd>
+        <dt>Серийный номер:</dt><dd>{{meter.get('em:hasSerialNumber')}}</dd>
+        <dt>Местоположение:</dt><dd>{{meter.get('dul:hasLocation/rdfs:label')}}</dd>
+    </dl>
+    <div class="panel panel-default" ng-controller="MeterChartCtrl">
+        <form name="datepickerForm" class="panel-heading form-inline" role="form">
+            <div class="form-group">
+                <input class="form-control" ng-model="fromDate" 
+                       data-mix-date="{{fromDate}}" placeholder="From" 
+                       bs-datepicker type="text"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" ng-model="untilDate"
+                       data-mix-date="{{untilDate}}" placeholder="Now"
+                       bs-datepicker type="text"/>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-default" ng-click="changedDateRange()">Выбрать</button>
+            </div>
+        </form>
+        <div class="row panel-body">
+            <div class="col-md-6">
+                <highchart config="vChartConfig"></highchart>
+            </div>
+            <div class="col-md-6">
+                <highchart config="pChartConfig"></highchart>
+            </div>
+        </div>
+    </div>
+</div>

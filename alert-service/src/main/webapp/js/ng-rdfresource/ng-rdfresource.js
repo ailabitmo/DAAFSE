@@ -37,10 +37,10 @@
             if(path.length > index) {
                 var vs = this._store.find(root, path[index], null);
                 if(!vs.length) {
-                    var variable = ResourceUtils.propToVar(path[index]);
+                    var variable = ResourceUtils.pathToVar(path, index);
 
                     missingTriples = missingTriples.concat([[
-                        root.indexOf('?') === 0? root : '<' + root + '>',
+                        root.indexOf('?') === 0 || root.indexOf('<') === 0? root : '<' + root + '>',
                         path[index], 
                         variable
                     ]]);
@@ -79,7 +79,7 @@
                             var vs = this._store.find(
                                     resource.subject, path[0], null);
                             if(vs.length) {
-                                r[prop] = vs.map(function(v) {
+                                r[path[0]] = vs.map(function(v) {
                                     return v.object;
                                 });
                             }
@@ -175,6 +175,8 @@
         };
         
         Resource.prototype.get = function(prop) {
+//            if(this[prop]) return this[prop];
+            
             if(prop.indexOf('/') > -1) {
                 var path = prop.split('/');
                 if(this[path[0]]) {
@@ -313,6 +315,15 @@
         };
         ResourceUtils.prototype.propToVar = function(prop) {
             return '?' + prop.replace(':', '_');
+        };
+        ResourceUtils.prototype.pathToVar = function(path, index) {
+            if(index < 0) { return null; }
+            
+            var variable = "?" + path[0].replace(':', '_');
+            for(var i = 1; i <= index; i++) {
+                variable += '_' + path[i].replace(':', '_');
+            }
+            return variable;
         };
         ResourceUtils.prototype.varToProp = function(variable) {
             return variable.replace('_', ':');

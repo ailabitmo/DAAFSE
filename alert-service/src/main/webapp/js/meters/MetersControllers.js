@@ -3,19 +3,30 @@
         'ngRDFResource', 'ngSTOMP', 'ngSPARQL', 'ngSPARQL.config'
     ]);
     
+    module.controller('MeterListCtrl', function($scope, ResourceManager) {
+        $scope.meters = [];
+
+        ResourceManager.findByType('em:Mercury230', [
+            'em:hasSerialNumber', 'dul:hasLocation/rdfs:label','rdf:type/rdfs:label'
+        ])
+        .then(function(meters) {
+            $scope.meters = meters;
+        });
+    });
+    
     module.controller('MeterPageCtrl', function(
-            $scope, $stateParams, ResourceManager) {
-        ResourceManager.findByURI($stateParams.meterUri, [
-            'em:hasStream', 'em:hasSerialNumber'
+            $scope, $routeParams, ResourceManager) {
+        ResourceManager.findByURI($routeParams.meterUri, [
+            'dul:hasLocation/rdfs:label', 'em:hasSerialNumber', 'rdf:type/rdfs:label'
         ]).then(function(meters) {
             $scope.meter = meters[0];
         });
     });
-    module.controller('MeterChartCtrl', function($scope, $stateParams, 
+    module.controller('MeterChartCtrl', function($scope, $routeParams, 
         ResourceManager, GraphFactory, utils, stomp, sparql, SPARQL_CONFIG) {
         var thisArg = this;
         var sub;
-        $scope.chartConfig = {
+        $scope.vChartConfig = {
             options: {
                 chart: { type: 'line', zoomType: 'x'},
                 rangeSelector: {
@@ -41,19 +52,54 @@
             },
             useHighStocks: true,
             series: [
-                { name: 'Phase 1', data: [] },
-                { name: 'Phase 2', data: [] },
-                { name: 'Phase 3', data: [] }
+                { name: 'Фаза 1', data: [] },
+                { name: 'Фаза 2', data: [] },
+                { name: 'Фаза 3', data: [] }
             ],
             legend: { enabled: true },
-            yAxis: { title: { text: 'Voltage (V)' } },
+            yAxis: { title: { text: 'Напряжение (В)' } },
+            xAxis: { type: 'datetime', minRange: 15*60000 },
+            loading: true
+        };
+        $scope.pChartConfig = {
+            options: {
+                chart: { type: 'line', zoomType: 'x'},
+                rangeSelector: {
+                    inputEnabled: false,
+                    enabled: true,
+                    buttons: [
+                        {
+                            type: 'minute',
+                            count: 60,
+                            text: '1h'
+                        },
+                        {
+                            type: 'day',
+                            count: 1,
+                            text: '1d'
+                        },
+                        {
+                            type: 'all',
+                            text: 'All'
+                        }
+                    ]
+                }
+            },
+            useHighStocks: true,
+            series: [
+                { name: 'Фаза 1', data: [] },
+                { name: 'Фаза 2', data: [] },
+                { name: 'Фаза 3', data: [] }
+            ],
+            legend: { enabled: true },
+            yAxis: { title: { text: 'Мощность (Вт)' } },
             xAxis: { type: 'datetime', minRange: 15*60000 },
             loading: true
         };
         $scope.fromDate = new Date();
         $scope.untilDate = null;
         
-        ResourceManager.findByURI($stateParams.meterUri, ['em:hasStream'])
+        ResourceManager.findByURI($routeParams.meterUri, ['em:hasStream'])
         .then(function(meters) {
             return $scope.meter = meters[0];
         })
@@ -68,17 +114,17 @@
         });
         
         $scope._addObservation = function(observation, length) {
-            utils.shiftAndPush($scope.chartConfig.series[0].data, 
+            utils.shiftAndPush($scope.vChartConfig.series[0].data, 
                 observation[1], length);
-            utils.shiftAndPush($scope.chartConfig.series[1].data, 
+            utils.shiftAndPush($scope.vChartConfig.series[1].data, 
                         observation[2], length);
-            utils.shiftAndPush($scope.chartConfig.series[2].data,
+            utils.shiftAndPush($scope.vChartConfig.series[2].data,
                         observation[3], length);
         };
         $scope._removeObservations = function() {
-            $scope.chartConfig.series[0].data = [];
-            $scope.chartConfig.series[1].data = [];
-            $scope.chartConfig.series[2].data = [];
+            $scope.vChartConfig.series[0].data = [];
+            $scope.vChartConfig.series[1].data = [];
+            $scope.vChartConfig.series[2].data = [];
         };
         $scope.changedDateRange = function() {                        
             thisArg._loadObservations($scope.meter, 
@@ -86,9 +132,11 @@
                         toZeroTimeDate($scope.untilDate));
         };
         $scope.$on('$destroy', function() {
-            sub.then(function(subscription) {
-                subscription.unsubscribe();
-            });
+            if(sub) {
+                sub.then(function(subscription) {
+                    subscription.unsubscribe();
+                });
+            }
         });
         
         this._onMessage = function(message) {
@@ -97,6 +145,7 @@
             .then(function(graph) {
                 var points = [];
                 var observation = graph.getByType('em:PolyphaseVoltageObservation')[0];
+                if(!observation) return; //TODO Implement visualisation of the power observations
                 var output = graph.getByURI(observation.get('ssn:observationResult'));
                 output['ssn:hasValue'].forEach(function(valueURI){
                     var value = graph.getByURI(valueURI);
@@ -128,7 +177,7 @@
                 query += ")\n";
             }
             query += "}} ORDER BY ?time";
-            $scope.chartConfig.loading = true;
+            $scope.vChartConfig.loading = true;
             return sparql.describe(query, SPARQL_CONFIG.ENDPOINTS.ENDPOINT_2)
             .then(function(graph) {
                 var observations = graph.getByType('em:PolyphaseVoltageObservation');
@@ -163,7 +212,7 @@
                     });
                     $scope._addObservation(points);
                 }, thisArg);
-                $scope.chartConfig.loading = false;
+                $scope.vChartConfig.loading = false;
             });
         };
     });

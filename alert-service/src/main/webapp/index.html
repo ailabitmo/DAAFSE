@@ -7,16 +7,16 @@
         <!--WebJars-->
         <link rel="stylesheet" href="webjars/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="webjars/codemirror/4.3/lib/codemirror.css">
-        
+
         <link rel="stylesheet" href="css/style.css">
-        
+
         <script src="js/lib/parserUri/parserUri.js"></script>
         <script src="js/lib/n3/n3-browser.min.js"></script>
-     
+
         <!--WebJars-->
         <script src="webjars/stomp-websocket/2.3.1/stomp.min.js"></script>
         <script src="webjars/angularjs/1.2.19/angular.min.js"></script>
-        <script src="webjars/angular-ui-router/0.2.10/angular-ui-router.min.js"></script>
+        <script src="webjars/angularjs/1.2.19/angular-route.min.js"></script>
         <script src="webjars/highcharts-ng/0.0.6/highcharts-ng.min.js"></script>
         <script src="webjars/highstock/2.0.3/adapters/standalone-framework.js"></script>
         <script src="webjars/highstock/2.0.3/highstock.js"></script>
@@ -24,7 +24,7 @@
         <script src="webjars/ui-codemirror/0.1.5/ui-codemirror.js"></script>
         <script src="webjars/angular-strap/2.0.3/angular-strap.min.js"></script>
         <script src="webjars/angular-strap/2.0.3/angular-strap.tpl.min.js"></script>
-        
+
         <script src="js/lib/codemirror/mode-sparql.js"></script>
         <script src="js/ng-stomp.js"></script>
         <script src="js/ng-sparql.js"></script>
@@ -33,25 +33,25 @@
         <script src="js/ng-rdfresource/ng-rdfresource.js"></script>
         <script src="js/alerts/AlertsControllers.js"></script>
         <script src="js/meters/MetersControllers.js"></script>
-        <script src="js/controllers.js"></script>
     </head>
     <body>
-        <div class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar navbar-default navbar-static-top"
+             role="navigation" bs-navbar>
             <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Dashboard</a>
-                </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="#/alerts">Alerts</a></li>
-                        <li><a href="#/meters">Smart Meters</a></li>
-                        <li><a href="#/configure">Configure Alerts</a></li>
+                        <li data-match-route="/+(main)?$"><a href="#/">Главная</a></li>
+                        <li data-match-route="/configure"><a href="#/configure">Конфигурация уведомлений</a></li>
                     </ul>
+                    <form class="navbar-form navbar-right" role="search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Поиск...">
+                        </div>
+                        <button type="submit" class="btn btn-default">Искать</button>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="container-fluid">
-            <div class="row" ui-view></div>
-        </div>
+        <div class="container-fluid" ng-view></div>
     </body>
 </html>

@@ -10,7 +10,10 @@ WORKDIR /root
 RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && chmod 777 /usr/sbin/policy-rc.d
 RUN apt-get update
 RUN apt-get install -y wget openjdk-7-jre-headless unzip
-RUN wget http://apache-mirror.rbc.ru/pub/apache/jena/binaries/jena-fuseki-1.0.2-distribution.zip
-RUN unzip jena-fuseki-1.0.2-distribution.zip -d .
-RUN cd jena-fuseki-1.0.2 && ./fuseki-server --update --mem /ds
+RUN wget http://apache-mirror.rbc.ru/pub/apache/jena/binaries/jena-fuseki-1.1.0-distribution.zip
+RUN unzip jena-fuseki-1.1.0-distribution.zip -d .
+
+ADD fuseki-config.ttl /root/jena-fuseki-1.1.0/config.ttl
+
+RUN cd jena-fuseki-1.1.0 && ./fuseki-server --config=config.ttl
 

@@ -30,24 +30,15 @@
         });
     });
     
-    module.controller('AlertListCtrl', function($scope, stomp, GENERAL_CONFIG, 
-        utils, ResourceFactory, ResourceManager) {
+    module.controller('AlertListCtrl', function(
+            $scope, stomp, GENERAL_CONFIG, $modal, 
+            utils, ResourceFactory, ResourceManager) {
         var sub;
+        var modal = $modal({
+            scope: $scope, placement: 'center', 
+            template: 'partials/alert-info.html', show: false
+        });
         $scope.alerts = [];
-        $scope.alertTypes = [];
-        $scope.selectedType = null;
-        $scope.getTypeClass = function(alert) {
-            switch(alert.get('rdf:type/dul:isClassifiedBy')) {
-                case "http://purl.org/daafse/alerts/types#Info":
-                    return 'alert-info';
-                case "http://purl.org/daafse/alerts/types#Warning":
-                    return 'alert-warning';
-                case "http://purl.org/daafse/alerts/types#Danger":
-                    return 'alert-danger';
-                default:
-                    return 'alert-success';
-            };
-        };
         $scope._onAlert = function(message) {
             utils.parseTTL(message.body)
             .then(ResourceFactory.newFromTriples)
@@ -62,28 +53,24 @@
                     return true;
                 });
                 if(index > -1) {
-                    $scope.alerts[index].count++;
+                    //The similar alert has been found
                 } else {
-                    alert.count = 1;
                     $scope.alerts.push(alert);
                 }
             });
         };
-        $scope.filterByType = function(alert) {
-            if(!$scope.selectedType) return true;
-            return alert.get('rdf:type/dul:isClassifiedBy') 
-                    === $scope.selectedType.uri;
-        };
         $scope.remove = function(index) {
             $scope.alerts.splice(index, 1);
+        };
+        $scope.onClick = function(index) {
+            $scope.selected = $scope.alerts[index];
+            modal.$promise.then(modal.show);
         };
         //Pre-cache alert types
         ResourceManager.findByType('dul:Event', [
             'rdfs:label', 'rdfs:comment', 'dul:isClassifiedBy'
         ]).then(function() {
             return ResourceManager.findByType('dul:EventType', ['rdfs:label']);
-        }).then(function(eventTypes) {
-            return $scope.alertTypes = eventTypes;
         }).then(function() {
             sub = stomp.subscribe(GENERAL_CONFIG.ALERTS_STREAM, $scope._onAlert);
         });

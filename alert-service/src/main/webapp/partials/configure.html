@@ -1,24 +1,26 @@
-<div class="col-md-8">
-    <form name="queryForm" class="form" role="form" novalidate 
-          ng-submit="register(queryForm.$valid)">
-        <div class="form-group panel panel-default">
-            <div class="panel-heading">
-                <label for="query-name" class="control-label">Name:</label>
-                <input id="query-name" class="form-control" 
-                       required ng-model="name" placeholder="query name..."/>
+<div class="row">
+    <div class="col-md-8">
+        <form name="queryForm" class="form" role="form" novalidate 
+              ng-submit="register(queryForm.$valid)">
+            <div class="form-group panel panel-default">
+                <div class="panel-heading">
+                    <label for="query-name" class="control-label">Name:</label>
+                    <input id="query-name" class="form-control" 
+                           required ng-model="name" placeholder="query name..."/>
+                </div>
+                <div ui-codemirror="editorOptions" ng-model="query"></div>
             </div>
-            <div ui-codemirror="editorOptions" ng-model="query"></div>
+            <button class="btn btn-default btn-lg btn-block" 
+                    type="submit" ng-disabled="queryForm.$invalid">Register</button>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="list-group meter-list">
+            <a class="list-group-item" ng-repeat="q in queries" 
+               ng-click="setSelected(q)"
+               ng-class="{'active': isSelected(q)}">
+                {{q.name}}
+            </a>
         </div>
-        <button class="btn btn-default btn-lg btn-block" 
-                type="submit" ng-disabled="queryForm.$invalid">Register</button>
-    </form>
-</div>
-<div class="col-md-4">
-    <div class="list-group meter-list">
-        <a class="list-group-item" ng-repeat="q in queries" 
-           ng-click="setSelected(q)"
-           ng-class="{'active': isSelected(q)}">
-            {{q.name}}
-        </a>
     </div>
 </div>

@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-md-9" ng-controller="AlertListCtrl">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>Местоположение</th>
+                    <th>Наименование и серийный номер</th>
+                    <th>Уведомление</th>
+                    <th>Время</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="alert in alerts"
+                    ng-click="onClick($index)">
+                    <td>{{alert.get('dul:involvesAgent/dul:hasLocation/rdfs:label')}}</td>
+                    <td>
+                        {{alert.get('dul:involvesAgent/rdf:type/rdfs:label')}}
+                        №{{alert.get('dul:involvesAgent/em:hasSerialNumber')}}
+                    </td>
+                    <td>{{alert.get('rdf:type/rdfs:label')}}</td>
+                    <td>{{alert.get('dul:hasEventDate') | date: 'MMM d HH:mm:ss'}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-3" ng-controller="MeterListCtrl">
+        <div class="panel panel-default">
+            <div class="panel-heading">Всего: {{meters.length}}</div>
+            <div class="list-group meter-list">
+                <a href="#/meters/{{meter.uri}}/info" class="list-group-item"
+                   ng-repeat="meter in meters"
+                   ng-click="setSelected(meter.uri)"
+                   ng-class="{'active': isSelected(meter.uri)}">
+                    {{meter.get('dul:hasLocation/rdfs:label')}} -
+                    <small>{{meter.get('rdf:type/rdfs:label')}} №{{meter.get('em:hasSerialNumber')}}</small>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

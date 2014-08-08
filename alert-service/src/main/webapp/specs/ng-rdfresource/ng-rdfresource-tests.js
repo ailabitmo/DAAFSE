@@ -130,7 +130,7 @@ describe("Unit: ResourceStore", function() {
         expect(patterns[1]).toEqual([
             '?rdf_type',
             'rdfs:label',
-            '?rdfs_label'
+            '?rdf_type_rdfs_label'
         ]);
     }));
     it("genMissingTP: a path[2], 1 - exists", inject(function(ResourceStore) {
@@ -146,7 +146,7 @@ describe("Unit: ResourceStore", function() {
         expect(patterns[0]).toEqual([
             '<http://purl.org/NET/ssnext/electricmeters#Mercury230>',
             'rdfs:label',
-            '?rdfs_label'
+            '?rdf_type_rdfs_label'
         ]);
     }));
     it("genMissingTP: a path[2], all exists", inject(function(ResourceStore) {
@@ -232,7 +232,7 @@ describe("Unit: ResourceStore", function() {
         expect(result.missing[1]).toEqual(
                 ['?uri', 'em:hasSerialNumber', '?em_hasSerialNumber']);
         expect(result.missing[2]).toEqual(['?uri', 'rdf:type', '?rdf_type']);
-        expect(result.missing[3]).toEqual(['?rdf_type', 'rdfs:label', '?rdfs_label']);
+        expect(result.missing[3]).toEqual(['?rdf_type', 'rdfs:label', '?rdf_type_rdfs_label']);
     }));
 });
 
@@ -289,5 +289,23 @@ describe("Unit: Resource", function() {
         var label = resource.get('rdf:type/rdfs:label');
         
         expect(label).toEqual('\"Mercury 230\"@en');;
+    }));
+});
+
+describe("Unit: ResourceUtils", function() {
+    beforeEach(module('ngRDFResource'));
+    
+    it("pathToVar: path[2], index 0", inject(function(ResourceUtils) {
+        var path = ["dul:hasLocation", "rdfs:label"];
+        var variable = ResourceUtils.pathToVar(path, 0);
+        
+        expect(variable).toEqual("?dul_hasLocation");
+    }));
+    
+    it("pathToVar: path[2], index 1", inject(function(ResourceUtils) {
+        var path = ["dul:hasLocation", "rdfs:label"];
+        var variable = ResourceUtils.pathToVar(path, 1);
+        
+        expect(variable).toEqual("?dul_hasLocation_rdfs_label");
     }));
 });
