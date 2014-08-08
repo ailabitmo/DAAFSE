@@ -14,3 +14,4 @@ RUN wget http://apache-mirror.rbc.ru/pub/apache/jena/binaries/jena-fuseki-1.1.0-
 RUN unzip jena-fuseki-1.1.0-distribution.zip -d .
 
 ADD config.ttl /root/jena-fuseki-1.1.0/config.ttl
+ADD start.sh /root/start.sh
