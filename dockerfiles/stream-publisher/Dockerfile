@@ -1,4 +1,4 @@
-OM ubuntu
+FROM ubuntu
 
 ENV http_proxy http://proxy.ifmo.ru:3128
 ENV https_proxy http://proxy.ifmo.ru:3128
