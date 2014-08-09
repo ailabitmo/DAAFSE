@@ -19,7 +19,7 @@ RUN apt-get install -y maven git
 
 RUN rm /usr/share/maven/conf/settings.xml
 ADD settings.xml /usr/share/maven/conf/settings.xml
-ADD ../../electricmeters.owl /root/DAAFSE/srteam-publisher/electricmeters.ttl
+ADD https://raw.githubusercontent.com/ailabitmo/DAAFSE/master/electricmeters.owl /root/DAAFSE/srteam-publisher/electricmeters.ttl
 
 RUN git clone https://github.com/ailabitmo/DAAFSE.git
 RUN cd DAAFSE/stream-publisher/ && mvn clean install -DskipTests=true
