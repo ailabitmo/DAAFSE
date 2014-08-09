@@ -1,10 +1,15 @@
 package ru.ifmo.ailab.daafse.streampublisher;
 
+import com.hp.hpl.jena.query.DatasetAccessorFactory;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.util.FileManager;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import org.aeonbits.owner.ConfigFactory;
@@ -31,6 +36,11 @@ public class Store {
         UpdateRequest request = UpdateFactory.create("CLEAR ALL");
         UpdateExecutionFactory.createRemote(request, endpoint).execute();
     }
+    
+    public void uploadFile(Path path) {
+        Model m = FileManager.get().loadModel(path.toString());
+        DatasetAccessorFactory.createHTTP(CONFIG.sparqlUpload()).add(m);
+    }
 
     public void save(Observation o) {
         cache.add(o);
@@ -38,7 +48,7 @@ public class Store {
         
         if (batchSize >= CONFIG.sparqlMaxBatchSize()) {
             try {
-                logger.debug("Flusing the cache...");
+                logger.debug("Flushing the cache...");
                 UpdateRequest request = UpdateFactory.create(modelToQuery(cache));
                 UpdateExecutionFactory.createRemote(request, endpoint).execute();
                 batchSize = 0;
@@ -52,14 +62,14 @@ public class Store {
     private String modelToQuery(List<Observation> obs) throws IOException {
         String query = "INSERT DATA {\n";
         for (Observation o : obs) {
-            query += "GRAPH <" + o.getMeterURI() + "> {\n";
+//            query += "GRAPH <" + o.getMeterURI() + "> {\n";
             try (StringWriter writer = new StringWriter()) {
                 o.getModel().write(writer, "N3");
                 query += writer.toString();
             } catch (IOException ex) {
                 throw ex;
             }
-            query += "\n}";
+//            query += "\n}";
         }
         query += "\n}";
         return query;

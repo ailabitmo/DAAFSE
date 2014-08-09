@@ -24,10 +24,11 @@ public class Publisher implements ObservationListener {
     public static void main(String[] args) throws Exception {
         try {
             Path log = Paths.get(args[0]);
-            if (args.length > 1 && args[1] != null) {
-                lang = args[1];
-                if(args.length > 2 && args[2] != null) {
-                    verbose = Boolean.parseBoolean(args[2]);
+            Path ontology = Paths.get(args[1]);
+            if (args.length > 2 && args[2] != null) {
+                lang = args[2];
+                if(args.length > 3 && args[3] != null) {
+                    verbose = Boolean.parseBoolean(args[3]);
                 }
             }
             logger.info("Observations will be read from {} file.", log);
@@ -35,6 +36,7 @@ public class Publisher implements ObservationListener {
             producer.init();
             if(CONFIG.sparqlUpdateEnabled()) {
                 store.clearAll();
+                store.uploadFile(ontology);
             }
             logger.debug("SPARQL endpoint [{}] has been cleared!",
                     CONFIG.sparqlUpdate());

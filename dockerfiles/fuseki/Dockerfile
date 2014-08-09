@@ -15,3 +15,5 @@ RUN unzip jena-fuseki-1.1.0-distribution.zip -d .
 
 ADD config.ttl /root/jena-fuseki-1.1.0/config.ttl
 ADD start.sh /root/start.sh
+
+RUN chmod 777 /root/start.sh

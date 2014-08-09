@@ -20,6 +20,9 @@ public interface PublisherConfig extends Config {
     @Key("sparql.update")
     String sparqlUpdate();
     
+    @Key("sparql.upload")
+    String sparqlUpload();
+    
     @Key("sparql.update.enabled")
     @DefaultValue("true")
     boolean sparqlUpdateEnabled();
