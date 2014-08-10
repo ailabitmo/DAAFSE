@@ -175,8 +175,6 @@
         };
         
         Resource.prototype.get = function(prop) {
-//            if(this[prop]) return this[prop];
-            
             if(prop.indexOf('/') > -1) {
                 var path = prop.split('/');
                 if(this[path[0]]) {
@@ -188,6 +186,9 @@
             } else {
                 return this._getFirstValueOfProperty(prop);
             }
+        };
+        Resource.prototype.is = function(type) {
+            return this['rdf:type'].indexOf(type) > -1;
         };
         
         return Resource;

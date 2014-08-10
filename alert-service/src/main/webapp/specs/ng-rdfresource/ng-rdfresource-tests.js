@@ -290,6 +290,28 @@ describe("Unit: Resource", function() {
         
         expect(label).toEqual('\"Mercury 230\"@en');;
     }));
+    it("is: two types", inject(function(ResourceFactory) {
+        var triples = [{
+                subject: "http://example.com/resource/1",
+                predicate: RDF_TYPE,
+                object: "http://examplecom/ontology#Class1"
+        },
+        {
+                subject: "http://example.com/resource/1",
+                predicate: RDF_TYPE,
+                object: "http://examplecom/ontology#Class2"
+        }];
+        
+        var resource = ResourceFactory.newFromTriples(triples);
+        
+        var isClass1 = resource.is('http://examplecom/ontology#Class1');
+        var isClass2 = resource.is('http://examplecom/ontology#Class2');
+        var isClass3 = resource.is('http://examplecom/ontology#Class3');
+        
+        expect(isClass1).toBeTruthy();
+        expect(isClass2).toBeTruthy();
+        expect(isClass3).toBeFalsy();
+    }));
 });
 
 describe("Unit: ResourceUtils", function() {

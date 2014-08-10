@@ -113,18 +113,18 @@
                 thisArg._onMessage);
         });
         
-        $scope._addObservation = function(observation, length) {
-            utils.shiftAndPush($scope.vChartConfig.series[0].data, 
+        $scope._addObservation = function(chart, observation, length) {
+            utils.shiftAndPush(chart.series[0].data, 
                 observation[1], length);
-            utils.shiftAndPush($scope.vChartConfig.series[1].data, 
+            utils.shiftAndPush(chart.series[1].data, 
                         observation[2], length);
-            utils.shiftAndPush($scope.vChartConfig.series[2].data,
+            utils.shiftAndPush(chart.series[2].data,
                         observation[3], length);
         };
-        $scope._removeObservations = function() {
-            $scope.vChartConfig.series[0].data = [];
-            $scope.vChartConfig.series[1].data = [];
-            $scope.vChartConfig.series[2].data = [];
+        $scope._removeObservations = function(chart) {
+            chart.series[0].data = [];
+            chart.series[1].data = [];
+            chart.series[2].data = [];
         };
         $scope.changedDateRange = function() {                        
             thisArg._loadObservations($scope.meter, 
@@ -156,31 +156,21 @@
                     ];
                 });
                 
-                $scope._addObservation(points);
+//                $scope._addObservation(points);
             });
         };
         this._loadObservations = function(meter, from, till) {
-            $scope._removeObservations();
-            var query = "DESCRIBE ?observation ?output ?value\n\
-                    WHERE {\n\
-                        GRAPH <" + meter.uri + "> {\n\
-                            ?observation a em:PolyphaseVoltageObservation ;\n\
-                                ssn:observationResultTime ?time ;\n\
-                                ssn:observationResult ?output ;\n\
-                                ssn:observedBy <" + meter.uri + "> .\n\
-                            ?output ssn:hasValue ?value .\n";
-            if(from) {
-                query += "FILTER(?time >= '" + from.toISOString() + "'^^xsd:dateTime";
-                if(till) {
-                    query += "&& ?time <= '" + till.toISOString() + "'^^xsd:dateTime";
-                }
-                query += ")\n";
-            }
-            query += "}} ORDER BY ?time";
+            $scope._removeObservations($scope.vChartConfig);
+            $scope._removeObservations($scope.pChartConfig);
+            
+            var query = createGetObservationQuery(meter, from, till);
+            
             $scope.vChartConfig.loading = true;
+            $scope.pChartConfig.loading = true;
+            
             return sparql.describe(query, SPARQL_CONFIG.ENDPOINTS.ENDPOINT_2)
             .then(function(graph) {
-                var observations = graph.getByType('em:PolyphaseVoltageObservation');
+                var observations = graph.getByType('ssn:Observation');
                 if(observations.length > 0) {
                     var TZoffset = new Date(observations[0].get('ssn:observationResultTime')).getTimezoneOffset();
                     Highcharts.setOptions({
@@ -210,9 +200,15 @@
                             parseFloat(value.get('em:hasQuantityValue'))
                         ];
                     });
-                    $scope._addObservation(points);
+                    if(observation.is('http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageObservation')) {
+                        $scope._addObservation($scope.vChartConfig, points);
+                    } else {
+                        $scope._addObservation($scope.pChartConfig, points);
+                    }
                 }, thisArg);
+                
                 $scope.vChartConfig.loading = false;
+                $scope.pChartConfig.loading = false;
             });
         };
     });
@@ -221,6 +217,26 @@
         return date ? 
                 new Date(date.getFullYear(), date.getMonth(), date.getDate())
                 : null;
+    };
+    
+    function createGetObservationQuery(meter, from, till) {
+        var query = "DESCRIBE ?observation ?output ?value\n\
+                    WHERE {\n\
+                            ?observation a ssn:Observation ;\n\
+                                ssn:observationResultTime ?time ;\n\
+                                ssn:observationResult ?output ;\n\
+                                ssn:observedBy <" + meter.uri + "> .\n\
+                            ?output ssn:hasValue ?value .\n";
+        if(from) {
+            query += "FILTER(?time >= '" + from.toISOString() + "'^^xsd:dateTime";
+            if(till) {
+                query += "&& ?time <= '" + till.toISOString() + "'^^xsd:dateTime";
+            }
+            query += ")\n";
+        }
+        query += "} ORDER BY ?time";
+        
+        return query;
     };
     
 })(window.angular);
