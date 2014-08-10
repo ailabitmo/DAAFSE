@@ -188,7 +188,8 @@
             }
         };
         Resource.prototype.is = function(type) {
-            return this['rdf:type'].indexOf(type) > -1;
+            var expandedType = ResourceUtils.expandQName(type);
+            return this['rdf:type'].indexOf(expandedType) > -1;
         };
         
         return Resource;

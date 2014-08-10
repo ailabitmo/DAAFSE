@@ -75,6 +75,11 @@
             sub = stomp.subscribe(GENERAL_CONFIG.ALERTS_STREAM, $scope._onAlert);
         });
         
+        $scope.$on('$routeChangeStart', function() {
+            if(modal.$scope.$isShown) {
+                modal.hide();
+            }
+        });
         $scope.$on('$destroy', function () {
             sub.then(function(subscription) {
                 subscription.unsubscribe();

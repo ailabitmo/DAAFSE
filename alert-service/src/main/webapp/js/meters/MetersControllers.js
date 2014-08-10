@@ -144,8 +144,8 @@
             .then(GraphFactory.newFromTriples)
             .then(function(graph) {
                 var points = [];
-                var observation = graph.getByType('em:PolyphaseVoltageObservation')[0];
-                if(!observation) return; //TODO Implement visualisation of the power observations
+                var observation = graph.getByType('em:PolyphaseVoltageObservation')[0] ||
+                        graph.getByType('em:PolyphasePowerObservation')[0];
                 var output = graph.getByURI(observation.get('ssn:observationResult'));
                 output['ssn:hasValue'].forEach(function(valueURI){
                     var value = graph.getByURI(valueURI);
@@ -156,7 +156,11 @@
                     ];
                 });
                 
-//                $scope._addObservation(points);
+                if(observation.is('em:PolyphaseVoltageObservation')) {
+                    $scope._addObservation($scope.vChartConfig, points);
+                } else {
+                    $scope._addObservation($scope.pChartConfig, points);
+                }
             });
         };
         this._loadObservations = function(meter, from, till) {
@@ -200,7 +204,8 @@
                             parseFloat(value.get('em:hasQuantityValue'))
                         ];
                     });
-                    if(observation.is('http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageObservation')) {
+                    
+                    if(observation.is('em:PolyphaseVoltageObservation')) {
                         $scope._addObservation($scope.vChartConfig, points);
                     } else {
                         $scope._addObservation($scope.pChartConfig, points);
