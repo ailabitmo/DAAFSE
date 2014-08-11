@@ -36,6 +36,12 @@
             return deferred.promise;
         };
         
+        Utils.prototype.addPoints = function(chart, points) {
+            points.forEach(function(series, index) {
+                chart.series[index].data = series;
+            });
+        };
+        
         return new Utils();
     });
 })(window.angular, window.N3);

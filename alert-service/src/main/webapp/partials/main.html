@@ -18,7 +18,10 @@
                         №{{alert.get('dul:involvesAgent/em:hasSerialNumber')}}
                     </td>
                     <td>{{alert.get('rdf:type/rdfs:label')}}</td>
-                    <td>{{alert.get('dul:hasEventDate') | date: 'MMM d HH:mm:ss'}}</td>
+                    <td>
+                        {{alert.get('dul:hasEventDate') | date: 'MMM d HH:mm:ss'}} -
+                        {{alert.lastTime | date: 'HH:mm:ss'}}
+                    </td>
                 </tr>
             </tbody>
         </table>

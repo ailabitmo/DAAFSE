@@ -188,8 +188,18 @@
             }
         };
         Resource.prototype.is = function(type) {
-            var expandedType = ResourceUtils.expandQName(type);
-            return this['rdf:type'].indexOf(expandedType) > -1;
+            if(Array.isArray(type)) {
+                var result = -1;
+                type.some(function(element, index) {
+                    var expandedType = ResourceUtils.expandQName(element);
+                    result = index;
+                    return this['rdf:type'].indexOf(expandedType) > -1;
+                }, this);
+                return result;
+            } else {
+                var expandedType = ResourceUtils.expandQName(type);
+                return this['rdf:type'].indexOf(expandedType) > -1;
+            }
         };
         
         return Resource;

@@ -1,6 +1,7 @@
 (function(angular){ 'use strict';
     var module = angular.module('metersApp.alerts', [
-        'metersApp.config', 'metersApp.utils', 'ngRDFResource'
+        'metersApp.config', 'metersApp.utils', 'metersApp.meters.services', 
+        'ngRDFResource'
     ]);
     
     module.controller('AlertConfigureCtrl', function($scope, sparql, $http) {
@@ -31,13 +32,29 @@
     });
     
     module.controller('AlertListCtrl', function(
-            $scope, stomp, GENERAL_CONFIG, $modal, 
-            utils, ResourceFactory, ResourceManager) {
+            $scope, stomp, GENERAL_CONFIG, $modal, $window,
+            utils, ResourceFactory, ResourceManager, metersService) {
         var sub;
         var modal = $modal({
             scope: $scope, placement: 'center', 
             template: 'partials/alert-info.html', show: false
         });
+        $scope.chart = {
+            options: {
+                chart: { type: 'line', zoomType: 'x'},
+                rangeSelector: { enabled: false }
+            },
+            useHighStocks: true,
+            series: [
+                { name: 'Фаза 1', data: [] },
+                { name: 'Фаза 2', data: [] },
+                { name: 'Фаза 3', data: [] }
+            ],
+            legend: { enabled: true },
+            yAxis: { title: { text: 'Напряжение (В)' } },
+            xAxis: { type: 'datetime', minRange: 15*60000 },
+            loading: true
+        };
         $scope.alerts = [];
         $scope._onAlert = function(message) {
             utils.parseTTL(message.body)
@@ -54,7 +71,9 @@
                 });
                 if(index > -1) {
                     //The similar alert has been found
+                    $scope.alerts[index].lastTime = alert.get('dul:hasEventDate');
                 } else {
+                    alert.lastTime = alert.get('dul:hasEventDate');
                     $scope.alerts.push(alert);
                 }
             });
@@ -64,7 +83,25 @@
         };
         $scope.onClick = function(index) {
             $scope.selected = $scope.alerts[index];
-            modal.$promise.then(modal.show);
+            modal.$promise
+                .then(modal.show)
+                .then(function() {
+                    $window.dispatchEvent(new Event('resize'));
+                    $scope.chart.loading = true;
+                    $scope.from = new Date(new Date($scope.selected.get('dul:hasEventDate')).getTime() - 15*60000);
+                    $scope.till = new Date(new Date($scope.selected.lastTime).getTime() + 15*60000);
+                    return metersService.fetchObservations(
+                            $scope.selected.get('dul:involvesAgent'),
+                            $scope.from,
+                            $scope.till,
+                            ['em:PolyphaseVoltageObservation'])
+                    .then(function(points) {
+                        utils.addPoints($scope.chart, points['em:PolyphaseVoltageObservation']);
+                    });
+                })
+                .then(function() {
+                    $scope.chart.loading = false;
+                });
         };
         //Pre-cache alert types
         ResourceManager.findByType('dul:Event', [

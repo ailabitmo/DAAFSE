@@ -1,5 +1,5 @@
 <div class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" ng-click="$hide()">&times;</button>
@@ -9,23 +9,27 @@
                 </h4>
             </div>
             <div class="modal-body">
-                <div>
-                    <dl class="dl-horizontal">
-                        <dt>Счетчик:</dt>
-                        <dd>
-                            <a href="#/meters/{{selected.get('dul:involvesAgent')}}/info">
-                            {{selected.get('dul:involvesAgent/rdf:type/rdfs:label')}}
-                            №{{selected.get('dul:involvesAgent/em:hasSerialNumber')}}
-                            </a>
-                        </dd>
-                        <dt>Местоположение:</dt>
-                        <dd>{{selected.get('dul:involvesAgent/dul:hasLocation/rdfs:label')}}</dd>
-                        <dt>Описание:</dt><dd>{{selected.get('rdf:type/rdfs:comment')}}</dd>
-                    </dl>
+                <dl class="dl-horizontal">
+                    <dt>Счетчик:</dt>
+                    <dd>
+                        <a href="#/meters/{{selected.get('dul:involvesAgent')}}/info">
+                        {{selected.get('dul:involvesAgent/rdf:type/rdfs:label')}}
+                        №{{selected.get('dul:involvesAgent/em:hasSerialNumber')}}
+                        </a>
+                    </dd>
+                    <dt>Местоположение:</dt>
+                    <dd>{{selected.get('dul:involvesAgent/dul:hasLocation/rdfs:label')}}</dd>
+                    <dt>Описание:</dt><dd>{{selected.get('rdf:type/rdfs:comment')}}</dd>
+                </dl>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        {{from | date: 'MMM d HH:mm:ss'}} - 
+                        {{till | date: 'HH:mm:ss'}}
+                    </div>
+                    <div class="panel-body">
+                        <highchart config="chart"></highchart>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
             </div>
         </div>
     </div>
