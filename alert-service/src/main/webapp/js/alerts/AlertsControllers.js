@@ -101,6 +101,7 @@
                 })
                 .then(function() {
                     $scope.chart.loading = false;
+                    $window.dispatchEvent(new Event('resize'));
                 });
         };
         //Pre-cache alert types
