@@ -29,6 +29,7 @@ RUN groupadd -r wildfly -g 433 && useradd -u 431 -r -g wildfly -d /home/wildfly 
 
 # Change the owner of the /opt/wildfly directory
 RUN chown -R wildfly:wildfly /opt/wildfly*
+RUN mkdir /home/wildfly
 RUN chmod 777 -R /home/wildfly
 
 WORKDIR /home/wildfly
