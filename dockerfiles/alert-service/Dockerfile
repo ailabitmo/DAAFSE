@@ -39,7 +39,7 @@ RUN chmod 777 /home/wildfly/deploy.sh
 #################################################
 # Build and deploy the application
 
-RUN git clone https://github.com/ailabitmo/DAAFSE.git
+RUN git clone https://github.com/ailabitmo/DAAFSE.git /home/wildfly/DAAFSE
 
 #
 #################################################

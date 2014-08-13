@@ -1,7 +1,7 @@
 #!/bin/bash
 JBOSS_DEPS=$JBOSS_HOME/standalone/deployments
 
-APP_DIR=/root/DAAFSE/alert-service
+APP_DIR=/home/wildfly/DAAFSE/alert-service
 APP_NAME=alert-service-1.0-SNAPSHOT
 WAR_NAME=$APP_NAME.war
 
