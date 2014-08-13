@@ -2,7 +2,6 @@ package ru.ifmo.ailab.daafse.streampublisher;
 
 import com.hp.hpl.jena.query.DatasetAccessorFactory;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
@@ -62,14 +61,14 @@ public class Store {
     private String modelToQuery(List<Observation> obs) throws IOException {
         String query = "INSERT DATA {\n";
         for (Observation o : obs) {
-//            query += "GRAPH <" + o.getMeterURI() + "> {\n";
+            query += "GRAPH <" + o.getMeterURI() + "> {\n";
             try (StringWriter writer = new StringWriter()) {
                 o.getModel().write(writer, "N3");
                 query += writer.toString();
             } catch (IOException ex) {
                 throw ex;
             }
-//            query += "\n}";
+            query += "\n}";
         }
         query += "\n}";
         return query;

@@ -19,6 +19,7 @@
                 }
                 var query = "DESCRIBE ?observation ?output ?value\n\
                             WHERE {\n";
+                query += "GRAPH <" + meterUri + "> {\n";
                 query += t;
                 query += "?observation ssn:observationResultTime ?time ;\n\
                                     ssn:observationResult ?output ;\n\
@@ -33,7 +34,7 @@
                     }
                     query += ")\n";
                 }
-                query += "} ORDER BY ?time";
+                query += "}} ORDER BY ?time";
 
                 return query;
             },
@@ -54,7 +55,6 @@
         
         Service.prototype.fetchObservations = function(
                 meter, from, till, types) {
-            console.log(from, till);
             var thisArg = this;
             
             var points  = {};
@@ -65,7 +65,7 @@
             var query = this._createQuery(meter, from, till, types);
             return sparql.describe(query, SPARQL_CONFIG.ENDPOINTS.ENDPOINT_2)
             .then(function(graph) {
-                var observations = graph.getByType('ssn:Observation');
+                var observations = graph.getByType(types);
                 if(observations.length > 0) {
                     var TZoffset = new Date(observations[0]
                             .get('ssn:observationResultTime')).getTimezoneOffset();

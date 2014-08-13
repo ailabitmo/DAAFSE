@@ -352,11 +352,15 @@
         };
         
         Graph.prototype.getByType = function(type) {
+            var types = Array.isArray(type)? type: [type];
+            
             var resources = [];
-            var subjects = this._store.find(null, 'rdf:type', type);
-            subjects.forEach(function(subject) {
-                var triples = this._store.find(subject.subject, null, null);
-                resources.push(ResourceFactory.newFromTriples(triples));
+            types.forEach(function(type) {
+                var subjects = this._store.find(null, 'rdf:type', type);
+                subjects.forEach(function(subject) {
+                    var triples = this._store.find(subject.subject, null, null);
+                    resources.push(ResourceFactory.newFromTriples(triples));
+                }, this);
             }, this);
             return resources;
         };
