@@ -33,8 +33,8 @@ RUN chown -R wildfly:wildfly /opt/wildfly*
 WORKDIR /home/wildfly
 
 ADD settings.xml /usr/share/maven/conf/settings.xml
-ADD deploy.sh deploy.sh
-RUN chmod 777 deploy.sh
+ADD deploy.sh /home/wildfly/deploy.sh
+RUN chmod 777 /home/wildfly/deploy.sh
 
 #################################################
 # Build and deploy the application
