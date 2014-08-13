@@ -7,7 +7,7 @@ ENV https_proxy http://proxy.ifmo.ru:3128
 # xmlstarlet is useful when modifying attributes/elements
 # saxon can be used to execute configuration transformation using XSLT
 # augeas is a great tool to edit any configuration files (XML too)
-RUN yum -y install java-1.8.0-openjdk-headless xmlstarlet saxon augeas git maven openssl unzip
+RUN yum -y install java-1.8.0-openjdk-devel xmlstarlet saxon augeas git maven openssl unzip
 
 # Clean the metadata
 RUN yum clean all
