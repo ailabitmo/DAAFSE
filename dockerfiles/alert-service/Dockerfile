@@ -25,10 +25,12 @@ RUN ln -s /opt/wildfly-$WILDFLY_VERSION /opt/wildfly
 ENV JBOSS_HOME /opt/wildfly
 
 # Create the wildfly user and group
-RUN groupadd -r wildfly -g 433 && useradd -u 431 -r -g wildfly -d /opt/wildfly -s /sbin/nologin -c "WildFly user" -p $(openssl passwd -1 wildfly)  wildfly
+RUN groupadd -r wildfly -g 433 && useradd -u 431 -r -g wildfly -d /home/wildfly -s /sbin/nologin -c "WildFly user" -p $(openssl passwd -1 wildfly)  wildfly
 
 # Change the owner of the /opt/wildfly directory
 RUN chown -R wildfly:wildfly /opt/wildfly*
+
+WORKDIR /home/wildfly
 
 ADD settings.xml /usr/share/maven/conf/settings.xml
 ADD deploy.sh deploy.sh
