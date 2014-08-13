@@ -50,7 +50,7 @@ RUN git clone https://github.com/ailabitmo/DAAFSE.git /home/wildfly/DAAFSE
 EXPOSE 8080 9990
 
 # Run everything below as the wildfly user
-USER wildfly
+#USER wildfly
 
 
 
