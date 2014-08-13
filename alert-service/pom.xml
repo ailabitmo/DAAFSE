@@ -90,6 +90,17 @@
         </dependency>
     </dependencies>
     
+    <repositories>
+        <repository>
+            <id>cqels.mvn-repo</id>
+            <url>https://raw.github.com/KMax/cqels/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    
     <profiles>
         <profile>
             <id>arquillian-weld-ee-embedded</id>
