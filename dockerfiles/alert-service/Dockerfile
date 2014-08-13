@@ -31,7 +31,7 @@ RUN groupadd -r wildfly -g 433 && useradd -u 431 -r -g wildfly -d /opt/wildfly -
 RUN chown -R wildfly:wildfly /opt/wildfly*
 
 ADD settings.xml /usr/share/maven/conf/settings.xml
-ADD deploy.sh	/root/deploy.sh
+ADD deploy.sh deploy.sh
 RUN chmod 777 deploy.sh
 
 #################################################
