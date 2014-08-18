@@ -26,6 +26,7 @@ public class Producer implements ShutdownListener {
     }
 
     public void init() {
+        logger.debug("Connecting to {}", serverUri);
         ConnectionFactory factory = new ConnectionFactory();
         try {
             factory.setUri(this.serverUri);

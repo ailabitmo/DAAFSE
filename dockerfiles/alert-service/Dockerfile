@@ -9,6 +9,11 @@ RUN yum -y install java-1.8.0-openjdk-devel xmlstarlet saxon augeas git maven op
 # Clean the metadata
 RUN yum clean all
 
+RUN alternatives --install /usr/bin/java java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java 200000
+RUN alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-1.8.0-openjdk.x86_64/bin/javac 200000
+RUN echo 1 | alternatives --config java
+RUN echo 2 | alternatives --config javac
+
 # Set the WILDFLY_VERSION env variable
 ENV WILDFLY_VERSION 8.1.0.Final
 

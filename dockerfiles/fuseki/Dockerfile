@@ -14,3 +14,5 @@ ADD config.ttl /root/jena-fuseki-1.1.0/config.ttl
 ADD start.sh /root/start.sh
 
 RUN chmod 777 /root/start.sh
+
+CMD /root/start.sh
