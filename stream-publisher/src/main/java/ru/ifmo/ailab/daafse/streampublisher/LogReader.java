@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Level;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -28,9 +29,16 @@ public class LogReader implements Runnable {
 
     @Override
     public void run() {
-        try (BufferedReader reader = Files.newBufferedReader(file)) {
+        BufferedReader reader = null;
+        try {
+            reader = Files.newBufferedReader(file);
             String line;
-            while ((line = reader.readLine()) != null) {
+            while (true) {
+                if((line = reader.readLine()) == null) {
+                    reader = Files.newBufferedReader(file);
+                    line = reader.readLine();
+                }
+                
                 try (JsonReader jr = Json.createReader(new StringReader(line))) {
                     JsonObject obj = jr.readObject();
                     if (obj.containsKey("type")
@@ -58,10 +66,16 @@ public class LogReader implements Runnable {
                 }
                 Thread.sleep(SLEEP);
             }
-        } catch (IOException ex) {
+        } catch (IOException | InterruptedException ex) {
             logger.warn(ex.getMessage(), ex);
-        } catch (InterruptedException ex) {
-            logger.warn(ex.getMessage(), ex);
+        } finally {
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    logger.warn(ex.getMessage(), ex);
+                }
+            }
         }
     }
 
