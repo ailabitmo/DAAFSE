@@ -1,9 +1,6 @@
 # Use latest Fedora image as the base
 FROM fedora
 
-ENV http_proxy http://proxy.ifmo.ru:3128
-ENV https_proxy http://proxy.ifmo.ru:3128
-
 # xmlstarlet is useful when modifying attributes/elements
 # saxon can be used to execute configuration transformation using XSLT
 # augeas is a great tool to edit any configuration files (XML too)
@@ -34,7 +31,6 @@ RUN chmod 777 -R /home/wildfly
 
 WORKDIR /home/wildfly
 
-ADD settings.xml /usr/share/maven/conf/settings.xml
 ADD deploy.sh /home/wildfly/deploy.sh
 RUN chmod 777 /home/wildfly/deploy.sh
 
