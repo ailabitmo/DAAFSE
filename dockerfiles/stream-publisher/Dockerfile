@@ -6,9 +6,6 @@ RUN yum -y upgrade
 RUN yum install -y wget java-1.8.0-openjdk-devel unzip maven git
 RUN yum clean all
 
-RUN rm /usr/share/maven/conf/settings.xml
-ADD settings.xml /usr/share/maven/conf/settings.xml
-
 RUN git clone https://github.com/ailabitmo/DAAFSE.git
 RUN cd DAAFSE/stream-publisher/ && mvn clean install -DskipTests=true
 
