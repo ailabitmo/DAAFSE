@@ -13,7 +13,8 @@ RUN java -version
 RUN javac -version
 
 RUN git clone https://github.com/ailabitmo/DAAFSE.git
-RUN cd DAAFSE/stream-publisher/ && mvn clean install -DskipTests=true
 
 RUN wget https://dl.dropboxusercontent.com/u/1497018/daafse/server.log.zip -O /root/DAAFSE/stream-publisher/server.log.zip
 RUN cd /root/DAAFSE/stream-publisher/ && unzip server.log.zip -d .
+
+#RUN cd DAAFSE/stream-publisher/ && mvn clean install -DskipTests=true
