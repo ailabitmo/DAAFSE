@@ -4,8 +4,9 @@ WORKDIR /root
 
 RUN yum install -y wget java-1.8.0-openjdk-devel unzip maven git
 RUN yum clean all
-RUN alternatives --auto java
-RUN alternatives --auto javac
+
+RUN alternatives --display java
+RUN alternatives --display javac
 
 RUN git clone https://github.com/ailabitmo/DAAFSE.git
 RUN cd DAAFSE/stream-publisher/ && mvn clean install -DskipTests=true
