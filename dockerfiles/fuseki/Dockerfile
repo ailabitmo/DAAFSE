@@ -1,7 +1,5 @@
 FROM ubuntu
 
-ENTRYPOINT ["/bin/bash"]
-
 ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /root
