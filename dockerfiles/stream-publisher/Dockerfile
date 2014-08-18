@@ -2,7 +2,6 @@ FROM fedora
 
 WORKDIR /root
 
-RUN yum -y check-update
 RUN yum install -y wget java-1.8.0-openjdk-devel unzip maven git
 RUN yum clean all
 RUN alternatives --auto java
