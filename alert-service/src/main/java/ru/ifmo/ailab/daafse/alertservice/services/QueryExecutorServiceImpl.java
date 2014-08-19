@@ -36,7 +36,7 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
     static {
         try {
             streamUri = new StreamURI(
-                    "amqp://192.168.134.114?exchangeName=alert_exchange&routingKey=alerts");
+                    "amqp://rabbitmq?exchangeName=alert_exchange&routingKey=alerts");
         } catch (URISyntaxException ex) {
             logger.error(ex.getMessage(), ex);
         }

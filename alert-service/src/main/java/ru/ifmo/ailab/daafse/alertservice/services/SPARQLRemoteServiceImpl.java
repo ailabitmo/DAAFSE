@@ -12,7 +12,7 @@ import ru.ifmo.ailab.daafse.alertservice.SPARQLRemoteService;
 public class SPARQLRemoteServiceImpl implements SPARQLRemoteService {
 
     private static final String SPARQL_ENDPOINT = 
-            "http://192.168.134.114:8890/sparql";
+            "http://machine3-ailab.tk/sparql";
 
     @Override
     public Model construct(String query) {

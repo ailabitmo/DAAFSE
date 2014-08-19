@@ -30,7 +30,7 @@
     
     var generalConfig = angular.module('metersApp.config', []);
     generalConfig.constant('GENERAL_CONFIG', {
-        ALERTS_STREAM: 'amqp://192.168.134.114?exchangeName=alert_exchange&routingKey=alerts'
+        ALERTS_STREAM: 'amqp://rabbitmq?exchangeName=alert_exchange&routingKey=alerts'
     });
     
     var sparqlConfig = angular.module('ngSPARQL.config', []);
@@ -46,8 +46,8 @@
                 'dul': 'http://www.loa-cnr.it/ontologies/DUL.owl#'
             },
             ENDPOINTS: {
-                ENDPOINT_1: "http://192.168.134.114:8890/sparql-cors",
-                ENDPOINT_2: "http://192.168.134.114:3030/ds/query"
+                ENDPOINT_1: "http://machine3-ailab.tk/sparql-cors",
+                ENDPOINT_2: "http://fuseki:3030/ds/query"
             }
         }
     );
