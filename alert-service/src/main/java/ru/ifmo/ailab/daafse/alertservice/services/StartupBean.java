@@ -37,24 +37,25 @@ public class StartupBean {
             Channel channel = streamRs.getOrCreateChannel(
                     new StreamURI(CONFIG.alertsStreamURI()));
             logger.debug("{}", channel.isOpen());
+        
+            ResultSet results = sparqlRs.select("PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>"
+                    + "SELECT ?streamUri {"
+                    + "	GRAPH <http://192.168.134.114/SmartMetersDB/> {"
+                    + "    	?x em:hasStream ?streamUri ."
+                    + "    }"
+                    + "}");
+            while (results.hasNext()) {
+                String uri = results.nextSolution().getResource("streamUri").getURI();
+                try {
+                    streamRs.register(new StreamURI(uri));
+                } catch (URISyntaxException ex) {
+                    logger.warn(ex.getMessage(), ex);
+                }
+            }
+            logger.debug("initialized.");
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
-        ResultSet results = sparqlRs.select("PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>"
-                + "SELECT ?streamUri {"
-                + "	GRAPH <http://192.168.134.114/SmartMetersDB/> {"
-                + "    	?x em:hasStream ?streamUri ."
-                + "    }"
-                + "}");
-        while (results.hasNext()) {
-            String uri = results.nextSolution().getResource("streamUri").getURI();
-            try {
-                streamRs.register(new StreamURI(uri));
-            } catch (URISyntaxException ex) {
-                logger.warn(ex.getMessage(), ex);
-            }
-        }
-        logger.debug("initialized.");
     }
 
     @PreDestroy
