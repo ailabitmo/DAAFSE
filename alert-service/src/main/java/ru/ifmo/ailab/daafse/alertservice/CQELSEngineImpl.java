@@ -1,6 +1,5 @@
 package ru.ifmo.ailab.daafse.alertservice;
 
-import com.hp.hpl.jena.tdb.StoreConnection;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -11,17 +10,20 @@ import java.nio.file.attribute.BasicFileAttributes;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
+import org.aeonbits.owner.ConfigFactory;
 import org.deri.cqels.engine.ExecContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.ifmo.ailab.daafse.alertservice.config.ServiceConfig;
 
 @Singleton
 public class CQELSEngineImpl implements CQELSEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(
             CQELSEngineImpl.class);
-    private static final String CQELS_HOME = "/opt/wildfly/cqels_home";
-    private static final File HOME = new File(CQELS_HOME);
+    private static final ServiceConfig CONFIG = ConfigFactory.create(
+            ServiceConfig.class);
+    private static final File HOME = new File(CONFIG.cqelsHome());
     private static ExecContext context;
 
     @PostConstruct
@@ -31,7 +33,7 @@ public class CQELSEngineImpl implements CQELSEngine {
             HOME.setWritable(true);
             logger.debug("CQELS HOME: " + HOME.getAbsolutePath());
         }
-        context = new ExecContext(CQELS_HOME, true);
+        context = new ExecContext(CONFIG.cqelsHome(), true);
     }
 
     @PreDestroy

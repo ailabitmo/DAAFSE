@@ -14,6 +14,8 @@ RUN alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-1.8.0-openjdk.
 RUN echo 1 | alternatives --config java
 RUN echo 2 | alternatives --config javac
 
+ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
+
 # Set the WILDFLY_VERSION env variable
 ENV WILDFLY_VERSION 8.1.0.Final
 

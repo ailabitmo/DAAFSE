@@ -6,19 +6,21 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import javax.inject.Singleton;
+import org.aeonbits.owner.ConfigFactory;
 import ru.ifmo.ailab.daafse.alertservice.SPARQLRemoteService;
+import ru.ifmo.ailab.daafse.alertservice.config.ServiceConfig;
 
 @Singleton
 public class SPARQLRemoteServiceImpl implements SPARQLRemoteService {
 
-    private static final String SPARQL_ENDPOINT = 
-            "http://machine3-ailab.tk/sparql";
+    private static final ServiceConfig CONFIG = ConfigFactory.create(
+            ServiceConfig.class);
 
     @Override
     public Model construct(String query) {
         Query q = QueryFactory.create(query);
         Model model = QueryExecutionFactory
-                .createServiceRequest(SPARQL_ENDPOINT, q).execConstruct();
+                .createServiceRequest(CONFIG.sparqlEndpointURL(), q).execConstruct();
         return model;
     }
     
@@ -26,7 +28,7 @@ public class SPARQLRemoteServiceImpl implements SPARQLRemoteService {
     public ResultSet select(String query) {
         Query q = QueryFactory.create(query);
         ResultSet result = QueryExecutionFactory
-                .createServiceRequest(SPARQL_ENDPOINT, q).execSelect();
+                .createServiceRequest(CONFIG.sparqlEndpointURL(), q).execSelect();
         return result;
     }
 

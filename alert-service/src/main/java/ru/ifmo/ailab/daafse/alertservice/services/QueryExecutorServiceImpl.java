@@ -1,7 +1,6 @@
 package ru.ifmo.ailab.daafse.alertservice.services;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -10,11 +9,11 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.core.Var;
 import java.io.ByteArrayOutputStream;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.aeonbits.owner.ConfigFactory;
 import org.deri.cqels.data.Mapping;
 import org.deri.cqels.engine.ConstructListener;
 import org.deri.cqels.engine.ContinuousConstruct;
@@ -25,22 +24,16 @@ import ru.ifmo.ailab.daafse.alertservice.CQELSEngine;
 import ru.ifmo.ailab.daafse.alertservice.QueryExecutorService;
 import ru.ifmo.ailab.daafse.alertservice.StreamService;
 import ru.ifmo.ailab.daafse.alertservice.StreamURI;
+import ru.ifmo.ailab.daafse.alertservice.config.ServiceConfig;
 
 @Singleton
 public class QueryExecutorServiceImpl implements QueryExecutorService {
 
     private static final Logger logger = LoggerFactory.getLogger(
             QueryExecutorServiceImpl.class);
-    public static StreamURI streamUri;
-    
-    static {
-        try {
-            streamUri = new StreamURI(
-                    "amqp://rabbitmq?exchangeName=alert_exchange&routingKey=alerts");
-        } catch (URISyntaxException ex) {
-            logger.error(ex.getMessage(), ex);
-        }
-    }
+    private static final ServiceConfig CONFIG = ConfigFactory
+            .create(ServiceConfig.class);
+    private static StreamURI streamUri = new StreamURI(CONFIG.alertsStreamURI());
 
     @Inject
     private CQELSEngine cqelsEngine;
@@ -87,7 +80,7 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
                     Property predicate = ResourceFactory
                             .createProperty(t.getPredicate().getURI());
                     RDFNode object = null;
-                    if(t.getObject().isLiteral()) {
+                    if (t.getObject().isLiteral()) {
                         object = ResourceFactory.createTypedLiteral(
                                 t.getObject().getLiteralValue());
                     } else {

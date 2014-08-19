@@ -8,11 +8,13 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.alertservice.SPARQLRemoteService;
 import ru.ifmo.ailab.daafse.alertservice.StreamService;
 import ru.ifmo.ailab.daafse.alertservice.StreamURI;
+import ru.ifmo.ailab.daafse.alertservice.config.ServiceConfig;
 
 @Startup
 @Singleton
@@ -20,6 +22,8 @@ public class StartupBean {
 
     private static final Logger logger = LoggerFactory.getLogger(
             StartupBean.class);
+    private static final ServiceConfig CONFIG = ConfigFactory.create(
+            ServiceConfig.class);
 
     @Inject
     private SPARQLRemoteService sparqlRs;
@@ -30,8 +34,8 @@ public class StartupBean {
     void init() {
         logger.debug("initializing...");
         try {
-            Channel channel = 
-                    streamRs.getOrCreateChannel(QueryExecutorServiceImpl.streamUri);
+            Channel channel = streamRs.getOrCreateChannel(
+                    new StreamURI(CONFIG.alertsStreamURI()));
             logger.debug("{}", channel.isOpen());
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
