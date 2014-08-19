@@ -6,7 +6,7 @@ import org.aeonbits.owner.Config;
 public interface ServiceConfig extends Config {
     
     @Key("alerts.streamURI")
-    @DefaultValue("amqp://rabbitmq?exchangeName=alert_exchange&routingKey=alerts")
+    @DefaultValue("amqp://lpmanalytics.tk?exchangeName=alert_exchange&routingKey=alerts")
     URI alertsStreamURI();
     
     @Key("sparql.endpointURL")
