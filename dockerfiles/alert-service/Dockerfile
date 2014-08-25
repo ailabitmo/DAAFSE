@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /root
 
 RUN apt-get update
-RUN apt-get install -y wget binutils java-common unzip
+RUN apt-get install -y wget binutils java-common unzip curl
 
 RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
 RUN wget https://db.tt/dFU3BqFP -O /root/oracle-java8-installer_8u5-1~webupd8~3_all.deb
