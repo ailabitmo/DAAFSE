@@ -14,7 +14,7 @@ RUN dpkg -i oracle-java8-installer_8u5-1~webupd8~3_all.deb
 RUN apt-get update
 RUN apt-get install -y maven git
 
-ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle/jre
 
 # Set the WILDFLY_VERSION env variable
 ENV WILDFLY_VERSION 8.1.0.Final
@@ -41,3 +41,5 @@ RUN git clone https://github.com/ailabitmo/DAAFSE.git /root/DAAFSE
 
 # Expose the ports we're interested in
 EXPOSE 8080 9990
+
+CMD ./deploy.sh redeploy && ./deploy.sh run
