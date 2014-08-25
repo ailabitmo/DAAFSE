@@ -1,18 +1,18 @@
-# Use latest Fedora image as the base
-FROM fedora
+FROM ubuntu
 
-# xmlstarlet is useful when modifying attributes/elements
-# saxon can be used to execute configuration transformation using XSLT
-# augeas is a great tool to edit any configuration files (XML too)
-RUN yum -y install java-1.8.0-openjdk-devel xmlstarlet saxon augeas git maven openssl unzip
+ENV DEBIAN_FRONTEND noninteractive
 
-# Clean the metadata
-RUN yum clean all
+WORKDIR /root
 
-RUN alternatives --install /usr/bin/java java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java 200000
-RUN alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-1.8.0-openjdk.x86_64/bin/javac 200000
-RUN echo 1 | alternatives --config java
-RUN echo 2 | alternatives --config javac
+RUN apt-get update
+RUN apt-get install -y wget binutils java-common unzip
+
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+RUN wget https://db.tt/dFU3BqFP -O /root/oracle-java8-installer_8u5-1~webupd8~3_all.deb
+RUN dpkg -i oracle-java8-installer_8u5-1~webupd8~3_all.deb
+
+RUN apt-get update
+RUN apt-get install -y maven git
 
 ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 
@@ -23,37 +23,21 @@ ENV WILDFLY_VERSION 8.1.0.Final
 RUN cd /opt && curl http://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz | tar zx
 
 # Make sure the distribution is available from a well-known place
-RUN ln -s /opt/wildfly-$WILDFLY_VERSION /opt/wildfly
+RUN mv /opt/wildfly-$WILDFLY_VERSION /opt/wildfly
 
 # Set the JBOSS_HOME env variable
 ENV JBOSS_HOME /opt/wildfly
 
-# Create the wildfly user and group
-RUN groupadd -r wildfly -g 433 && useradd -u 431 -r -g wildfly -d /home/wildfly -s /sbin/nologin -c "WildFly user" -p $(openssl passwd -1 wildfly)  wildfly
-
-# Change the owner of the /opt/wildfly directory
-RUN chown -R wildfly:wildfly /opt/wildfly*
-RUN mkdir /home/wildfly
-RUN chmod 777 -R /home/wildfly
-
-WORKDIR /home/wildfly
-
-ADD deploy.sh /home/wildfly/deploy.sh
-RUN chmod 777 /home/wildfly/deploy.sh
+ADD deploy.sh /root/deploy.sh
+RUN chmod 777 /root/deploy.sh
 
 #################################################
 # Build and deploy the application
 
-RUN git clone https://github.com/ailabitmo/DAAFSE.git /home/wildfly/DAAFSE
+RUN git clone https://github.com/ailabitmo/DAAFSE.git /root/DAAFSE
 
 #
 #################################################
 
 # Expose the ports we're interested in
 EXPOSE 8080 9990
-
-# Run everything below as the wildfly user
-#USER wildfly
-
-
-
