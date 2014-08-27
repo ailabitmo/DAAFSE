@@ -10,7 +10,7 @@ CONSTRUCT {
         dul:hasEventDate ?time ;
         dul:involvesAgent ?meter .
 }
-FROM NAMED <http://192.168.134.114:8890/sparql-graph-crud>
+FROM NAMED <http://machine3-ailab.tk/sparql-graph-crud>
 WHERE {
   GRAPH <http://192.168.134.114/SmartMetersDB/> {
     ?meter em:hasStream ?stream .
@@ -41,7 +41,7 @@ CONSTRUCT {
         dul:hasEventDate ?time ;
         dul:involvesAgent ?meter .
 }
-FROM NAMED <http://192.168.134.114:8890/sparql-graph-crud>
+FROM NAMED <http://machine3-ailab.tk/sparql-graph-crud>
 WHERE {
   GRAPH <http://192.168.134.114/SmartMetersDB/> {
     ?meter em:hasStream ?stream .
