@@ -59,7 +59,9 @@ public class Store {
     }
 
     private String modelToQuery(List<Observation> obs) throws IOException {
-        String query = "INSERT DATA {\n";
+        String prefixes = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+                + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>";
+        String query = prefixes + "\nINSERT DATA {\n";
         for (Observation o : obs) {
             query += "GRAPH <" + o.getMeterURI() + "> {\n";
             try (StringWriter writer = new StringWriter()) {

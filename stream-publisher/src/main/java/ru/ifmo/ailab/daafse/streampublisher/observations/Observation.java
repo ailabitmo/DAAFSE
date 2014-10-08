@@ -24,6 +24,10 @@ public abstract class Observation {
         this.uriPrefix = uriPrefix;
     }
     
+    public long getTimestamp() {
+        return timestamp;
+    }
+    
     public Model getModel() {
         return model;
     }
@@ -40,7 +44,7 @@ public abstract class Observation {
         return METERS + meterId;
     }
     
-    protected String createObservationURI() {
+    public String createObservationURI() {
         return OBSERVATIONS + uriPrefix + meterId + "-" + timestamp;
     }
     

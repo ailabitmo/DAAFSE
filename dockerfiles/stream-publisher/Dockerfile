@@ -14,9 +14,9 @@ ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 
 RUN git clone https://github.com/ailabitmo/DAAFSE.git
 
-RUN wget https://dl.dropboxusercontent.com/u/1497018/daafse/server.log.zip -O /root/DAAFSE/stream-publisher/server.log.zip
-RUN cd /root/DAAFSE/stream-publisher/ && unzip server.log.zip -d .
+RUN wget https://dl.dropboxusercontent.com/u/1497018/daafse/stream.json.zip -O /root/DAAFSE/stream-publisher/stream.json.zip
+RUN cd /root/DAAFSE/stream-publisher/ && unzip stream.json.zip -d .
 
 RUN cd DAAFSE/stream-publisher/ && mvn clean install -DskipTests=true
 
-CMD cd DAAFSE/stream-publisher/ && java -jar target/stream-publisher-1.0-SNAPSHOT-jar-with-dependencies.jar server.log "TTL"
+CMD cd DAAFSE/stream-publisher/ && java -jar target/stream-publisher-1.0-SNAPSHOT-jar-with-dependencies.jar stream.json "TTL"

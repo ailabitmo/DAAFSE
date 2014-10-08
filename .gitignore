@@ -4,6 +4,7 @@ stream-publisher/target/
 nb-configuration.xml
 nbactions.xml
 server.log
+stream.json
 
 
 *.class

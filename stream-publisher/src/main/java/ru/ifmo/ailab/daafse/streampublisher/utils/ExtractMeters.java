@@ -61,7 +61,7 @@ public class ExtractMeters {
                 r.addProperty(DAAFSE.hasStream, meter.stream);
             });
             
-            try(FileWriter writer = new FileWriter(new File("meters.ttl"))){
+            try(FileWriter writer = new FileWriter(new File("meters.ttl"))) {
                 model.write(writer, "TTL");
             } catch (IOException ex) {
                 logger.warn(ex.getMessage(), ex);
