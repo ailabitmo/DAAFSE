@@ -36,7 +36,7 @@
                     deferred.resolve(client);
                 }
                 return deferred.promise;
-            }   
+            }
         };
         
         StreamClient.prototype.subscribe = function(streamUri, callback) {
