@@ -6,11 +6,11 @@ import org.aeonbits.owner.Config;
 public interface ServiceConfig extends Config {
     
     @Key("alerts.streamURI")
-    @DefaultValue("amqp://lpmanalytics.tk?exchangeName=alert_exchange&routingKey=alerts")
+    @DefaultValue("amqp://lpmstreams.tk?exchangeName=alert_exchange&routingKey=alerts")
     URI alertsStreamURI();
     
     @Key("sparql.endpointURL")
-    @DefaultValue("http://machine3-ailab.tk/sparql")
+    @DefaultValue("http://lpmanalytics.tk/sparql")
     String sparqlEndpointURL();
     
     @Key("cqels.home")

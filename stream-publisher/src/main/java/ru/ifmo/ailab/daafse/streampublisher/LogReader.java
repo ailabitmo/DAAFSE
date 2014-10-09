@@ -44,12 +44,13 @@ public class LogReader implements Runnable {
 
                     final String type = obj.getString("type");
                     final int serialNumber = obj.getInt("SerialNumber__");
-                    final long time = toTimestamp(
+                    final long historicalTime = toTimestamp(
                             obj.getString(DAY), obj.getInt(HOUR),
                             obj.getInt(MINUTE), obj.getInt(SECONDS));
+                    final long currentTime = System.currentTimeMillis();
                     
                     VoltageObservation o = new VoltageObservation(
-                            type, serialNumber, time,
+                            type, serialNumber, currentTime,
                             new double[]{
                                 obj.getJsonNumber("Now_Voltage_Phase_1_value").doubleValue(),
                                 obj.getJsonNumber("Now_Voltage_Phase_2_value").doubleValue(),
@@ -57,17 +58,17 @@ public class LogReader implements Runnable {
                             }
                     );
                     PowerObservation po = new PowerObservation(
-                            type, serialNumber, time, new double[]{
+                            type, serialNumber, currentTime, new double[]{
                                 obj.getJsonNumber("Now_Power_P_Phase_1_value").doubleValue(),
                                 obj.getJsonNumber("Now_Power_P_Phase_2_value").doubleValue(),
                                 obj.getJsonNumber("Now_Power_P_Phase_3_value").doubleValue()
                             });
                     
-                    if(previous != 0 && (time - previous > 100)) {
-                        Thread.sleep(time - previous);
+                    if(previous != 0 && (historicalTime - previous > 100)) {
+                        Thread.sleep(historicalTime - previous);
                     }
                     
-                    previous = time;
+                    previous = historicalTime;
                     
                     listener.newObservation(o);
                     listener.newObservation(po);
