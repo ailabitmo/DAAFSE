@@ -31,6 +31,8 @@ ENV JBOSS_HOME /opt/wildfly
 ADD deploy.sh /root/deploy.sh
 RUN chmod 777 /root/deploy.sh
 
+ADD settings.xml /usr/share/maven/conf/settings.xml
+
 #################################################
 # Build and deploy the application
 
