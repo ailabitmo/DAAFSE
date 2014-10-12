@@ -2,7 +2,12 @@ package ru.ifmo.ailab.daafse.streampublisher.config;
 
 import java.net.URI;
 import org.aeonbits.owner.Config;
+import org.aeonbits.owner.Config.Sources;
 
+@Sources({
+    "file:${DAAFSE_SP_HOME}/config.properties",
+    "classpath:ru/ifmo/ailab/daafse/streampublisher/config/config.properties"
+})
 public interface PublisherConfig extends Config {
     
     public static final String VIRTUOSO = "virtuoso";

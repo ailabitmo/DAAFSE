@@ -2,6 +2,8 @@ FROM fedora
 
 WORKDIR /root
 
+ENV DAAFSE_SP_HOME /root/DAAFSE/stream-publisher
+
 RUN yum install -y wget java-1.8.0-openjdk-devel unzip maven git
 RUN yum clean all
 
