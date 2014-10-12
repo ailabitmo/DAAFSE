@@ -5,6 +5,8 @@ import org.aeonbits.owner.Config;
 
 public interface PublisherConfig extends Config {
     
+    public static final String VIRTUOSO = "virtuoso";
+    
     @Key("amqp.exchangeName")
     @DefaultValue("meter_exchange")
     String exchangeName();
@@ -17,6 +19,9 @@ public interface PublisherConfig extends Config {
     @DefaultValue("amqp://localhost")
     URI serverURI();
     
+    @Key("sparql.vendor")
+    String sparqlVendor();
+    
     @Key("sparql.update")
     String sparqlUpdate();
     
@@ -26,6 +31,14 @@ public interface PublisherConfig extends Config {
     @Key("sparql.update.enabled")
     @DefaultValue("true")
     boolean sparqlUpdateEnabled();
+    
+    @Key("sparql.update.username")
+    @DefaultValue("")
+    String sparqlUpdateUsername();
+    
+    @Key("sparql.update.password")
+    @DefaultValue("")
+    String sparqlUpdatePassword();
     
     @Key("sparql.update.maxBatchSize")
     @DefaultValue("5")

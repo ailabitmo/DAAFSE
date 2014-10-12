@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import org.aeonbits.owner.ConfigFactory;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.streampublisher.config.PublisherConfig;
@@ -25,31 +27,45 @@ public class Store {
     private final String endpoint;
     private final List<Observation> cache = new ArrayList<>(
             CONFIG.sparqlMaxBatchSize());
+    private final HttpAuthenticator authenticator;
     private int batchSize = 0;
 
     public Store(final String endpoint) {
         this.endpoint = endpoint;
+        this.authenticator = new SimpleAuthenticator(
+                CONFIG.sparqlUpdateUsername(),
+                CONFIG.sparqlUpdatePassword().toCharArray());
     }
 
     public void clearAll() {
-        UpdateRequest request = UpdateFactory.create("CLEAR ALL");
-        UpdateExecutionFactory.createRemote(request, endpoint).execute();
+        UpdateRequest request = null;
+        if (CONFIG.sparqlVendor().equalsIgnoreCase(PublisherConfig.VIRTUOSO)) {
+            request = UpdateFactory.create(
+                    "DELETE{GRAPH ?g {?x ?y ?z}}WHERE{GRAPH ?g {?x ?y ?z}"
+                    + "FILTER(strStarts(str(?g), \"" + Observation.METERS + "\"))}");
+        } else {
+            request = UpdateFactory.create("CLEAR ALL");
+        }
+        UpdateExecutionFactory.createRemote(
+                request, endpoint, authenticator).execute();
     }
-    
+
     public void uploadFile(Path path) {
         Model m = FileManager.get().loadModel(path.toString());
-        DatasetAccessorFactory.createHTTP(CONFIG.sparqlUpload()).add(m);
+        DatasetAccessorFactory.createHTTP(
+                CONFIG.sparqlUpload(), authenticator).add(m);
     }
 
     public void save(Observation o) {
         cache.add(o);
         batchSize++;
-        
+
         if (batchSize >= CONFIG.sparqlMaxBatchSize()) {
             try {
                 logger.debug("Flushing the cache...");
                 UpdateRequest request = UpdateFactory.create(modelToQuery(cache));
-                UpdateExecutionFactory.createRemote(request, endpoint).execute();
+                UpdateExecutionFactory.createRemote(
+                        request, endpoint, authenticator).execute();
                 batchSize = 0;
                 cache.clear();
             } catch (IOException ex) {
