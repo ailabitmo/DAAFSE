@@ -47,7 +47,7 @@
             },
             ENDPOINTS: {
                 ENDPOINT_1: "http://lpmanalytics.tk/sparql-cors",
-                ENDPOINT_2: "http://lpmanalytics.tk:3030/ds/query"
+                ENDPOINT_2: "http://lpmanalytics.tk:3030/sparql-cors"
             }
         }
     );
