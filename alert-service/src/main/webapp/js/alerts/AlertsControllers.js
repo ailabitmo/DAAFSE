@@ -97,15 +97,17 @@
                 .then(function() {
                     $window.dispatchEvent(new Event('resize'));
                     $scope.chart.loading = true;
-                    $scope.from = new Date(new Date($scope.selected.get('dul:hasEventDate')).getTime() - 15*60000);
-                    $scope.till = new Date(new Date($scope.selected.lastTime).getTime() + 15*60000);
-                    return metersService.fetchObservations(
+                    $scope.from = new Date(new Date(
+                            $scope.selected.get('dul:hasEventDate')).getTime() - 10*60000);
+                    $scope.till = new Date(new Date(
+                            $scope.selected.lastTime).getTime() + 10*60000);
+                    return metersService.fetchObservation(
                             $scope.selected.get('dul:involvesAgent'),
+                            $scope.selected.get('rdf:type/dul:includesEvent'),
                             $scope.from,
-                            $scope.till,
-                            ['em:PolyphaseVoltageObservation'])
+                            $scope.till)
                     .then(function(points) {
-                        utils.addPoints($scope.chart, points['em:PolyphaseVoltageObservation']);
+                        utils.addPoints($scope.chart, points);
                     });
                 })
                 .then(function() {
@@ -115,7 +117,7 @@
         };
         //Pre-cache alert types
         ResourceManager.findByType('dul:Event', [
-            'rdfs:label', 'rdfs:comment', 'dul:isClassifiedBy'
+            'rdfs:label', 'rdfs:comment', 'dul:isClassifiedBy', 'dul:includesEvent'
         ]).then(function() {
             return ResourceManager.findByType('dul:EventType', ['rdfs:label']);
         }).then(function() {
