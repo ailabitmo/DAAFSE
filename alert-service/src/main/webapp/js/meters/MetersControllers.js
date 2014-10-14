@@ -5,13 +5,21 @@
     ]);
     
     module.controller('MeterListCtrl', function($scope, ResourceManager) {
-        $scope.meters = [];
+        $scope.substations = {};
+        $scope.activePanel = -1;
 
         ResourceManager.findByType('em:Mercury230', [
-            'em:hasSerialNumber', 'dul:hasLocation/rdfs:label','rdf:type/rdfs:label'
+            'em:hasSerialNumber', 'dul:hasLocation/rdfs:label', 
+            'rdf:type/rdfs:label', 'ssn:hasDeployment/rdfs:label'
         ])
         .then(function(meters) {
-            $scope.meters = meters;
+            meters.forEach(function(meter) {
+                var substation = meter.get('ssn:hasDeployment/rdfs:label');
+                if(!$scope.substations[substation]) {
+                    $scope.substations[substation] = [];
+                }
+                $scope.substations[substation].push(meter);
+            });
         });
     });
     

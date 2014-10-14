@@ -20,25 +20,33 @@
                     <td>{{alert.get('rdf:type/rdfs:label')}}</td>
                     <td>
                         {{alert.get('dul:hasEventDate') | date: 'MMM d HH:mm:ss'}} -
-                        {{alert.lastTime | date: 'HH:mm:ss'}}
+                        {{alert.lastTime| date: 'HH:mm:ss'}}
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
     <div class="col-md-3" ng-controller="MeterListCtrl">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="glyphicon glyphicon-list"></span> List of meters (total: {{meters.length}})
-            </div>
-            <div class="list-group meter-list">
-                <a href="#/meters/{{meter.uri}}/info" class="list-group-item"
-                   ng-repeat="meter in meters"
-                   ng-click="setSelected(meter.uri)"
-                   ng-class="{'active': isSelected(meter.uri)}">
-                    {{meter.get('dul:hasLocation/rdfs:label')}} -
-                    <small>{{meter.get('rdf:type/rdfs:label')}} №{{meter.get('em:hasSerialNumber')}}</small>
-                </a>
+        <div class="panel-group substation-list" ng-model="activePanel" bs-collapse>
+            <div class="panel panel-default" ng-repeat="(substation, meters) in substations">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a bs-collapse-toggle><span class="glyphicon glyphicon-list-alt"></span> {{substation}}</a>
+                    </h4>
+                </div>
+                <div class="panel-collapse" bs-collapse-target>
+                    <div class="panel-body">
+                        <div class="list-group meter-list">
+                            <a href="#/meters/{{meter.uri}}/info" class="list-group-item"
+                               ng-repeat="meter in meters"
+                               ng-click="setSelected(meter.uri)"
+                               ng-class="{'active': isSelected(meter.uri)}">
+                                {{meter.get('dul:hasLocation/rdfs:label')}} -
+                                <small>{{meter.get('rdf:type/rdfs:label')}} №{{meter.get('em:hasSerialNumber')}}</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,11 @@
 .meter-list p {
     word-wrap: break-word;
 }
+
+.substation-list .panel-title a {
+    cursor: pointer;
+}
+
 .meter-alert {
     display: inline-block;
     margin: 5px;
