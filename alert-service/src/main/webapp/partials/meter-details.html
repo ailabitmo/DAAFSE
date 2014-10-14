@@ -12,14 +12,23 @@
     <div class="panel panel-default" ng-controller="MeterChartCtrl">
         <form name="datepickerForm" class="panel-heading form-inline" role="form">
             <div class="form-group">
+                <span class="glyphicon glyphicon-calendar"></span>
                 <input class="form-control" ng-model="fromDate" 
                        data-mix-date="{{fromDate}}" placeholder="From" 
                        bs-datepicker type="text"/>
             </div>
             <div class="form-group">
-                <input class="form-control" ng-model="untilDate"
-                       data-mix-date="{{untilDate}}" placeholder="Now"
-                       bs-datepicker type="text"/>
+                <span class="glyphicon glyphicon-time"></span>
+                <input class="form-control" ng-model="fromTime"
+                        data-time-format="HH:mm"
+                       data-time-type="number" bs-timepicker type="text"/>
+            </div>
+            -
+            <div class="form-group">
+                <input class="form-control" ng-model="untilTime"
+                        data-time-format="HH:mm"
+                       data-time-type="number" bs-timepicker type="text"
+                       placeholder="Now"/>
             </div>
             <div class="form-group">
                 <button class="btn btn-default" ng-click="changedDateRange()">Выбрать</button>

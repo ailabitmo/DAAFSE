@@ -23,8 +23,8 @@
             $scope.meter = meters[0];
         });
     });
-    module.controller('MeterChartCtrl', function($scope, $routeParams, 
-        ResourceManager, GraphFactory, utils, stomp, metersService) {
+    module.controller('MeterChartCtrl', function($scope, $routeParams, $q, 
+        ResourceManager, GraphFactory, utils, stomp, metersService, sparql) {
         var thisArg = this;
         var sub;
         $scope.vChartConfig = {
@@ -97,17 +97,34 @@
             xAxis: { type: 'datetime', minRange: 15*60000 },
             loading: true
         };
+        $scope.typeToChart = {
+            "http://purl.org/NET/ssnext/electricmeters#PolyphasePowerObservation" : $scope.pChartConfig,
+            "http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageObservation" : $scope.vChartConfig
+        };
         $scope.fromDate = new Date();
-        $scope.untilDate = null;
+        $scope.fromTime = $scope.fromDate.getTime() - 3600000; //minus an hour
+        $scope.untilTime = null;
+        $scope.types = [];
         
         ResourceManager.findByURI($routeParams.meterUri, ['em:hasStream'])
         .then(function(meters) {
             return $scope.meter = meters[0];
         })
         .then(function(meter) {
-            return thisArg._loadObservations(meter, 
-                            toZeroTimeDate($scope.fromDate), 
-                            toZeroTimeDate($scope.untilDate));
+            return sparql.select(
+                "SELECT ?type {<" + meter.uri + "> ssn:observes ?prop .?type ssn:observedProperty ?prop .}");
+        })
+        .then(function(typesUris) {
+            var promises = [];
+            typesUris.forEach(function(type) {
+                $scope.types.push(type.type);
+                var promise = thisArg._loadObservationToChart(
+                        $scope.typeToChart[type.type], $scope.meter, type.type, 
+                        toZeroTimeDate($scope.fromDate, $scope.fromTime),
+                        toZeroTimeDate($scope.fromDate, $scope.untilTime));
+                promises.push(promise);
+            });
+            return $q.all(promises);
         })
         .then(function() {
             sub = stomp.subscribe($scope.meter.get('em:hasStream'), 
@@ -127,10 +144,22 @@
             chart.series[1].data = [];
             chart.series[2].data = [];
         };
-        $scope.changedDateRange = function() {                        
-            thisArg._loadObservations($scope.meter, 
-                        toZeroTimeDate($scope.fromDate),
-                        toZeroTimeDate($scope.untilDate));
+        $scope.changedDateRange = function() {
+            var promises = [];
+            $scope.types.forEach(function(typeUri){
+                var promise = thisArg._loadObservationToChart(
+                        $scope.typeToChart[typeUri], $scope.meter, typeUri, 
+                        toZeroTimeDate($scope.fromDate, $scope.fromTime),
+                        toZeroTimeDate($scope.fromDate, $scope.untilTime));
+                promises.push(promise);
+            });
+            var promise = $q.all(promises);
+            if(!$scope.untilTime) {
+                promise.then(function() {
+                    sub = stomp.subscribe($scope.meter.get('em:hasStream'), 
+                        thisArg._onMessage);
+                });
+            }
         };
         $scope.$on('$destroy', function() {
             if(sub) {
@@ -187,12 +216,30 @@
                     $scope.pChartConfig.loading = false;
                 });
         };
+        this._loadObservationToChart = function(chart, meter, typeUri, from, till) {
+            $scope._removeObservations(chart);
+            chart.loading = true;
+            
+            return metersService.fetchObservation(meter.uri, typeUri, from, till)
+            .then(function(points) {
+                utils.addPoints(chart, points);
+            })
+            .then(function() {
+                chart.loading = false;
+            });
+        };
     });
     
-    function toZeroTimeDate(date) {
-        return date ? 
-                new Date(date.getFullYear(), date.getMonth(), date.getDate())
-                : null;
+    function toZeroTimeDate(date, time) {
+        if(date) {
+            var t = new Date(time);
+            return time ?
+                new Date(
+                    date.getFullYear(), date.getMonth(), date.getDate(),
+                    t.getHours(), t.getMinutes(), 0, 0) : null;
+        } else {
+            return null;
+        }
     };
     
 })(window.angular);

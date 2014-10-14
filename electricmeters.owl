@@ -119,13 +119,37 @@
             rdfs:label "Mercury 230"@en ,
                        "Меркурий 230"@ru ;
             
-            rdfs:subClassOf :ElectricMeter ,
-                            [ rdf:type owl:Restriction ;
-                              owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observes> ;
-                              owl:someValuesFrom :VoltageProperty
-                            ] ;
+            rdfs:subClassOf :PolyphaseElectricMeter ;
             
             rdfs:seeAlso "http://77cs.ru/mercury-230"^^xsd:anyURI .
+
+
+
+###  http://purl.org/NET/ssnext/electricmeters#PolyphaseElectricMeter
+
+:PolyphaseElectricMeter rdf:type owl:Class ;
+                        
+                        rdfs:label "Polyphase Electric Meter"@en ;
+                        
+                        rdfs:subClassOf :ElectricMeter ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observes> ;
+                                          owl:someValuesFrom :PolyphaseElectricPowerProperty
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observes> ;
+                                          owl:someValuesFrom :PolyphaseVoltageProperty
+                                        ] .
+
+
+
+###  http://purl.org/NET/ssnext/electricmeters#PolyphaseElectricPowerProperty
+
+:PolyphaseElectricPowerProperty rdf:type owl:Class ;
+                                
+                                rdfs:label "Polyphase Electric Power"@en ;
+                                
+                                rdfs:subClassOf :PowerProperty .
 
 
 
@@ -137,6 +161,10 @@
                                            [ rdf:type owl:Restriction ;
                                              owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
                                              owl:allValuesFrom :PolyphasePowerSensorOutput
+                                           ] ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
+                                             owl:allValuesFrom :PolyphaseElectricPowerProperty
                                            ] .
 
 
@@ -167,9 +195,23 @@
                              
                              rdfs:subClassOf :VoltageObservation ,
                                              [ rdf:type owl:Restriction ;
+                                               owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
+                                               owl:allValuesFrom :PolyphaseVoltageProperty
+                                             ] ,
+                                             [ rdf:type owl:Restriction ;
                                                owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
                                                owl:allValuesFrom :PolyphaseVoltageSensorOutput
                                              ] .
+
+
+
+###  http://purl.org/NET/ssnext/electricmeters#PolyphaseVoltageProperty
+
+:PolyphaseVoltageProperty rdf:type owl:Class ;
+                          
+                          rdfs:label "Polyphase Voltage"@en ;
+                          
+                          rdfs:subClassOf :VoltageProperty .
 
 
 
@@ -205,6 +247,10 @@
                                   [ rdf:type owl:Restriction ;
                                     owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
                                     owl:allValuesFrom :PowerSensorOutput
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
+                                    owl:allValuesFrom :PowerProperty
                                   ] .
 
 
@@ -258,6 +304,10 @@
                                     [ rdf:type owl:Restriction ;
                                       owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
                                       owl:allValuesFrom :VoltageSensorOutput
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
+                                      owl:allValuesFrom :VoltageProperty
                                     ] .
 
 
@@ -302,6 +352,24 @@
 #    Individuals
 #
 #################################################################
+
+
+###  http://purl.org/NET/ssnext/electricmeters#ThreePhaseElectricPower
+
+:ThreePhaseElectricPower rdf:type :PolyphaseElectricPowerProperty ,
+                                  owl:NamedIndividual ;
+                         
+                         rdfs:label "Three-phase Electric Power"@en .
+
+
+
+###  http://purl.org/NET/ssnext/electricmeters#ThreePhaseVoltage
+
+:ThreePhaseVoltage rdf:type :PolyphaseVoltageProperty ,
+                            owl:NamedIndividual ;
+                   
+                   rdfs:label "Three-phase Voltage"@en .
+
 
 
 ###  http://purl.org/NET/ssnext/electricmeters#Volt

@@ -38,6 +38,27 @@
 
                 return query;
             },
+            _createSelectQuery: function(meterUri, typeUri, from, till) {
+                var query = "SELECT ?time ?phase ?value WHERE {\n\
+                    GRAPH <" + meterUri + "> {\n\
+                        ?observation a <" + typeUri + "> ;\n\
+                                     ssn:observationResultTime ?time ;\n\
+                                     ssn:observationResult ?output .\n\
+                        ?output ssn:hasValue ?v .\n\
+                        ?v  em:hasPhaseNumber ?phase ;\n\
+                            em:hasQuantityValue ?value .\n";
+                if(from) {
+                    query += "FILTER(?time >= '" + from.toISOString() 
+                            + "'^^xsd:dateTime";
+                    if(till) {
+                        query += "&& ?time <= '" + till.toISOString() 
+                                + "'^^xsd:dateTime";
+                    }
+                    query += ")\n";
+                }
+                query+="}} ORDER BY ?time";
+                return query;
+            },
             _sortObservations: function(array) {
                 array.sort(function(a, b) {
                     var ta = a.get('ssn:observationResult');
@@ -96,6 +117,29 @@
                         points[types[index]][i] = points[types[index]][i].concat([v]);
                     });
                 }, thisArg);
+                
+                return points;
+            });
+        };
+        
+        Service.prototype.fetchObservation = function(meterUri, typeUri, from, till) {
+            var points = [[], [], []];
+            
+            var query = this._createSelectQuery(meterUri, typeUri, from, till);
+            return sparql.select(query, SPARQL_CONFIG.ENDPOINTS.ENDPOINT_2)
+            .then(function(observations) {
+                if(observations.length > 0) {
+                    var TZoffset = new Date(observations[0]["time"]).getTimezoneOffset();
+                    Highcharts.setOptions({global:{timezoneOffset: TZoffset}});
+                }
+                
+                observations.forEach(function(observation) {
+                    var phase = parseInt(observation['phase']);
+                    points[phase - 1].push([
+                        new Date(observation['time']).getTime(),
+                        parseFloat(observation['value'])
+                    ]);
+                });
                 
                 return points;
             });
