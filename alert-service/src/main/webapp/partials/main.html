@@ -3,10 +3,10 @@
         <table class="table table-condensed table-hover">
             <thead>
                 <tr>
-                    <th>Местоположение</th>
-                    <th>Наименование и серийный номер</th>
-                    <th>Уведомление</th>
-                    <th>Время</th>
+                    <th><span class="glyphicon glyphicon-map-marker"></span> Location code</th>
+                    <th><span class="glyphicon glyphicon-tasks"></span> Meter (model and serial number)</th>
+                    <th><span class="glyphicon glyphicon-info-sign"></span> Alert name</th>
+                    <th><span class="glyphicon glyphicon-time"></span> Time</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +28,9 @@
     </div>
     <div class="col-md-3" ng-controller="MeterListCtrl">
         <div class="panel panel-default">
-            <div class="panel-heading">Всего: {{meters.length}}</div>
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-list"></span> List of meters (total: {{meters.length}})
+            </div>
             <div class="list-group meter-list">
                 <a href="#/meters/{{meter.uri}}/info" class="list-group-item"
                    ng-repeat="meter in meters"
