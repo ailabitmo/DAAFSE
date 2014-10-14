@@ -37,6 +37,7 @@ public class LogReader implements Runnable {
                 if ((line = reader.readLine()) == null) {
                     reader = Files.newBufferedReader(file);
                     line = reader.readLine();
+                    logger.debug("Reloaded the source file.");
                 }
 
                 try (JsonReader jr = Json.createReader(new StringReader(line))) {
