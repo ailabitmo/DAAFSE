@@ -23,7 +23,16 @@
         $scope.register = function(isValid) {
             if(isValid) {
                 $scope.selected = null;
-                sparql.register($scope.name, $scope.query);
+                sparql.register($scope.name, $scope.query)
+                .then(function() {
+                    alert('Query sucessfully registered!');
+                }, function() {
+                    alert('Registration of query failed! Take a look at the logs.');
+                }).then(function() {
+                    return $http.get('rest/query').success(function(data) {
+                        $scope.queries = data;
+                    });
+                });
             }
         };
         $http.get('rest/query').success(function(data){
