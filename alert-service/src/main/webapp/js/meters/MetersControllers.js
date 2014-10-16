@@ -66,7 +66,7 @@
                 { name: 'Фаза 3', data: [] }
             ],
             legend: { enabled: true },
-            yAxis: { title: { text: 'Напряжение (В)' } },
+            yAxis: { title: { text: 'Voltage (V)' } },
             xAxis: { type: 'datetime', minRange: 15*60000 },
             loading: true
         };
@@ -101,7 +101,7 @@
                 { name: 'Фаза 3', data: [] }
             ],
             legend: { enabled: true },
-            yAxis: { title: { text: 'Мощность (Вт)' } },
+            yAxis: { title: { text: 'Electric Power (kW)' } },
             xAxis: { type: 'datetime', minRange: 15*60000 },
             loading: true
         };

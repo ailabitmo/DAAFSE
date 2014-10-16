@@ -2,6 +2,10 @@
     word-wrap: break-word;
 }
 
+.meter-list a {
+    cursor: pointer;
+}
+
 .substation-list .panel-title a {
     cursor: pointer;
 }

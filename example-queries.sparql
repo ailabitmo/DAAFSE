@@ -77,15 +77,16 @@ WHERE {
   GRAPH <http://192.168.134.114/SmartMetersDB/> {
     ?meter em:hasStream ?stream .
   }
-  STREAM ?stream [NOW] {
-    ?observation a em:PolyphasePowerObservation ;
+  STREAM ?stream [RANGE 1m] {
+    ?observation a em:PolyphaseVoltageObservation ;
             ssn:observationResultTime ?time ;
             ssn:observationResult ?output .
-    ?output a em:PolyphasePowerSensorOutput ;
-            ssn:isProducedBy ?meter ;
+    ?output ssn:isProducedBy ?meter ;
             ssn:hasValue ?value .
     ?value em:hasQuantityValue ?qvalue .
+    ?meter  ssn:hasDeployment ?deployment .
   }
-  FILTER(?qvalue < 0)
+  FILTER(AVG(?qvalue) > 0)
   BIND(IRI(CONCAT(STR(?meter), '/alerts/', STR(?time))) AS ?alert)
 }
+GROUP BY ?deployment

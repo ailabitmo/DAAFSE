@@ -15,12 +15,21 @@
         </form>
     </div>
     <div class="col-md-4">
-        <div class="list-group meter-list">
-            <a class="list-group-item" ng-repeat="q in queries" 
-               ng-click="setSelected(q)"
-               ng-class="{'active': isSelected(q)}">
-                {{q.name}}
-            </a>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-list-alt"></span>
+                    Registered queries (total {{queries.length}})</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group meter-list">
+                    <a class="list-group-item" ng-repeat="q in queries" 
+                       ng-click="setSelected(q)"
+                       ng-class="{'active': isSelected(q)}">
+                        {{q.name}}
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
