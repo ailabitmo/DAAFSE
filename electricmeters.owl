@@ -21,6 +21,16 @@
 #################################################################
 
 
+###  http://purl.org/NET/ssnext/electricmeters#complyWith
+
+:complyWith rdf:type owl:ObjectProperty ;
+            
+            rdfs:domain :ElectricMeter ;
+            
+            rdfs:range :QualityRequirement .
+
+
+
 ###  http://purl.org/NET/ssnext/electricmeters#hasStream
 
 :hasStream rdf:type owl:ObjectProperty ;
@@ -72,6 +82,24 @@
 
 
 
+###  http://purl.org/NET/ssnext/electricmeters#maxVoltageValue
+
+:maxVoltageValue rdf:type owl:DatatypeProperty .
+
+
+
+###  http://purl.org/NET/ssnext/electricmeters#minPowerValue
+
+:minPowerValue rdf:type owl:DatatypeProperty .
+
+
+
+###  http://purl.org/NET/ssnext/electricmeters#minVoltageValue
+
+:minVoltageValue rdf:type owl:DatatypeProperty .
+
+
+
 
 
 #################################################################
@@ -101,11 +129,11 @@
                     rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest> ,
                                     [ rdf:type owl:Restriction ;
                                       owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#hasProperty> ;
-                                      owl:someValuesFrom :VoltageProperty
+                                      owl:someValuesFrom :PowerProperty
                                     ] ,
                                     [ rdf:type owl:Restriction ;
                                       owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#hasProperty> ;
-                                      owl:someValuesFrom :PowerProperty
+                                      owl:someValuesFrom :VoltageProperty
                                     ] ;
                     
                     rdfs:comment "Электричество. Его свойства: напряжение, сила тока и т.д."@ru .
@@ -159,12 +187,12 @@
                            
                            rdfs:subClassOf :PowerObservation ,
                                            [ rdf:type owl:Restriction ;
-                                             owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
-                                             owl:allValuesFrom :PolyphasePowerSensorOutput
-                                           ] ,
-                                           [ rdf:type owl:Restriction ;
                                              owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
                                              owl:allValuesFrom :PolyphaseElectricPowerProperty
+                                           ] ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
+                                             owl:allValuesFrom :PolyphasePowerSensorOutput
                                            ] .
 
 
@@ -241,16 +269,16 @@
                   
                   rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#Observation> ,
                                   [ rdf:type owl:Restriction ;
-                                    owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> ;
-                                    owl:allValuesFrom :ElectricityFeature
+                                    owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
+                                    owl:allValuesFrom :PowerProperty
                                   ] ,
                                   [ rdf:type owl:Restriction ;
                                     owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
                                     owl:allValuesFrom :PowerSensorOutput
                                   ] ,
                                   [ rdf:type owl:Restriction ;
-                                    owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
-                                    owl:allValuesFrom :PowerProperty
+                                    owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> ;
+                                    owl:allValuesFrom :ElectricityFeature
                                   ] .
 
 
@@ -284,6 +312,14 @@
 
 
 
+###  http://purl.org/NET/ssnext/electricmeters#QualityRequirement
+
+:QualityRequirement rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf <http://www.loa-cnr.it/ontologies/DUL.owl#Entity> .
+
+
+
 ###  http://purl.org/NET/ssnext/electricmeters#QuantityObservationValue
 
 :QuantityObservationValue rdf:type owl:Class ;
@@ -298,16 +334,16 @@
                     
                     rdfs:subClassOf <http://purl.oclc.org/NET/ssnx/ssn#Observation> ,
                                     [ rdf:type owl:Restriction ;
-                                      owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> ;
-                                      owl:allValuesFrom :ElectricityFeature
+                                      owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
+                                      owl:allValuesFrom :VoltageProperty
                                     ] ,
                                     [ rdf:type owl:Restriction ;
                                       owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observationResult> ;
                                       owl:allValuesFrom :VoltageSensorOutput
                                     ] ,
                                     [ rdf:type owl:Restriction ;
-                                      owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#observedProperty> ;
-                                      owl:allValuesFrom :VoltageProperty
+                                      owl:onProperty <http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest> ;
+                                      owl:allValuesFrom :ElectricityFeature
                                     ] .
 
 

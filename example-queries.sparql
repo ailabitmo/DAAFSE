@@ -77,16 +77,79 @@ WHERE {
   GRAPH <http://192.168.134.114/SmartMetersDB/> {
     ?meter em:hasStream ?stream .
   }
-  STREAM ?stream [RANGE 1m] {
+  STREAM ?stream [NOW] {
     ?observation a em:PolyphaseVoltageObservation ;
             ssn:observationResultTime ?time ;
             ssn:observationResult ?output .
     ?output ssn:isProducedBy ?meter ;
             ssn:hasValue ?value .
     ?value em:hasQuantityValue ?qvalue .
-    ?meter  ssn:hasDeployment ?deployment .
   }
-  FILTER(AVG(?qvalue) > 0)
+  FILTER(?qvalue < 0)
   BIND(IRI(CONCAT(STR(?meter), '/alerts/', STR(?time))) AS ?alert)
 }
-GROUP BY ?deployment
+
+==================================================================
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX em: <http://purl.org/NET/ssnext/electricmeters#>
+PREFIX pne: <http://data.press.net/ontology/event/>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dul: <http://www.loa-cnr.it/ontologies/DUL.owl#>
+
+CONSTRUCT {
+    ?alert a <http://purl.org/daafse/alerts#TooHighVoltageValue> ;
+        dul:hasEventDate ?time ;
+        dul:involvesAgent ?meter .
+}
+FROM NAMED <http://lpmanalytics.tk/sparql-graph-crud>
+WHERE {
+  GRAPH <http://192.168.134.114/SmartMetersDB/> {
+    ?meter em:hasStream ?stream ;
+	   em:complyWith ?requirement .
+    ?requirement em:maxVoltageValue ?maxvvalue .
+  }
+  STREAM ?stream [NOW] {
+    ?observation a em:PolyphaseVoltageObservation ;
+            ssn:observationResultTime ?time ;
+            ssn:observationResult ?output .
+    ?output a em:PolyphaseVoltageSensorOutput ;
+            ssn:isProducedBy ?meter ;
+            ssn:hasValue ?value .
+    ?value em:hasQuantityValue ?qvalue .
+  }
+  FILTER(?qvalue > ?maxvvalue)
+  BIND(IRI(CONCAT(STR(?meter), '/alerts/', STR(?time))) AS ?alert)
+}
+
+================================================================
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX em: <http://purl.org/NET/ssnext/electricmeters#>
+PREFIX pne: <http://data.press.net/ontology/event/>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dul: <http://www.loa-cnr.it/ontologies/DUL.owl#>
+
+CONSTRUCT {
+    ?alert a <http://purl.org/daafse/alerts#PowerValueBelowZero> ;
+        dul:hasEventDate ?time ;
+        dul:involvesAgent ?meter .
+}
+FROM NAMED <http://lpmanalytics.tk/sparql-graph-crud>
+WHERE {
+  GRAPH <http://192.168.134.114/SmartMetersDB/> {
+    ?meter em:hasStream ?stream ;
+	       em:complyWith ?requirement .
+	?requirement em:minPowerValue ?minpvalue .
+  }
+  STREAM ?stream [NOW] {
+    ?observation a em:PolyphaseVoltageObservation ;
+            ssn:observationResultTime ?time ;
+            ssn:observationResult ?output .
+    ?output ssn:isProducedBy ?meter ;
+            ssn:hasValue ?value .
+    ?value em:hasQuantityValue ?qvalue .
+  }
+  FILTER(?qvalue < ?minPowerValue)
+  BIND(IRI(CONCAT(STR(?meter), '/alerts/', STR(?time))) AS ?alert)
+}
