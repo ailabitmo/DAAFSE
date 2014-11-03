@@ -20,6 +20,8 @@ RUN mkdir crossbar
 WORKDIR crossbar
 RUN crossbar init
 
-EXPOSE 8080
+ADD config.json /root/crossbar/.crossbar/
+
+EXPOSE 80
 
 CMD crossbar start --cbdir /root/crossbar/.crossbar
