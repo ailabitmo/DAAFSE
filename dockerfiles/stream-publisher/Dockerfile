@@ -1,4 +1,4 @@
-FROM fedora
+FROM fedora:20
 
 WORKDIR /root
 
@@ -15,10 +15,11 @@ RUN echo 2 | alternatives --config javac
 ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
 
 RUN git clone https://github.com/ailabitmo/DAAFSE.git
-
 RUN wget https://dl.dropboxusercontent.com/u/1497018/daafse/stream.json.zip -O /root/DAAFSE/stream-publisher/stream.json.zip
-RUN cd /root/DAAFSE/stream-publisher/ && unzip stream.json.zip -d .
 
-RUN cd DAAFSE/stream-publisher/ && mvn clean install -DskipTests=true
+WORKDIR $DAAFSE_SP_HOME
 
-CMD cd DAAFSE/stream-publisher/ && java -jar target/stream-publisher-1.0-SNAPSHOT-jar-with-dependencies.jar stream.json "TTL"
+RUN unzip stream.json.zip -d .
+RUN mvn clean install -DskipTests=true
+
+CMD java -jar target/stream-publisher-1.0-SNAPSHOT-jar-with-dependencies.jar stream.json "TTL"

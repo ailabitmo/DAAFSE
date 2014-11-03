@@ -8,16 +8,18 @@ import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.streampublisher.config.PublisherConfig;
+import ru.ifmo.ailab.daafse.streampublisher.messages.MessagePublisher;
+import ru.ifmo.ailab.daafse.streampublisher.messages.MessagePublisherFactory;
 import ru.ifmo.ailab.daafse.streampublisher.observations.Observation;
 
-public class Publisher implements ObservationListener {
+public class Launcher implements ObservationListener {
 
     private static final PublisherConfig CONFIG = ConfigFactory
             .create(PublisherConfig.class);
-    private static final Producer producer = new Producer(
-            CONFIG.serverURI(), CONFIG.exchangeName());
+    private static final MessagePublisher producer = 
+            new MessagePublisherFactory().create(CONFIG.mbusType());
     private static final Store store = new Store(CONFIG.sparqlUpdate());
-    private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
+    private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
     private static String lang = "RDF/XML";
     private static boolean verbose = false;
 
@@ -32,7 +34,7 @@ public class Publisher implements ObservationListener {
                 }
             }
             logger.info("Observations will be read from {} file.", log);
-            LogReader lr = new LogReader(log, new Publisher());
+            LogReader lr = new LogReader(log, new Launcher());
             producer.init();
             if(CONFIG.sparqlUpdateEnabled()) {
                 store.clearAll();
@@ -53,13 +55,13 @@ public class Publisher implements ObservationListener {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             observation.getModel().write(out, lang);
-            producer.publish(CONFIG.routingKey(observation.getMeterId()),
-                    out.toByteArray());
+            producer.publish(CONFIG.mbusTopicPrefix(observation.getMeterId()),
+                    out.toString());
             if(verbose) {
                 logger.info(out.toString());
             }
-            logger.debug("Published to {}",
-                    CONFIG.routingKey(observation.getMeterId()));
+            logger.debug("Published to {}", 
+                    CONFIG.mbusTopicPrefix(observation.getMeterId()));
             if (CONFIG.sparqlUpdateEnabled()) {
                 store.save(observation);
                 logger.debug("Saved to {}", observation.getMeterURI());

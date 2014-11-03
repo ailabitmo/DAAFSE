@@ -34,7 +34,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.ifmo.ailab.daafse.streampublisher.Publisher</mainClass>
+                            <mainClass>ru.ifmo.ailab.daafse.streampublisher.Launcher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -45,6 +45,11 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>ws.wamp.jawampa</groupId>
+            <artifactId>jawampa</artifactId>
+            <version>0.1.0</version>
+        </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>

@@ -11,18 +11,27 @@ import org.aeonbits.owner.Config.Sources;
 public interface PublisherConfig extends Config {
     
     public static final String VIRTUOSO = "virtuoso";
+    public static final String AMQP = "amqp";
+    public static final String WAMP = "wamp";
     
-    @Key("amqp.exchangeName")
-    @DefaultValue("meter_exchange")
-    String exchangeName();
+    @Key("mbus.type")
+    String mbusType();
     
-    @Key("amqp.routingKey.prefix")
-    @DefaultValue("meter.location.%s")
-    String routingKey(String meterId);
-    
-    @Key("amqp.uri")
+    @Key("mbus.uri")
     @DefaultValue("amqp://localhost")
     URI serverURI();
+    
+    @Key("mbus.wamp.realm")
+    @DefaultValue("realm1")
+    String wampRealmName();
+    
+    @Key("mbus.amqp.exchangeName")
+    @DefaultValue("meter_exchange")
+    String amqpExchangeName();
+    
+    @Key("mbus.topic.prefix")
+    @DefaultValue("meter.%s")
+    String mbusTopicPrefix(String meterId);
     
     @Key("sparql.vendor")
     String sparqlVendor();

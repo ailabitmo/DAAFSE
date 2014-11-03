@@ -1,4 +1,4 @@
-package ru.ifmo.ailab.daafse.streampublisher;
+package ru.ifmo.ailab.daafse.streampublisher.messages;
 
 import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
@@ -11,20 +11,21 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Producer implements ShutdownListener {
+public class AMQPMessagePublisher implements MessagePublisher, ShutdownListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(Producer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AMQPMessagePublisher.class);
     private final URI serverUri;
     private final String exchangeName;
     private volatile boolean connected = false;
     private Connection connection;
     private Channel channel;
 
-    public Producer(final URI serverUri, final String exchangeName) {
+    AMQPMessagePublisher(final URI serverUri, final String exchangeName) {
         this.serverUri = serverUri;
         this.exchangeName = exchangeName;
     }
 
+    @Override
     public void init() {
         logger.debug("Connecting to {}", serverUri);
         ConnectionFactory factory = new ConnectionFactory();
@@ -58,10 +59,12 @@ public class Producer implements ShutdownListener {
         }
     }
 
-    public void publish(final String routingKey, final byte[] data) throws IOException {
+    @Override
+    public void publish(final String routingKey, final String message) throws IOException {
         try {
             if(connected) {
-                channel.basicPublish(exchangeName, routingKey, null, data);
+                channel.basicPublish(exchangeName, routingKey, null, 
+                        message.getBytes());
             } else {
                 logger.warn("Not connected! Ignoring message...");
             }
@@ -70,6 +73,7 @@ public class Producer implements ShutdownListener {
         }
     }
 
+    @Override
     public void close() {
         connected = false;
         try {
