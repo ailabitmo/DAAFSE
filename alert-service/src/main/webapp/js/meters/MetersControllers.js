@@ -1,7 +1,7 @@
 (function(angular){ 'use strict';
     var module = angular.module('metersApp.meters', [
-        'metersApp.meters.services', 'ngRDFResource', 'ngSTOMP', 'ngSPARQL', 
-        'ngSPARQL.config'
+        'metersApp.meters.services', 'ngRDFResource', 'ngSPARQL', 
+        'ngSPARQL.config', 'ngWAMP'
     ]);
     
     module.controller('MeterListCtrl', function($scope, ResourceManager) {
@@ -32,7 +32,7 @@
         });
     });
     module.controller('MeterChartCtrl', function($scope, $routeParams, $q, 
-        ResourceManager, GraphFactory, utils, stomp, metersService, sparql) {
+        ResourceManager, GraphFactory, utils, wamp, metersService, sparql) {
         var thisArg = this;
         var sub;
         $scope.vChartConfig = {
@@ -135,7 +135,7 @@
             return $q.all(promises);
         })
         .then(function() {
-            sub = stomp.subscribe($scope.meter.get('em:hasStream'), 
+            sub = wamp.subscribe($scope.meter.get('em:hasStream'), 
                 thisArg._onMessage);
         });
         
@@ -164,7 +164,7 @@
             var promise = $q.all(promises);
             if(!$scope.untilTime) {
                 promise.then(function() {
-                    sub = stomp.subscribe($scope.meter.get('em:hasStream'), 
+                    sub = wamp.subscribe($scope.meter.get('em:hasStream'), 
                         thisArg._onMessage);
                 });
             }
@@ -177,8 +177,8 @@
             }
         });
         
-        this._onMessage = function(message) {
-            utils.parseTTL(message.body)
+        this._onMessage = function(args) {
+            utils.parseTTL(args[0])
             .then(GraphFactory.newFromTriples)
             .then(function(graph) {
                 var points = [];

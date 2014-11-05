@@ -30,7 +30,7 @@
     
     var generalConfig = angular.module('metersApp.config', []);
     generalConfig.constant('GENERAL_CONFIG', {
-        ALERTS_STREAM: 'amqp://lpmstreams.tk?exchangeName=alert_exchange&routingKey=alerts'
+        ALERTS_STREAM: 'ws://lpmstreams.tk/ws?topic=alerts.all'
     });
     
     var sparqlConfig = angular.module('ngSPARQL.config', []);

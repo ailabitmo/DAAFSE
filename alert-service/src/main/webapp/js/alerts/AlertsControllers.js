@@ -1,7 +1,7 @@
 (function(angular){ 'use strict';
     var module = angular.module('metersApp.alerts', [
         'metersApp.config', 'metersApp.utils', 'metersApp.meters.services', 
-        'ngRDFResource'
+        'ngRDFResource', 'ngWAMP'
     ]);
     
     module.controller('AlertConfigureCtrl', function($scope, sparql, $http) {
@@ -41,7 +41,7 @@
     });
     
     module.controller('AlertListCtrl', function(
-            $scope, stomp, GENERAL_CONFIG, $modal, $window,
+            $scope, wamp, GENERAL_CONFIG, $modal, $window,
             utils, ResourceFactory, ResourceManager, metersService) {
         var sub;
         var modal = $modal({
@@ -65,8 +65,8 @@
             loading: true
         };
         $scope.alerts = [];
-        $scope._onAlert = function(message) {
-            utils.parseTTL(message.body)
+        $scope._onAlert = function(args) {
+            utils.parseTTL(args[0])
             .then(ResourceFactory.newFromTriples)
             .then(function(alert) {
                 var index = -1;
@@ -121,7 +121,7 @@
         ]).then(function() {
             return ResourceManager.findByType('dul:EventType', ['rdfs:label']);
         }).then(function() {
-            sub = stomp.subscribe(GENERAL_CONFIG.ALERTS_STREAM, $scope._onAlert);
+            sub = wamp.subscribe(GENERAL_CONFIG.ALERTS_STREAM, $scope._onAlert);
         });
         
         $scope.$on('$routeChangeStart', function() {

@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import java.io.ByteArrayOutputStream;
 import java.util.Iterator;
 import java.util.List;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.aeonbits.owner.ConfigFactory;
@@ -22,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.alertservice.CQELSEngine;
 import ru.ifmo.ailab.daafse.alertservice.QueryExecutorService;
-import ru.ifmo.ailab.daafse.alertservice.StreamService;
+import ru.ifmo.ailab.daafse.alertservice.MessagePublishingService;
 import ru.ifmo.ailab.daafse.alertservice.StreamURI;
 import ru.ifmo.ailab.daafse.alertservice.config.ServiceConfig;
 
@@ -33,12 +34,14 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
             QueryExecutorServiceImpl.class);
     private static final ServiceConfig CONFIG = ConfigFactory
             .create(ServiceConfig.class);
-    private static StreamURI streamUri = new StreamURI(CONFIG.alertsStreamURI());
+    private final static StreamURI STREAM_URI = new StreamURI(
+            CONFIG.alertsStreamURI());
 
     @Inject
     private CQELSEngine cqelsEngine;
     @Inject
-    private StreamService streamService;
+    @Default
+    private MessagePublishingService streamService;
 
     @Override
     public void loadDataset(final String graph, final String uri) {
@@ -60,7 +63,6 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
                     result += " " + mapping.getCtx().engine().decode(t);
                 }
             }
-//            logger.debug("{}", result);
         });
         return 0;
     }
@@ -91,8 +93,7 @@ public class QueryExecutorServiceImpl implements QueryExecutorService {
                 });
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 model.write(out, "TTL");
-                logger.debug(out.toString());
-                streamService.publish(streamUri, out.toByteArray());
+                streamService.publish(STREAM_URI, out.toString());
             }
         });
         return 0;

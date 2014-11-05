@@ -13,6 +13,8 @@
     <logger name="com.hp" level="INFO"/>
     <logger name="org.apache.jena" level="INFO"/>
     <logger name="org.apache.http.wire" level="INFO"/>
+    <logger name="io.netty" level="INFO"/>
+    <logger name="ws.wamp" level="INFO"/>
 
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />

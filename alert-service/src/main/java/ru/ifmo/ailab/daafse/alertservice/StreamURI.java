@@ -6,8 +6,7 @@ import java.net.URISyntaxException;
 public class StreamURI {
 
     private final URI serverURI;
-    private final String exchangeName;
-    private final String routingKey;
+    private final String topic;
     
     public StreamURI(final String uri) throws URISyntaxException {
         this(new URI(uri));
@@ -19,40 +18,33 @@ public class StreamURI {
             tempServerURI = new URI(
                     uri.getScheme() + "://" + uri.getAuthority() + uri.getPath());
         } catch (URISyntaxException ex) {
-            ex.printStackTrace();
+            throw new IllegalArgumentException(ex);
         }
         this.serverURI = tempServerURI;
 
-        String tempExchangeName = null;
-        String tempRoutingKey = null;
+        String tempTopic = null;
         for (String kv : uri.getQuery().split("&")) {
             String[] parts = kv.split("=");
-            if (parts[0].equalsIgnoreCase("exchangeName")) {
-                tempExchangeName = parts[1];
-            } else if (parts[0].equalsIgnoreCase("routingKey")) {
-                tempRoutingKey = parts[1];
+            if (parts[0].equalsIgnoreCase("topic")) {
+                tempTopic = parts[1];
             }
         }
-        this.exchangeName = tempExchangeName;
-        this.routingKey = tempRoutingKey;
+        this.topic = tempTopic;
     }
 
     public URI getServerURI() {
         return serverURI;
     }
 
-    public String getExchangeName() {
-        return exchangeName;
-    }
-
-    public String getRoutingKey() {
-        return routingKey;
+    public String getTopic() {
+        return topic;
     }
 
     @Override
     public String toString() {
-        return serverURI.toString() + "?exchangeName=" + exchangeName
-                + "&routingKey=" + routingKey;
+        StringBuilder builder = new StringBuilder();
+        return builder.append(serverURI.toASCIIString()).append("?topic=")
+                .append(topic).toString();
     }
 
 }

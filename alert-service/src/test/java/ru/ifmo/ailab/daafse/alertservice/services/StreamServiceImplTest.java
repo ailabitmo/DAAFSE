@@ -1,6 +1,7 @@
 package ru.ifmo.ailab.daafse.alertservice.services;
 
 import java.net.URISyntaxException;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -10,7 +11,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import ru.ifmo.ailab.daafse.alertservice.QueryExecutorService;
-import ru.ifmo.ailab.daafse.alertservice.StreamService;
+import ru.ifmo.ailab.daafse.alertservice.MessagePublishingService;
 import ru.ifmo.ailab.daafse.alertservice.StreamURI;
 
 @RunWith(Arquillian.class)
@@ -24,7 +25,8 @@ public class StreamServiceImplTest {
     }
 
     @Inject
-    StreamService stream;
+    @Default
+    MessagePublishingService stream;
     @Inject
     QueryExecutorService qes;
 

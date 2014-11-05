@@ -31,9 +31,9 @@ public class WAMPMessagePublisher implements MessagePublisher {
             client = builder.build();
             client.statusChanged().subscribe((WampClient.Status newStatus) -> {
                 if(WampClient.Status.Connected == newStatus) {
-                    logger.debug("Connected to WAMP router!");
+                    logger.debug("Connected to WAMP router [{}]", serverURI);
                 } else if(WampClient.Status.Connecting == newStatus) {
-                    logger.debug("Connecting to {}", serverURI);
+                    logger.debug("Connecting to WAMP router [{}]", serverURI);
                 }
             });
             client.open();

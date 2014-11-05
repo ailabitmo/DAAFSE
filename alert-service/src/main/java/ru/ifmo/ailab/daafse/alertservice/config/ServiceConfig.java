@@ -5,8 +5,14 @@ import org.aeonbits.owner.Config;
 
 public interface ServiceConfig extends Config {
     
+    public static final String WAMP = "wamp";
+    
+    @Key("mbus.type")
+    @DefaultValue(WAMP)
+    String mbusType();
+    
     @Key("alerts.streamURI")
-    @DefaultValue("amqp://lpmstreams.tk?exchangeName=alert_exchange&routingKey=alerts")
+    @DefaultValue("ws://lpmstreams.tk:80/ws?topic=alerts.all")
     URI alertsStreamURI();
     
     @Key("sparql.endpointURL")

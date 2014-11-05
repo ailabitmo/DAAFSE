@@ -93,12 +93,25 @@
             <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>ws.wamp.jawampa</groupId>
+            <artifactId>jawampa</artifactId>
+            <version>0.1.0</version>
+        </dependency>
     </dependencies>
     
     <repositories>
         <repository>
             <id>cqels.mvn-repo</id>
             <url>https://raw.github.com/KMax/cqels/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>jawampa.mvn-repo</id>
+            <url>https://raw.github.com/Matthias247/jawampa/mvn-repo/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>

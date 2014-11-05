@@ -15,44 +15,28 @@ import java.io.StringReader;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.deri.cqels.engine.RDFStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ifmo.ailab.daafse.alertservice.CQELSEngine;
-import ru.ifmo.ailab.daafse.alertservice.StreamService;
+import ru.ifmo.ailab.daafse.alertservice.MessagePublishingService;
 import ru.ifmo.ailab.daafse.alertservice.StreamURI;
 
-@Singleton
-public class StreamServiceImpl implements StreamService {
+public class AMQPMessagePublishingService implements MessagePublishingService {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-            StreamServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AMQPMessagePublishingService.class);
     private static final String EXCHANGE_TYPE = "topic";
-    private Map<URI, ConnectionFactory> factories;
-    private Map<URI, Connection> connections;
-    private Map<StreamURI, Channel> channels;
+    private final Map<URI, ConnectionFactory> factories = new HashMap<>();
+    private final Map<URI, Connection> connections = new HashMap<>();
+    private final Map<StreamURI, Channel> channels = new HashMap<>();
+    private final CQELSEngine cqelsEngine;
 
-    @Inject
-    private CQELSEngine cqelsEngine;
-
-    @PostConstruct
-    public void postConstruct() {
-        try {
-            factories = new HashMap<>();
-            connections = new HashMap<>();
-            channels = new HashMap<>();
-            logger.debug("service has been initialized");
-        } catch (Exception ex) {
-            logger.warn(ex.getMessage(), ex);
-        }
+    public AMQPMessagePublishingService(CQELSEngine cqelsEngine) {
+        this.cqelsEngine = cqelsEngine;
     }
 
-    @PreDestroy
-    public void preDestroy() {
+    @Override
+    public void destroy() {
         channels.forEach((k, v) -> {
             try {
                 if (v.isOpen()) {
@@ -79,11 +63,12 @@ public class StreamServiceImpl implements StreamService {
     }
 
     @Override
-    public void publish(final StreamURI uri, final byte[] body) {
+    public void publish(final StreamURI uri, final String message) {
         try {
             final Channel channel = getOrCreateChannel(uri);
-            channel.basicPublish(uri.getExchangeName(), uri.getRoutingKey(),
-                    null, body);
+            final String[] topic = uri.getTopic().split(":");
+            channel.basicPublish(topic[0], topic[1],
+                    null, message.getBytes());
         } catch (Exception ex) {
             logger.warn(ex.getMessage(), ex);
         }
@@ -97,10 +82,10 @@ public class StreamServiceImpl implements StreamService {
         }
         try {
             final Channel channel = getOrCreateChannel(uri);
-            channel.exchangeDeclare(uri.getExchangeName(), EXCHANGE_TYPE);
+            channel.exchangeDeclare(uri.getTopic(), EXCHANGE_TYPE);
             final String queueName = channel.queueDeclare().getQueue();
-            channel.queueBind(queueName, uri.getExchangeName(),
-                    uri.getRoutingKey());
+            final String[] topic = uri.getTopic().split(":");
+            channel.queueBind(queueName, topic[0], topic[1]);
             channel.basicConsume(queueName,
                     new ObservationConsumer(channel, uri));
             channels.put(uri, channel);
@@ -129,7 +114,6 @@ public class StreamServiceImpl implements StreamService {
         }
     }
 
-    @Override
     public Channel getOrCreateChannel(final StreamURI uri)
             throws Exception {
         ConnectionFactory cf;
@@ -154,7 +138,7 @@ public class StreamServiceImpl implements StreamService {
                 }
             }
             Channel channel = connection.createChannel();
-            channel.exchangeDeclare(uri.getExchangeName(), EXCHANGE_TYPE);
+            channel.exchangeDeclare(uri.getTopic(), EXCHANGE_TYPE);
             channels.put(uri, channel);
             return channel;
         }
