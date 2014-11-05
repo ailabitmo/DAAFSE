@@ -11,6 +11,25 @@
         <module>alert-service</module>
         <module>stream-publisher</module>
     </modules>
+    
+    <licenses>
+        <license>
+            <name>MIT License</name>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <name>Maxim Kolchin</name>
+            <email>kolchinmax@gmail.com</email>
+            <url>http://kolchinmax.ru</url>
+        </developer>
+    </developers>
+    
+    <organization>
+        <name>Laboratory ISST, ITMO University</name>
+        <url>http://ailab.ifmo.ru</url>
+    </organization>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
