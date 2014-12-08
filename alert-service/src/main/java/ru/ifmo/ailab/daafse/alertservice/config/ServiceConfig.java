@@ -12,7 +12,7 @@ public interface ServiceConfig extends Config {
     String mbusType();
     
     @Key("alerts.streamURI")
-    @DefaultValue("ws://lpmstreams.tk:80/ws?topic=alerts.all")
+    @DefaultValue("ws://lpmstreams.tk/ws?topic=alerts.all")
     URI alertsStreamURI();
     
     @Key("sparql.endpointURL")

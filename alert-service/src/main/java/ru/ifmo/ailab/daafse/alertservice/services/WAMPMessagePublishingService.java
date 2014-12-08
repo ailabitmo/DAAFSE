@@ -33,6 +33,7 @@ public class WAMPMessagePublishingService implements MessagePublishingService {
     
     public WAMPMessagePublishingService(CQELSEngine cqelsEngine) {
         this.cqelsEngine = cqelsEngine;
+        logger.debug("instantiated");
     }
 
     @Override
@@ -51,7 +52,7 @@ public class WAMPMessagePublishingService implements MessagePublishingService {
         try {
             WampClient client = getOrCreateClient(uri).join();
             client.publish(uri.getTopic(), body);
-        } catch (ApplicationError ex) {
+        } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
     }

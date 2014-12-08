@@ -1,10 +1,11 @@
 package ru.ifmo.ailab.daafse.streampublisher.messages;
 
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ws.wamp.jawampa.ApplicationError;
 import ws.wamp.jawampa.WampClient;
 import ws.wamp.jawampa.WampClientBuilder;
 
@@ -26,6 +27,8 @@ public class WAMPMessagePublisher implements MessagePublisher {
         WampClientBuilder builder = new WampClientBuilder();
             builder.witUri(serverURI)
                     .withRealm(realm)
+                    .withSslContext(SslContext.newClientContext(
+                            InsecureTrustManagerFactory.INSTANCE))
                     .withInfiniteReconnects()
                     .withReconnectInterval(5, TimeUnit.SECONDS);
             client = builder.build();
@@ -37,7 +40,7 @@ public class WAMPMessagePublisher implements MessagePublisher {
                 }
             });
             client.open();
-        } catch(ApplicationError ex) {
+        } catch(Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
     }

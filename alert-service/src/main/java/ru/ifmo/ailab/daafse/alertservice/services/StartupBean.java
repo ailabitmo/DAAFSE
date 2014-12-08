@@ -39,9 +39,10 @@ public class StartupBean {
 //                    new StreamURI(CONFIG.alertsStreamURI()));
 //            logger.debug("{}", channel.isOpen());
         
-            ResultSet results = sparqlRs.select("PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>"
+            ResultSet results = sparqlRs.select(
+                    "PREFIX em:<http://purl.org/NET/ssnext/electricmeters#>"
                     + "SELECT ?streamUri {"
-                    + "	GRAPH <http://192.168.134.114/SmartMetersDB/> {"
+                    + "	GRAPH <http://purl.org/daafse/> {"
                     + "    	?x em:hasStream ?streamUri ."
                     + "    }"
                     + "}");

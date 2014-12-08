@@ -1,5 +1,4 @@
 {
-   "controller": {},
    "workers": [
       {
          "type": "router",
@@ -29,9 +28,9 @@
                   "type": "tcp",
                   "port": 80
                },
-               "url": "ws://0.0.0.0:80/ws"
+               "url": "ws://0.0.0.0/ws"
             }
-          ]
+         ]
       }
     ]
 }
